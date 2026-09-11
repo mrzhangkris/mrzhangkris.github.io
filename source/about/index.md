@@ -1,7 +1,6 @@
 ---
-# the default layout is 'page'
-icon: fas fa-info-circle
-order: 4
+title: 关于我
+date: 2026-09-11 11:00:00
 ---
 
 ## 关于我
