@@ -1,0 +1,13 @@
+{
+  "title": "nginx limit_req",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "limit_req_zone $binary_remote_addr"},
+    {"t": "config", "s": "  zone=mylimit:10m rate=1r/s;"},
+    {"t": "note", "s": "每客户端每秒 1 个请求"},
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "  limit_req zone=mylimit burst=5 nodelay;"},
+    {"t": "config", "s": "  proxy_pass http://backend_server;"},
+    {"t": "config", "s": "}"}
+  ]
+}

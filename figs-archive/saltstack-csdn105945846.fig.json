@@ -1,0 +1,13 @@
+{
+  "title": "salt remote execution structure",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "salt '<target>' <function> [arguments]"},
+    {"t": "cmd", "s": "salt \"*-node[1|2]\" test.ping"},
+    {"t": "out", "s": "minion-node2:"},
+    {"t": "out", "s": "    True"},
+    {"t": "out", "s": "master-node1:"},
+    {"t": "out", "s": "    True"},
+    {"t": "note", "s": "target 圈定机器，function 是执行模块里的函数"}
+  ]
+}

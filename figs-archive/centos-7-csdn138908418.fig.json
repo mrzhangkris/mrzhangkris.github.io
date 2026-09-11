@@ -1,0 +1,16 @@
+{
+  "title": "postfix main.cf basic setup",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "myhostname = mail.example.com"},
+    {"t": "config", "s": "mydomain = example.com"},
+    {"t": "config", "s": "myorigin = $mydomain"},
+    {"t": "config", "s": "inet_interfaces = all"},
+    {"t": "config", "s": "home_mailbox = Maildir/"},
+    {"t": "config", "s": "smtpd_sasl_auth_enable = yes"},
+    {"t": "note", "s": "SASL 认证由 Dovecot 提供"},
+    {"t": "config", "s": "smtpd_recipient_restrictions = permit_mynetworks,"},
+    {"t": "config", "s": "  permit_sasl_authenticated, reject_unauth_destination"},
+    {"t": "note", "s": "改完 systemctl restart postfix 生效"}
+  ]
+}

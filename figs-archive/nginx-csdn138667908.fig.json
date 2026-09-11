@@ -1,0 +1,12 @@
+{
+  "title": "nginx hot upgrade signals",
+  "type": "cmd",
+  "lines": [
+    {"t": "note", "s": "USR2：拉起新 master，pid 文件加 oldbin 后缀"},
+    {"t": "cmd", "s": "kill -USR2 51393"},
+    {"t": "note", "s": "WINCH：优雅关闭旧 worker"},
+    {"t": "cmd", "s": "kill -WINCH 51393"},
+    {"t": "note", "s": "QUIT：确认正常后退出旧 master"},
+    {"t": "cmd", "s": "kill -QUIT 51393"}
+  ]
+}

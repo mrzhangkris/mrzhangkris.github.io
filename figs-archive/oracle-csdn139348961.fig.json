@@ -1,0 +1,12 @@
+{
+  "title": "Oracle sqlnet.ora encryption",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "SQLNET.ENCRYPTION_SERVER = REQUIRED"},
+    {"t": "config", "s": "SQLNET.ENCRYPTION_TYPES_SERVER = (AES256,"},
+    {"t": "config", "s": "  AES192, AES128)"},
+    {"t": "config", "s": "SQLNET.CRYPTO_CHECKSUM_SERVER = REQUIRED"},
+    {"t": "config", "s": "SQLNET.CRYPTO_CHECKSUM_TYPES_SERVER = SHA1"},
+    {"t": "note", "s": "REQUIRED: 不加密/不校验的连接直接拒绝"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "title": "GoAccess real-time HTML report",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "locale"},
+    {"t": "note", "s": "检查系统 locale 是否支持 UTF-8"},
+    {"t": "cmd", "s": "export LC_ALL=en_US.UTF-8"},
+    {"t": "cmd", "s": "export LANG=en_US.UTF-8"},
+    {"t": "cmd", "s": "goaccess /var/log/nginx/access.log \\"},
+    {"t": "cmd", "s": "  --log-format=COMBINED \\"},
+    {"t": "cmd", "s": "  -o /var/www/html/report.html --real-time-html"},
+    {"t": "note", "s": "浏览器打开 report.html，实时更新"}
+  ]
+}

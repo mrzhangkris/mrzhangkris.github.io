@@ -1,20 +1,25 @@
 ---
-title: "elasticsearch安装"
+title: "Elasticsearch 7.6.1 安装：tar 包手动部署并指定 JDK"
 date: 2020-03-29 10:05:30
 categories: [技术]
 tags: [Elasticsearch]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/elasticsearch-csdn105170609.png
+updated: 2026-09-11
 ---
 
-### 基础环境的安装
+在 Linux 上快速跑起一个 Elasticsearch，用官方 tar 包手动部署是最直接的方式。这篇记录 Elasticsearch 7.6.1（no-jdk 版本，安装包内不含 JDK）的完整安装过程：先装好 JDK，创建专用用户，再解压、指定 JDK 路径、启动并验证。
 
-1. 安装基础命令
+## 基础环境的安装
+
+先装几个基础工具：
+
 ```bash
 yum install -y wget tar net-tools vim
 ```
-2. 安装JDK
-3. 使用java --version命令查看jdk版本，若显示not found，说明未安装JDK，可以根据代码块内容安装JDK，也可以自行安装JDK。
+
+Elasticsearch 依赖 Java 运行环境，用 `java --version` 查看 JDK 版本，若显示 not found 说明未安装 JDK。可以用 `yum search` 按关键字找安装包：
+
 ```bash
 [root@localhost ~]# yum search "*jdk*"
 Last metadata expiration check: 0:16:00 ago on Sat 28 Mar 2020 10:30:06 PM CST.
@@ -54,53 +59,56 @@ OpenJDK 64-Bit Server VM 18.9 (build 11.0.6+10-LTS, mixed mode, sharing)
 
 ```
 
--   yum search 根据关键字查找安装包
+`yum search` 的作用就是根据关键字查找可安装的包，从结果里挑 `java-11-openjdk` 装上即可。
 
-### 安装
+## 安装
 
-1. 创建elasticsearch用户和用户组
+### 创建 elasticsearch 用户和用户组
+
 ```bash
 [root@localhost ~]# groupadd es
 [root@localhost ~]# useradd es -g es
 ```
 
--   groupadd创建用户组es
--   useradd创建用户es，参数-g是指定es用户属于es组
+`groupadd` 创建用户组 es；`useradd` 创建用户 es，参数 `-g` 指定该用户属于 es 组。Elasticsearch 不能用 root 直接启动，所以要先备好一个普通用户。
 
-2. 下载elasticsearch安装包
-3. 切换到es用户
-```bash
-[root@localhost ~]# su - es
-```
+### 下载并解压安装包
 
-在[Elasticsearch](https://www.elastic.co/cn/downloads/elasticsearch)下载安装包。文章中使用的是elasticsearch-7.6.1(no-jdk版本,安装包内不包含jdk)
+从 [Elasticsearch 官网](https://www.elastic.co/cn/downloads/elasticsearch)下载安装包。本文使用 elasticsearch-7.6.1 的 no-jdk 版本（安装包内不包含 JDK，所以前面要先装好 JDK）：
 
 ```bash
 [es@localhost ~]$ wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.1-no-jdk-linux-x86_64.tar.gz
 ```
-3. 解压elasticsearch安装包
+
+解压：
+
 ```bash
 [es@localhost ~]$ tar -zxf elasticsearch-7.6.1-no-jdk-linux-x86_64.tar.gz
 ```
-4. 在elasticsearch-env文件中添加jdk路径
-5. 编辑elasticsearch-env文件，大约在37行(第一个JAVA\_HOME上一行)添加JAVA\_HOME=jdk路径
+
+![配图](/images/csdn/figures/elasticsearch-csdn105170609.png)
+
+### 在 elasticsearch-env 文件中添加 JDK 路径
+
+no-jdk 版本不会自带 JDK，需要在启动脚本里指明 JAVA_HOME。编辑 elasticsearch-env 文件，大约在第 37 行（第一个 JAVA_HOME 的上一行）添加 `JAVA_HOME=jdk路径`：
+
 ```bash
 [es@localhost ~]$ cd elasticsearch-7.6.1/bin/
 [es@localhost bin]$ vim elasticsearch-env
-
 ```
 
-![在这里插入图片描述](/images/csdn/105170609-1.png)
+本文的 JDK 路径是 `/usr/lib/jvm/java-11-openjdk-11.0.6.10-0.el8_1.x86_64`，写入时需要换成你自己的 JDK 路径。OpenJDK 默认安装在 /usr/lib/jvm/ 目录下。
 
--   /usr/lib/jvm/java-11-openjdk-11.0.6.10-0.el8\_1.x86\_64是我的jdk路径（这里需要改成你的jdk路径）
--   OpenJDK默认安装路径在/usr/lib/jvm/下
+### 启动 elasticsearch
 
-5. 启动elasticsearch
 ```bash
 [es@localhost bin]$ ./elasticsearch
 ```
-6. 验证
-7. 新开一个终端，使用curl命令访问elasticsearch，有版本等信息返回说明elasticsearch启动成功
+
+### 验证
+
+新开一个终端，用 curl 访问 9200 端口，有版本等信息返回说明启动成功：
+
 ```bash
 [root@localhost ~]# curl 127.0.0.1:9200
 {
@@ -124,6 +132,13 @@ OpenJDK 64-Bit Server VM 18.9 (build 11.0.6+10-LTS, mixed mode, sharing)
 
 ```
 
+## 注意事项
+
+- Elasticsearch 不允许以 root 身份启动，务必用前面创建的 es 用户来运行。
+- no-jdk 版安装包不含 JDK，启动前必须在 elasticsearch-env 里写好 JAVA_HOME，否则起不来；不想配这一步也可以换用带 JDK 的安装包。
+- 验证只看 9200 端口的返回即可，返回 JSON 里的 `version.number` 就是当前运行的版本号。
+- 前台启动的进程跟着终端走，`./elasticsearch` 是前台运行，验证通过后按需改成后台方式托管。
+
 ---
 
-> 本文迁移自作者 CSDN 博客，2020-03-29 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

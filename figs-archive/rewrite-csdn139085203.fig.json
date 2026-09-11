@@ -1,0 +1,15 @@
+{
+  "title": "nginx rewrite permanent redirect",
+  "type": "config",
+  "lines": [
+    {"t": "note", "s": "301 永久重定向 /old-path -> /new-path"},
+    {"t": "config", "s": "server {"},
+    {"t": "config", "s": "  listen 80;"},
+    {"t": "config", "s": "  server_name example.com;"},
+    {"t": "config", "s": "  rewrite ^/old-path$ /new-path permanent;"},
+    {"t": "config", "s": "  location / {"},
+    {"t": "config", "s": "    try_files $uri $uri/ =404;"},
+    {"t": "config", "s": "  }"},
+    {"t": "config", "s": "}"}
+  ]
+}

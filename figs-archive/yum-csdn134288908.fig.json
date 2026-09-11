@@ -1,0 +1,13 @@
+{
+  "title": "createrepo: build local yum repo",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "createrepo -u -d /data/yum-repo/"},
+    {"t": "note", "s": "扫描仓库目录，生成 repodata 元数据"},
+    {"t": "cmd", "s": "createrepo --update /data/yum-repo/"},
+    {"t": "note", "s": "追加新包后增量更新索引"},
+    {"t": "cmd", "s": "yum clean all"},
+    {"t": "cmd", "s": "yum makecache"},
+    {"t": "note", "s": "客户端重建缓存验证"}
+  ]
+}

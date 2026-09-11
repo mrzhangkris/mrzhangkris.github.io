@@ -1,44 +1,41 @@
 ---
-title: "使用Nginx的Realip模块探知真实客户端IP"
+title: "使用 Nginx Realip 模块还原真实客户端 IP"
 date: 2024-05-20 14:01:42
+updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-realip-ip-csdn139063602.png
 ---
 
-在使用Nginx作为反向代理服务器时，客户端的真实IP地址有时候会被隐藏，而显示的只是Nginx服务器的IP地址。这对记录日志、用户分析等行为带来了一定的困扰。为了解决这个问题，Nginx提供了ngx\_http\_realip\_module，用于获取并展示客户端的真实IP地址。
+![配图](/images/csdn/figures/nginx-realip-ip-csdn139063602.png)
 
-### 1\. 什么是Realip模块？
+Nginx 做反向代理时，后端看到的 `$remote_addr` 往往是代理服务器自己的 IP，真实客户端被藏在了 `X-Forwarded-For` 这类请求头里。日志、限流、风控如果直接用 `$remote_addr`，结果都会失真。`ngx_http_realip_module` 就是解决这个问题的：让 Nginx 从可信代理传来的请求头里还原出真实客户端 IP。
 
-ngx\_http\_realip\_module模块允许覆盖由代理服务器（如前端Nginx或负载均衡器）传递的客户端IP地址。通过设置real\_ip\_header和set\_real\_ip\_from指令，Nginx可以从特定的HTTP头或指定的IP范围内提取真实的客户端IP地址。
+## 确认模块已编译
 
-### 2\. 安装Realip模块
-
-Nginx的Realip模块通常在Nginx默认配置时就已包含，您可以通过以下命令查看是否启用了该模块：
+Realip 模块属于标准模块，大多数发行版的预编译包都带着它。确认一下：
 
 ```bash
 nginx -V 2>&1 | grep -o with-http_realip_module
 ```
 
-如果未启用，可以重新编译Nginx并添加–with-http\_realip\_module参数。大多数主流Linux发行版的Nginx预编译包中已包含该模块。
+有输出说明已启用。如果没有，需要重新编译 Nginx 时加上 `--with-http_realip_module` 参数。
 
-### 3\. 配置Realip模块
+## 核心配置
 
-#### 示例配置
-
-以下是一个简单的Nginx配置文件示例，演示如何使用Realip模块：
+三个指令撑起整个功能：
 
 ```nginx
 http {
   # 定义可从哪些IP地址接收真实客户端IP
   set_real_ip_from    192.168.1.0/24;    # 局域网中的负载均衡器
-  set_real_ip_from    203.0.113.0/24;   # 公网的负载均衡器
+  set_real_ip_from    203.0.113.0/24;    # 公网的负载均衡器
 
-  # 定义客户端IP地址的HTTP头
+  # 从哪个HTTP头取真实客户端IP
   real_ip_header      X-Forwarded-For;
 
-  # 仅更改地址部分，不改变端口
+  # 多层代理时逐级回溯
   real_ip_recursive   on;
 
   server {
@@ -48,73 +45,73 @@ http {
     location / {
       proxy_pass http://backend_server;
 
-      # 打印日志，包含真实IP
+      # 日志里同时记录还原后的IP和原始头内容
       log_format main
         '$remote_addr - $remote_user [$time_local] "$request" '
         '$status $body_bytes_sent "$http_referer" '
-        '"$http_user_agent" "$http_x_forward_for"';
+        '"$http_user_agent" "$http_x_forwarded_for"';
       access_log /var/log/nginx/access.log main;
     }
   }
 }
 ```
 
-#### 指令解释
+逐条说明：
 
-1. set\_real\_ip\_from：指定可以信任的代理的IP地址或CIDR。只有在这些IP地址范围内的请求，Nginx才会使用指定的头部字段的值来覆盖客户端IP。
-2. real\_ip\_header：指定哪个头部字段包含要使用的真实客户端IP地址。常见的值是X-Forwarded-For或X-Real-IP。
-3. real\_ip\_recursive：这个设置用于处理多个层级的代理服务器。当设置为on时，Nginx将使用第一个可信代理传递的IP地址；当设置为off时，Nginx只使用直接连接的代理服务器传递的IP地址。
+- **set_real_ip_from**：指定可信代理的 IP 或 CIDR 网段。只有来自这些地址的请求，Nginx 才会用指定头部字段的值覆盖客户端 IP。这是安全边界——不设它，任何人都能伪造请求头冒充别的 IP。
+- **real_ip_header**：指定从哪个请求头取真实 IP，常见取值是 `X-Forwarded-For` 或 `X-Real-IP`。
+- **real_ip_recursive**：处理多层代理的场景。设为 `on` 时，Nginx 会沿代理链逐级回溯：从请求头里依次剥掉可信代理的地址，取最后一个不在可信名单里的地址作为客户端 IP；设为 `off` 时，只取直接连接的那层代理传来的值。多层代理环境一般都要开 `on`。
 
-#### 日志配置
+日志这边补一句：`$remote_addr` 在 realip 生效后就是还原出的真实客户端 IP；再带一个 `$http_x_forwarded_for` 把原始头内容记下来，排查问题时可以对照。
 
-日志格式remoteaddr，打印使用Realip模块后提取的真实IP地址。使用自定义logformat显示remote\_addr，打印使用Realip模块后提取的真实IP地址。使用自定义log\_format显示remotea​ddr，打印使用Realip模块后提取的真实IP地址。使用自定义logf​ormat显示http\_x\_forwarded\_for，可以记录原始的X-Forwarded-For头内容，便于调试。
+## 几种常见组合
 
-### 4\. 其他配置选项
+代理层形态不同，写法略有差别。
 
-#### 单一IP支持
-
-如果只有一个固定的代理服务器或负载均衡器，可以使用单一IP配置：
+只有一个固定代理时，直接写单个 IP：
 
 ```nginx
 set_real_ip_from 123.45.67.89;
 real_ip_header X-Forwarded-For;
 ```
 
-#### 支持IPv6
-
-支持从IPv6地址获取真实客户端IP：
+代理是 IPv6 地址时同样支持：
 
 ```nginx
 set_real_ip_from 2001:0db8::/32;
 real_ip_header X-Forwarded-For;
 ```
 
-#### 获取本地代理IP
-
-如果有本地代理服务器，可以直接指定本地IP：
+本机还有一层本地代理（比如 127.0.0.1 上跑的前置服务）时：
 
 ```nginx
 set_real_ip_from 127.0.0.1;
 real_ip_header X-Real-IP;
 ```
 
-### 5\. 测试配置
+## 测试
 
-配置完成后，可以使用curl命令模拟请求进行测试：
+配置重载后，用 curl 模拟一个带头部的请求：
 
 ```bash
 curl -H "X-Forwarded-For: 1.2.3.4" http://example.com
 ```
 
-检查Nginx访问日志，确认客户端IP已成功提取：
+然后盯住访问日志：
 
 ```bash
 tail -f /var/log/nginx/access.log
 ```
 
-日志输出应包含1.2.3.4，表示Realip模块成功获取真实客户端IP。
-通过配置和使用Nginx的Realip模块，可以确保在复杂的代理和负载均衡环境中仍然可以准确记录和处理客户端的真实IP地址。希望这篇文章对您配置Nginx的Realip模块有所帮助。
+日志里出现 `1.2.3.4` 就说明 realip 已经在正常还原客户端 IP 了。
+
+## 注意事项
+
+- `set_real_ip_from` 只写真正部署代理的那几个网段，范围越大，伪造头冒充 IP 的空间越大。
+- `real_ip_recursive on` 只在多层代理时必要，单层代理开不开效果一样。
+- `X-Forwarded-For` 本身可以被客户端伪造，realip 之所以可信，前提是可信代理会覆盖或追加这个头——信任链建立在 `set_real_ip_from` 上，不在头本身。
+- 改完配置记得 `nginx -t` 验证再 reload，避免配置错误导致整个服务不可用。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-05-20 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

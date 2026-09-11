@@ -1,0 +1,13 @@
+{
+  "title": "ls -la directory listing",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "ls -la"},
+    {"t": "out", "s": "total 44"},
+    {"t": "out", "s": "dr-xr-x---.  3 root root   181 May  8 17:29 ."},
+    {"t": "out", "s": "dr-xr-xr-x. 19 root root   247 May  8 15:17 .."},
+    {"t": "out", "s": "-rw-------.  1 root root  3812 May 10 17:30 .bash_history"},
+    {"t": "out", "s": "-rw-r--r--.  1 root root    18 Feb 11  2022 .bash_logout"},
+    {"t": "note", "s": "d 开头是目录，- 开头是普通文件"}
+  ]
+}

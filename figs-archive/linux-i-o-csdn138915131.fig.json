@@ -1,0 +1,12 @@
+{
+  "title": "nr_requests tuning",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "cat /sys/block/sda/queue/nr_requests"},
+    {"t": "note", "s": "查看当前队列长度（默认常见为 128）"},
+    {"t": "cmd", "s": "echo 256 > /sys/block/sda/queue/nr_requests"},
+    {"t": "note", "s": "调大队列，运行时生效，重启失效"},
+    {"t": "cmd", "s": "iostat -dx 2 5"},
+    {"t": "note", "s": "对比修改前后的磁盘性能"}
+  ]
+}

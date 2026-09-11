@@ -1,0 +1,15 @@
+{
+  "title": "Elasticsearch 7.6.1 install check",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "java --version"},
+    {"t": "out", "s": "openjdk 11.0.6 2020-01-14 LTS"},
+    {"t": "note", "s": "没有 JDK 就先 yum 装 java-11-openjdk"},
+    {"t": "cmd", "s": "./elasticsearch"},
+    {"t": "note", "s": "用 es 用户启动，不能 root"},
+    {"t": "cmd", "s": "curl 127.0.0.1:9200"},
+    {"t": "out", "s": "\"number\" : \"7.6.1\","},
+    {"t": "out", "s": "\"lucene_version\" : \"8.4.0\","},
+    {"t": "note", "s": "返回版本信息即启动成功"}
+  ]
+}

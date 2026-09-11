@@ -1,0 +1,18 @@
+{
+  "title": "nginx auth_request",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "  auth_request /auth;"},
+    {"t": "config", "s": "  error_page 401 = @error401;"},
+    {"t": "config", "s": "  error_page 403 = @error403;"},
+    {"t": "config", "s": "  proxy_pass http://backend;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "/auth 子请求转给认证服务"},
+    {"t": "config", "s": "location /auth {"},
+    {"t": "config", "s": "  proxy_pass http://127.0.0.1:8080/auth;"},
+    {"t": "config", "s": "  proxy_pass_request_body off;"},
+    {"t": "config", "s": "  proxy_set_header Content-Length \"\";"},
+    {"t": "config", "s": "  proxy_set_header X-Original-URI $request_uri;"}
+  ]
+}

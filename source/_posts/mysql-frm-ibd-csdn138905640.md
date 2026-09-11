@@ -1,51 +1,52 @@
 ---
-title: "MySQL 利用frm文件和ibd文件恢复表数据"
+title: "MySQL 利用 frm 文件和 ibd 文件恢复表数据"
 date: 2024-05-15 14:51:08
 categories: [技术]
 tags: [MySQL]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/mysql-frm-ibd-csdn138905640.png
+updated: 2026-09-11
 ---
 
-当MySQL数据库遭遇崩溃或数据丢失时，利用备份的 .frm 和 .ibd 文件恢复数据是一种有效的解决方案。.frm 文件包含表的结构信息，而 .ibd 文件则存储表的实际数据。本文将提供一个详细的步骤指南，演示如何利用这些文件恢复MySQL表数据。
+MySQL 崩溃、实例起不来，手上又没有逻辑备份时，数据目录里的文件本身就是最后的救命稻草：`.frm` 存着表结构，`.ibd` 存着表数据和索引（InnoDB 独立表空间模式下每张表一个）。只要这两个文件还在，就能把它们挂回一个新实例里把数据捞出来。这篇按步骤走一遍。
 
-##### 1\. 环境准备
+## 环境与前提
 
-确保你有MySQL服务器的访问权限，并且安装了相应的MySQL版本。此外，确保你有足够的权限来操作文件和数据库。
+- 有 MySQL 服务器的访问权限，且目标实例与源实例版本一致（版本差异会导致表空间不兼容）。
+- 有足够的权限操作数据库文件和目录。
+- 假设数据库为 mydb、表为 mytable，手上备份着 mytable.frm 和 mytable.ibd。
 
-##### 2\. 数据库和表的基本设置
+## 恢复步骤
 
-假设我们有数据库 mydb 和表 mytable。表的结构和数据由 mytable.frm 和 mytable.ibd 文件备份。
+### 1. 停掉 MySQL
 
-##### 3\. 准备数据恢复环境
-
-在开始恢复数据之前，确保MySQL服务已停止，避免在恢复过程中发生数据冲突。
+恢复过程要直接动数据目录里的文件，先停服务避免写入冲突：
 
 ```bash
 sudo systemctl stop mysql
 ```
 
-##### 4\. 复制文件到数据库目录
+### 2. 把文件复制到数据目录
 
-将备份的 .frm 和 .ibd 文件复制到数据库目录下对应的位置。
+把两个文件放进目标库对应的目录：
 
 ```bash
 cp mytable.frm /var/lib/mysql/mydb/
 cp mytable.ibd /var/lib/mysql/mydb/
 ```
 
-##### 5\. 修改文件权限
+### 3. 修正属主
 
-确保MySQL服务器有权访问这些文件。
+mysql 进程要能读写这些文件：
 
 ```bash
 sudo chown mysql:mysql /var/lib/mysql/mydb/mytable.frm
 sudo chown mysql:mysql /var/lib/mysql/mydb/mytable.ibd
 ```
 
-##### 6\. 配置MySQL以导入表空间
+### 4. 配置表空间导入
 
-编辑MySQL的配置文件（例如 /etc/my.cnf），添加以下配置以启用表空间的导入：
+编辑配置文件（如 /etc/my.cnf），加两行：
 
 ```
 [mysqld]
@@ -53,15 +54,19 @@ innodb_force_recovery = 1
 innodb_file_per_table = 1
 ```
 
-##### 7\. 启动MySQL服务器
+`innodb_force_recovery = 1` 允许在受控状态下处理表空间；`innodb_file_per_table = 1` 确保独立表空间模式启用。
+
+### 5. 启动 MySQL
 
 ```bash
 sudo systemctl start mysql
 ```
 
-##### 8\. 使用MySQL命令行恢复数据
+### 6. 挂回表空间
 
-登录到MySQL命令行工具，并执行以下命令来恢复表空间：
+![配图](/images/csdn/figures/mysql-frm-ibd-csdn138905640.png)
+
+登录 mysql 命令行，执行：
 
 ```sql
 USE mydb;
@@ -69,34 +74,38 @@ ALTER TABLE mytable DISCARD TABLESPACE;
 ALTER TABLE mytable IMPORT TABLESPACE;
 ```
 
-##### 9\. 验证数据恢复
+DISCARD 把当前空的表空间卸掉，IMPORT 则把刚放进目录的 .ibd 重新挂到表上。
+
+### 7. 验证
 
 ```sql
 SELECT * FROM mytable;
 ```
 
-执行上述命令，如果看到预期的数据，说明恢复成功。
+能看到预期数据，恢复就成功了。
 
-##### 10\. 清理和重置配置
+### 8. 还原配置
 
-恢复完成后，记得将 innodb\_force\_recovery 设置回 0 并重启MySQL服务器，以恢复正常的数据库操作。
+`innodb_force_recovery` 是故障恢复用的参数，平时保持 0：
 
 ```
 [mysqld]
 innodb_force_recovery = 0
 ```
 
-然后重启MySQL：
+改完重启：
 
 ```bash
 sudo systemctl restart mysql
 ```
 
-##### 结论
+## 注意事项
 
-使用 .frm 和 .ibd 文件恢复MySQL表数据是一种高效的方式，尤其适合在无法访问常规备份的情况下。通过上述步骤，即使在数据库严重故障后，你也能够恢复重要的数据。
-希望这篇文章能帮助你理解和执行MySQL数据的恢复工作。如有任何疑问，请在评论区留言或联系专业技术支持。
+- 操作前把 mytable.frm、mytable.ibd 和原 mydb 目录再复制一份留底，导入失败时才有的回退。
+- IMPORT TABLESPACE 要求表结构在位，所以 .frm 必须先放回数据目录，且两边 MySQL 版本要一致。
+- innodb_force_recovery 只用于恢复场景，等级越高能做的操作越受限，恢复完立刻还原为 0。
+- 这套方法恢复的是"文件级备份"，无法替代定期的 mysqldump 或物理备份，日常还是要做正规备份。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-05-15 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

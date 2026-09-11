@@ -1,41 +1,28 @@
 ---
-title: "Nginx的satisfy指令_ 用途，使用场景及注意事项"
+title: "Nginx satisfy 指令：多重访问控制的组合判断"
 date: 2024-05-25 09:15:00
+updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-satisfy-csdn139174686.png
 ---
 
-##### 什么是satisfy指令？
+同一个 location 上同时挂了 IP 白名单和密码验证时，请求要过几道关卡？`satisfy` 指令就是回答这个问题的：`any` 表示任意一道关卡放行即可，`all` 表示每道都得过。做"内网免密、外网要密码"这类策略，全靠它。
 
-Nginx的satisfy指令用于控制当请求符合多个访问控制条件时，如何对这些条件进行组合判断。具体来说，它决定了是在多个访问控制条件中，只要任意一个条件满足即可还是全部条件都必须满足。
-
-##### 用途与使用场景
-
-satisfy指令主要在有多个访问控制机制（如访问权限限制和身份验证）时使用。典型使用场景如：
-
-1. 仅需满足某个条件：允许用户通过IP白名单或通过基本身份验证中的任何一个来访问资源。
-2. 需要同时满足多个条件：需要用户既在IP白名单中，同时也通过基本身份验证。
-
-##### 指令语法
+## 语法
 
 ```nginx
 satisfy any | all;
 ```
 
--   satisfy any 表示只要满足任意一个访问控制条件即可。
--   satisfy all 表示需要满足所有的访问控制条件。
+- `satisfy any`：多个访问控制条件里，满足任意一个即可通过。
+- `satisfy all`：所有条件必须同时满足。
 
-##### 注意事项
+这里的"条件"指的是 access 模块的 allow/deny（IP 控制）和 auth_basic（身份验证）这类访问限制。不写 satisfy 时，Nginx 默认取 `all`。
 
--   satisfy指令一般放置在server或location块中。
--   当与deny all或allow all结合使用时，需特别注意条件的组合方式。
--   默认情况下（未指定satisfy指令），Nginx采用all，即所有条件必须满足。
+## 示例一：IP 白名单或密码，过其一即可
 
-##### 示例与注释
-
-1. 允许通过IP白名单或基本身份验证中的任何一个访问资源
 ```nginx
 server {
   listen 80;
@@ -58,9 +45,10 @@ server {
 }
 ```
 
-在这个配置中，用户只需要满足IP白名单或通过基本身份验证中的任何一个条件即可访问资源。
+`deny all` 兜住白名单之外的来源，`auth_basic` 要求密码。`satisfy any` 让这两道关卡变成"或"的关系：内网 IP 直接放行，外网用户输对密码也能进。
 
-1. 需要同时满足IP白名单和基本身份验证
+## 示例二：两个条件都要过
+
 ```nginx
 server {
   listen 80;
@@ -83,9 +71,12 @@ server {
 }
 ```
 
-在这个配置中，用户需同时满足IP白名单和通过基本身份验证才能访问资源。
+只把 `any` 换成 `all`，语义就变成"且"：必须在白名单网段里，还必须通过基本身份验证，缺一个都进不来。适合"只允许办公网段访问，且访问者要实名登录"的场景。
 
-1. deny all和allow all的情况
+![配图](/images/csdn/figures/nginx-satisfy-csdn139174686.png)
+
+## 示例三：deny all 与 allow all 组合
+
 ```nginx
 server {
   listen 80;
@@ -107,9 +98,14 @@ server {
 }
 ```
 
-在这个配置中，由于satisfy any指令，实际上deny all和allow all会同时存在冲突。Nginx会优先处理allow all，使得所有请求都被允许，而不管其他条件是否满足。所以，deny all在这种情况下不会生效。
+同一段里 allow 和 deny 混用时，access 模块按书写顺序逐条检查，碰到第一条匹配当前来源的规则就停止。上面这段里 `deny all` 排在前面并且匹配所有来源，所以 IP 这道关卡实际上对所有请求都说"不"，后面的 `allow all` 永远轮不到——加上 `satisfy any`，最终效果是只能靠通过基本身份验证进门。
 
-1. return指令的情况
+> 注：原文此处解释为"Nginx 优先处理 allow all，所有请求都被允许"，与 allow/deny 的顺序匹配语义相反，重构时已修正。
+
+这类配置的意义在于提醒：deny/allow 的书写顺序不是装饰，写反了整条策略就变形了。
+
+## 示例四：return 的优先级更高
+
 ```nginx
 server {
   listen 80;
@@ -135,14 +131,15 @@ server {
 }
 ```
 
-在这个配置中，请求到/secret路径时，即使满足satisfy中的条件（如IP白名单或身份验证），仍然会直接返回404。这是因为return指令直接终止处理并返回指定的HTTP状态码。
+请求 `/secret` 时，不管来源是不是白名单 IP、密码对不对，都直接返回 404。原因是 `return` 在 rewrite 阶段就结束了请求，压根走不到 access 检查和身份验证那两步。想在某个路径上彻底关门的场景，这招比配一堆 allow/deny 更干脆。
 
-#### 总结
+## 注意事项
 
-Nginx的satisfy指令在处理多重访问控制条件时非常有用，可根据具体需求通过any或all进行配置。理解其与deny all、allow all和return指令的组合效果，对于实现复杂的访问控制策略至关重要。
-
-**希望本文能够帮助您更好地理解和使用Nginx的satisfy指令。**
+- `satisfy` 可以放在 http、server、location 块中，作用范围逐层向内生效。
+- 不写 satisfy 时默认 `all`——想要"任一条件放行"的语义，必须显式写 `satisfy any`。
+- allow/deny 按书写顺序取第一条匹配，把 `deny all` 和具体网段写在同一个块里时，顺序决定一切，`nginx -t` 只查语法不查逻辑，策略要在测试环境过一遍。
+- `.htpasswd` 文件用 `htpasswd` 或 `openssl passwd` 生成，路径别放在 web 根目录下。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-05-25 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

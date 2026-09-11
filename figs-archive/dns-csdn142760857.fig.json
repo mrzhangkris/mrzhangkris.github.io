@@ -1,0 +1,15 @@
+{
+  "title": "BIND zone declarations",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "zone \"example.com\" IN {"},
+    {"t": "config", "s": "    type master;"},
+    {"t": "config", "s": "    file \"example.com.zone\";"},
+    {"t": "config", "s": "};"},
+    {"t": "note", "s": "正向区域：域名到 IP"},
+    {"t": "config", "s": "zone \"254.168.192.in-addr.arpa\" IN {"},
+    {"t": "config", "s": "    file \"192.168.254.zone\";"},
+    {"t": "config", "s": "};"},
+    {"t": "note", "s": "反向区域：网段倒写 + in-addr.arpa"}
+  ]
+}

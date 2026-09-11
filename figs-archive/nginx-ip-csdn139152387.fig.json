@@ -1,0 +1,13 @@
+{
+  "title": "nginx allow deny",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "  allow 192.168.1.1;"},
+    {"t": "config", "s": "  deny all;"},
+    {"t": "config", "s": "  root /var/www/html;"},
+    {"t": "config", "s": "  index index.html;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "按书写顺序匹配，先 allow 后 deny all 兜底"}
+  ]
+}

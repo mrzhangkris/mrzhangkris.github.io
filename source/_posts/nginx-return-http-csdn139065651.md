@@ -1,21 +1,16 @@
 ---
-title: "利用Nginx的return模块定制HTTP响应"
+title: "用 Nginx return 指令定制 HTTP 响应"
 date: 2024-05-20 15:01:40
+updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-return-http-csdn139065651.png
 ---
 
-在Nginx中，return模块是一个强大的指令，可以被用来定制HTTP响应。通过指定状态码、跳转地址以及其他响应头信息，我们可以控制Nginx服务器对客户端请求的回应。在本篇博客中，将会介绍return模块的使用以及不同阶段下的作用。
+有时候你只想让 Nginx 直接"回话"：站点维护中返回 503，旧链接 301 跳新地址，某些路径直接 403。这些都不需要后端参与，一条 `return` 指令就够了。它属于 rewrite 模块（`ngx_http_rewrite_module`），是 Nginx 内置指令，用来指定服务器对请求的直接响应——状态码、跳转地址，甚至响应正文。
 
-### 1\. return模块简介
-
-return模块是Nginx内置的模块，主要用于指定Nginx服务器对客户端请求的响应。通过配置return指令，我们可以控制服务器返回的HTTP状态码、跳转的URL以及其他响应信息。
-
-### 2\. return模块示例及作用
-
-以下是一个简单的Nginx配置文件示例，展示了return模块的使用和注释：
+## 先看例子
 
 ```nginx
 server {
@@ -32,53 +27,48 @@ server {
 }
 ```
 
-#### 示例解释
+两个 location 各干各的事：
 
-1. 当客户端访问example.com时，Nginx会返回503 Service Unavailable状态码。
-2. 当客户端访问example.com/redirect时，Nginx会返回301 Moved Permanently状态码并重定向至https://www.example.com。
+- 访问 `example.com`，Nginx 直接返回 503 Service Unavailable，请求不会到任何上游。
+- 访问 `example.com/redirect`，返回 301 Moved Permanently，并带上 `Location: https://www.example.com` 让浏览器跳转。
 
-在这个示例中，return模块根据不同的URI匹配返回不同的响应，实现了灵活的HTTP响应控制。
+同一个指令，按 URI 匹配返回不同响应，这就是 return 的基本形态。状态码后面也可以直接跟文本，比如 `return 200 "ok";`，把响应内容一并写上。
 
-### 3\. return指令在不同阶段的作用
+![配图](/images/csdn/figures/nginx-return-http-csdn139065651.png)
 
-return指令可以在不同的Nginx处理阶段生效，主要包括两个阶段：rewrite阶段和content阶段。
+## 在哪些阶段生效
 
--   rewrite阶段：在rewrite阶段，return指令被用来处理重写URL、跳转和重定向的需求。此阶段通常用于修改请求的URI或执行URL重定向，以确保请求被正确路由到相应的location块。
--   content阶段：在content阶段，return指令被用来直接响应客户端的请求，返回指定的状态码和内容。该阶段通常用于直接结束请求并返回特定的HTTP响应。
+return 指令会在 Nginx 请求处理的两个阶段起作用：
 
-因此，在Nginx配置中，我们可以根据需要选择合适的处理阶段来使用return指令，以达到预期的响应效果。
+- **rewrite 阶段**：处理重写、跳转类需求。这一阶段常用来改写请求 URI 或执行重定向，让请求被路由到正确的 location。
+- **content 阶段**：直接响应客户端，返回指定的状态码和内容，请求到此为止。
 
-### 4\. 测试return模块配置
+实际配置里通常不用特意关心在哪个阶段——location 里写了 return，Nginx 自然在合适的阶段结束请求。
 
-为了测试Nginx的return模块配置，我们可以使用curl命令模拟客户端请求，检查返回的HTTP响应是否符合预期。
+## 测试
+
+改完配置后用 curl 检查响应头：
 
 ```bash
 curl -I http://example.com
 ```
 
-通过curl命令发送请求并查看返回的HTTP头部信息，来验证Nginx在不同场景下使用return指令时的响应效果。
+看返回的状态码是否符合预期即可，重定向场景再补一个 `-L` 可以跟着跳转走一遍。
 
-### 5\. return指令的注意事项
+## 使用时注意
 
-在使用return指令时，有一些注意事项需要考虑：
+- **指令位置**：return 要写在对应的 location（或 server）块里；在同一个块内，它应该放在其他 rewrite 类指令之前，先短路先生效。
+- **避免重复**：同一个 location 内多次写 return，只有第一个会生效，后面的直接被忽略。
+- **错误处理**：返回的状态码要考虑边界情况，比如 503 维护页最好配上 `Retry-After` 或维护说明页，别让用户看到光秃秃的错误码。
+- **响应头**：return 本身只管状态码和跳转，要加自定义响应头得配合 `add_header` 指令一起用。
 
--   **指令位置**：return指令的位置很重要，它应该放在location块的最顶部，以确保它在其他指令之前执行。
--   **避免重复**：避免在同一个location块内多次使用return指令，因为只有第一个return指令会生效，后续的会被忽略。
--   **错误处理**：在使用return指令时，务必考虑错误处理和边界情况，确保返回的状态码和内容符合预期。
+## 典型场景
 
-### 6\. return模块的实际应用场景
-
-return模块在实际应用中有许多用途，例如：
-
--   **网站维护页面**：可以使用return指令返回503状态码，显示网站维护页面，让用户知道网站正在维护中。
--   **URL重定向**：通过return指令返回301或302状态码，将旧的URL重定向到新的URL，实现页面重定向。
--   **访问权限控制**：可以通过return指令返回403状态码，限制用户访问某些特定的资源。
--   **自定义响应头**：除了返回状态码和内容外，还可以通过return指令添加自定义的响应头信息，以满足特定的需求。
-
-### 结语
-
-通过本文的介绍，您应该对Nginx的return模块有了更深入的了解。return模块可以帮助您灵活地控制Nginx服务器对客户端请求的响应，实现定制化的HTTP响应策略。在实际应用中，可以根据具体的需求和场景合理地使用return指令，以达到更好的效果。感谢您的阅读！
+- **网站维护**：返回 503，让用户知道站点在维护中。
+- **URL 重定向**：301/302 把旧地址永久或临时挪到新地址。
+- **访问控制**：对特定路径直接返回 403，请求连后端都摸不到。
+- **健康检查应答**：对内网探活路径返回固定的 200 文本。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-05-20 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

@@ -1,0 +1,13 @@
+{
+  "title": "pin nvidia driver version",
+  "type": "config",
+  "lines": [
+    {"t": "note", "s": "/etc/apt/preferences.d/nvidia"},
+    {"t": "config", "s": "Package: nvidia-driver-440"},
+    {"t": "config", "s": "Pin: version 440.*"},
+    {"t": "config", "s": "Pin-Priority: 1001"},
+    {"t": "cmd", "s": "sudo apt-mark hold nvidia-driver-440"},
+    {"t": "cmd", "s": "apt-mark showhold"},
+    {"t": "note", "s": "pin 固定版本 + hold 锁包，双保险防自动更新"}
+  ]
+}

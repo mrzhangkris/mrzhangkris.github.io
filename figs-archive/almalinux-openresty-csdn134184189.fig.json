@@ -1,0 +1,12 @@
+{
+  "title": "OpenResty configure & verify",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "./configure --prefix=/apps/openresty"},
+    {"t": "note", "s": "--prefix 指定安装目录"},
+    {"t": "cmd", "s": "gmake && gmake install"},
+    {"t": "note", "s": "AlmaLinux 上 make 的名字是 gmake"},
+    {"t": "cmd", "s": "curl -I -s -m 10 http://localhost |grep HTTP|awk '{print $2}'"},
+    {"t": "note", "s": "验证：输出 200 即正常"}
+  ]
+}

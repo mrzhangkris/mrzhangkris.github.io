@@ -1,0 +1,18 @@
+{
+  "title": "nginx reverse proxy",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "server {"},
+    {"t": "config", "s": "  listen 80;"},
+    {"t": "config", "s": "  server_name myapp.example.com;"},
+    {"t": "config", "s": "  location / {"},
+    {"t": "config", "s": "    proxy_pass http://localhost:5000;"},
+    {"t": "config", "s": "    proxy_set_header Host $host;"},
+    {"t": "config", "s": "    proxy_set_header X-Real-IP $remote_addr;"},
+    {"t": "config", "s": "    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"},
+    {"t": "config", "s": "    proxy_set_header X-Forwarded-Proto $scheme;"},
+    {"t": "config", "s": "  }"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "反代必带 proxy_set_header，否则后端拿不到真实 IP"}
+  ]
+}

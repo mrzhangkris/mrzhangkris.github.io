@@ -1,0 +1,15 @@
+{
+  "title": "zoo.cfg cluster config",
+  "type": "config",
+  "lines": [
+    {"t": "note", "s": "三节点集群的公共配置，server.X 按节点区分"},
+    {"t": "config", "s": "tickTime=2000"},
+    {"t": "config", "s": "initLimit=10"},
+    {"t": "config", "s": "syncLimit=5"},
+    {"t": "config", "s": "dataDir=/var/lib/zookeeper"},
+    {"t": "config", "s": "clientPort=2181"},
+    {"t": "config", "s": "server.1=zk1:2888:3888"},
+    {"t": "config", "s": "server.2=zk2:2888:3888"},
+    {"t": "config", "s": "server.3=zk3:2888:3888"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "ORA-01439 column type change",
+  "type": "cmd",
+  "lines": [
+    {"t": "note", "s": "ORA-01439: 要更改数据类型, 列必须为空"},
+    {"t": "cmd", "s": "ALTER TABLE example_table ADD temp_column 新数据类型;"},
+    {"t": "cmd", "s": "UPDATE example_table SET temp_column ="},
+    {"t": "cmd", "s": "  CAST(example_column AS 新数据类型);"},
+    {"t": "cmd", "s": "ALTER TABLE example_table DROP COLUMN example_column;"},
+    {"t": "note", "s": "最后 RENAME COLUMN temp_column TO example_column"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Debian apt-get basics",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo apt-get install nginx"},
+    {"t": "note", "s": "安装软件包"},
+    {"t": "cmd", "s": "sudo apt-get update"},
+    {"t": "cmd", "s": "sudo apt-get upgrade"},
+    {"t": "note", "s": "update 刷新软件源索引，upgrade 升级已安装软件包"},
+    {"t": "cmd", "s": "sudo apt-get autoremove"},
+    {"t": "note", "s": "清理不再需要的依赖包"}
+  ]
+}

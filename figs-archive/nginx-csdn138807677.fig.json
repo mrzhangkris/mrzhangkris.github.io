@@ -1,0 +1,16 @@
+{
+  "title": "nginx proxy_cache_path",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "proxy_cache_path /data/nginx/cache"},
+    {"t": "config", "s": "  levels=1:2 keys_zone=my_cache:10m"},
+    {"t": "config", "s": "  max_size=1g inactive=7d"},
+    {"t": "config", "s": "  use_temp_path=off;"},
+    {"t": "note", "s": "200 响应缓存 1 小时"},
+    {"t": "config", "s": "proxy_cache_valid 200 1h;"},
+    {"t": "note", "s": "后端故障时回源旧缓存"},
+    {"t": "config", "s": "proxy_cache_use_stale error timeout"},
+    {"t": "config", "s": "  updating http_500 http_502"},
+    {"t": "config", "s": "  http_503 http_504;"}
+  ]
+}

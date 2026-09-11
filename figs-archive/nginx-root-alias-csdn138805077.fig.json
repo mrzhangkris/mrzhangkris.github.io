@@ -1,0 +1,12 @@
+{
+  "title": "nginx root vs alias",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "root  /var/www/html;"},
+    {"t": "config", "s": "location /images/ {"},
+    {"t": "config", "s": "    alias /data/uploads/;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "root：URI 拼到根目录后面"},
+    {"t": "note", "s": "alias：把 location 匹配部分整个换掉"}
+  ]
+}

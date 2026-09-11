@@ -1,0 +1,9 @@
+{
+  "title": "ssh -V after upgrade",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "ssh -V"},
+    {"t": "out", "s": "OpenSSH_9.5p1, OpenSSL 3.1.4 24 Oct 2023"},
+    {"t": "note", "s": "两个版本都对上，升级完成"}
+  ]
+}

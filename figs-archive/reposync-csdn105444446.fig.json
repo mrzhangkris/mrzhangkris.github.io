@@ -1,0 +1,14 @@
+{
+  "title": "reposync mirror to local",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "yum install -y yum-utils"},
+    {"t": "cmd", "s": "yum repolist"},
+    {"t": "out", "s": "repo id   repo name                  status"},
+    {"t": "out", "s": "base      CentOS-6 - Base            6,713"},
+    {"t": "out", "s": "epel      Extra Packages for ...     12,587"},
+    {"t": "cmd", "s": "reposync -n --repoid=base --repoid=epel \\"},
+    {"t": "cmd", "s": "  --repoid=extras --repoid=updates \\"},
+    {"t": "cmd", "s": "  -p /data1/centos/$releasever"}
+  ]
+}

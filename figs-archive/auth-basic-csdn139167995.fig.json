@@ -1,0 +1,11 @@
+{
+  "title": "nginx auth_basic minimal config",
+  "type": "config",
+  "lines": [
+    {"t": "note", "s": "server 块的 location / 内"},
+    {"t": "config", "s": "auth_basic \"Restricted Area\";"},
+    {"t": "config", "s": "auth_basic_user_file /etc/nginx/.htpasswd;"},
+    {"t": "config", "s": "proxy_pass http://localhost:8080;"},
+    {"t": "note", "s": "密码文件由 htpasswd 工具生成"}
+  ]
+}

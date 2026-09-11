@@ -1,0 +1,14 @@
+{
+  "title": "linux brd ramdisk",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "modprobe brd rd_nr=1 rd_size=16777216 max_part=0"},
+    {"t": "note", "s": "brd 模块造盘：1 块，rd_size 单位 KB，16777216 KB = 16GB"},
+    {"t": "cmd", "s": "ls /dev/ram*"},
+    {"t": "note", "s": "设备就位：/dev/ram0"},
+    {"t": "cmd", "s": "mkfs.ext4 /dev/ram0"},
+    {"t": "note", "s": "内存盘同样要先格式化"},
+    {"t": "cmd", "s": "mount /dev/ram0 /data"},
+    {"t": "note", "s": "挂载完成，此后读写全在内存里"}
+  ]
+}

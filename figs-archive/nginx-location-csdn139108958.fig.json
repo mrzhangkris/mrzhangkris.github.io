@@ -1,0 +1,13 @@
+{
+  "title": "nginx location match",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "location = /exact-match { ... }"},
+    {"t": "config", "s": "location /prefix { ... }"},
+    {"t": "config", "s": "location ~ \\.php$ { ... }"},
+    {"t": "config", "s": "location ~* \\.php$ { ... }"},
+    {"t": "config", "s": "location ^~ /important { ... }"},
+    {"t": "config", "s": "location / { ... }"},
+    {"t": "note", "s": "五种模式：精确 / 前缀 / 正则(区分大小写与否) / ^~"}
+  ]
+}

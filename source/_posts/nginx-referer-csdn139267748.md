@@ -1,29 +1,28 @@
 ---
-title: "控制访问来源：Nginx Referer 模块"
+title: "Nginx Referer 模块：防盗链与来源统计"
 date: 2024-05-29 08:45:00
+updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-referer-csdn139267748.png
 ---
 
-Nginx 是一款高性能的开源 Web 服务器，其灵活的模块化结构为管理员提供了丰富的配置选项。其中之一就是 Referer 模块，它允许管理员控制允许或拒绝来自特定来源的请求。本文将深入探讨 Nginx Referer 模块的用法、示例以及其在实际场景中的用途。
+别人家的页面直接 `<img>` 标签挂着你的图片，流量账单算在你头上——这就是盗链。HTTP 请求头里的 `Referer` 记录了请求是从哪个页面跳转来的，Nginx 的 Referer 模块（`ngx_http_referer_module`）利用这个字段判断请求来源，既能做防盗链，也能把来源信息记进日志做流量分析。
 
-### 什么是 Referer？
+## Referer 是什么
 
-在 HTTP 请求头中，Referer 是一个标头字段，用于指示请求的来源页面的 URL。当用户点击链接访问网页时，浏览器通常会在发送请求时包含 Referer 头。Referer 的存在使得服务器可以知道用户从哪个页面链接过来的。
+浏览器从页面 A 上的链接跳到页面 B 时，请求 B 资源通常会带上 `Referer` 头，值就是页面 A 的 URL。服务器由此知道用户从哪儿来。不过要注意，Referer 是客户端提供的，可以直接伪造，它适合做粗粒度的来源控制，不适合做强安全校验。
 
-### Nginx Referer 模块的用途
+## 模块能做什么
 
-Nginx Referer 模块可以用于多种用途，包括但不限于：
+- **防盗链**：只允许特定来源的页面加载你的图片、视频等资源，其他来源直接拒绝。
+- **统计分析**：把 `$http_referer` 记进访问日志，分析流量从哪儿来。
+- **安全控制**：限制某些来源页面的访问，挡掉一批低质量的自动请求。
 
-1. **防盗链**：防止其他网站盗用您的资源，只允许特定来源页面加载资源。
-2. **统计分析**：通过统计 Referer 信息，了解访问者的来源，进行网站流量分析。
-3. **安全控制**：限制某些来源页面的访问权限，提高网站的安全性。
+## 示例一：防盗链
 
-### 示例1：防盗链设置
-
-使用 Nginx Referer 模块来防止盗链：
+最典型的写法是 `valid_referers` 配合 `if`：
 
 ```nginx
 server {
@@ -35,30 +34,24 @@ server {
     if ($invalid_referer) {
       return 403;
     }
-    # 允许直接访问的来源
-    allow yourwebsite.com;
-    deny all;
   }
 }
 ```
 
-配置中指定了允许的 Referer 来源，只允许来自本网站（yourwebsite.com）的请求访问资源。其他来源的请求将会被拒绝，并返回 403 Forbidden 错误。
+拆开看这条配置在做什么：
 
-#### 说明
+- `valid_referers none blocked yourwebsite.com;` 定义允许的 Referer 列表：`none` 表示允许不带 Referer 的请求（直接在地址栏输入网址就是这种），`blocked` 表示允许 Referer 存在但被防火墙或代理删掉了值的请求，最后的域名是合法来源。
+- 匹配失败的请求，内置变量 `$invalid_referer` 的值为非空字符串，`if` 命中后直接 `return 403`。
 
--   valid\_referers 指令用于指定允许的 Referer 来源列表。
--   if ($invalid\_referer) 用于检查请求的 Referer 是否在允许列表中。
--   allow 和 deny 指令用于进一步控制访问权限，这里我们只允许来自指定来源的请求访问。
+![配图](/images/csdn/figures/nginx-referer-csdn139267748.png)
 
-#### 使用场景
+适合的场景：图片、视频等静态资源保护，减少被外站白嫖的带宽；配合付费内容做粗粒度来源校验；挡掉一批不带合法 Referer 的爬虫请求。
 
-1. **图片、视频等资源保护**：防止其他网站直接链接到您的图片或视频资源，减少带宽消耗。
-2. **付费内容保护**：确保只有付费用户才能访问付费内容，通过验证 Referer 来源。
-3. **防止恶意请求**：限制只允许来自合法来源的请求，防止恶意爬虫或攻击。
+> 注：原文示例在 `if` 之后还写了 `allow yourwebsite.com; deny all;`，但 allow/deny 属于 access 模块，只接受 IP/CIDR，不能写域名，这两行在本例中也不会按作者意图生效，重构时删去。
 
-#### 示例2：统计分析
+## 示例二：来源统计
 
-使用 Nginx Referer 模块来记录访问者的来源：
+防盗链是"拒绝"，统计是"记录"。核心是自定义 log_format 把 Referer 记下来：
 
 ```nginx
 http {
@@ -76,29 +69,23 @@ http {
       if ($invalid_referer) {
         return 403;
       }
-      # 记录 Referer 信息
       access_log /var/log/nginx/referer_access.log referer_log;
-      allow yourwebsite.com;
-      deny all;
     }
   }
 }
 ```
 
-在这个配置中，定义了一个名为 referer\_log 的日志格式，用于记录请求的详细信息，包括 Referer 头和用户代理信息。然后在 server 块中的 location 配置中，将符合条件的请求记录到指定的日志文件中。
+这里定义了名为 `referer_log` 的日志格式，`$http_referer` 和 `$http_user_agent` 两个变量分别记录来源页面和浏览器信息。`access_log` 指定了日志文件路径和使用的格式；location 里再写一次 `access_log` 会覆盖 http 级别的设置，这样这个 location 的请求单独落到 `referer_access.log`，方便和其他流量分开统计。
 
-##### 说明
+日志攒起来之后，用途就很实际了：分析广告点击来源、看流量主要从哪些站点跳过来、结合不同来源的用户行为调整内容发布策略。
 
--   log\_format 指令定义了日志格式，其中 $http\_referer 和 $http\_user\_agent 变量用于记录请求的 Referer 和用户代理信息。
--   access\_log 指令用于指定访问日志文件的路径和日志格式。
--   在 location 配置中，将符合条件的请求记录到指定的访问日志文件中。
+## 注意事项
 
-##### 使用场景
-
-1. **广告效果分析**：通过统计 Referer 信息，分析广告点击来源，评估广告效果。
-2. **流量来源分析**：了解网站流量的来源，优化营销策略和内容发布。
-3. **用户行为分析**：根据不同来源的用户行为特点，调整网站内容和功能。
+- `none` 和 `blocked` 是不是要加，取决于业务：允许用户直接打开资源就得加 `none`，前面有会剥 Referer 的代理就得加 `blocked`。
+- Referer 可以伪造，防盗链挡的是"顺手挂链接"这种低成本盗用，防不了定向伪造。
+- 服务器块里没写 `server_names` 时，域名直接列在 `valid_referers` 后面即可；来源多的时候再考虑哈希表配置。
+- 改完用 `nginx -t` 验证，reload 前确认日志目录存在且 Nginx 进程有写权限。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-05-29 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

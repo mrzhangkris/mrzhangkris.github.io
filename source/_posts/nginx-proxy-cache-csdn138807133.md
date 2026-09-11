@@ -1,81 +1,81 @@
 ---
-title: "深入理解Nginx的proxy_cache模块：配置指南与最佳实践"
+title: "Nginx proxy_cache 配置指南"
 date: 2024-05-13 16:03:41
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-proxy-cache-csdn138807133.png
+updated: 2026-09-11
 ---
 
-在构建高性能的Web应用时，缓存策略扮演着关键的角色。Nginx的proxy\_cache模块提供了强大而灵活的缓存功能，对于优化网站性能，减轻后端服务器的负担，提高响应速度具有显著的效果。本文旨在详细介绍proxy\_cache模块的常用指令、使用场景，以及配置缓存的最佳实践。
+后端再快，也快不过缓存直接命中。Nginx 的 proxy_cache 模块把上游响应缓存到本地磁盘，命中后直接返回，既减轻后端负担又提高响应速度。本文整理 proxy_cache 的常用指令、不缓存内容的写法和一份完整配置。
 
-### 常用指令及其用途
+## 常用指令
 
-#### 1\. proxy\_cache\_path
+### proxy_cache_path
 
-定义缓存的存储路径及其他参数，如缓存键、过期时间等。
-**示例：**
+定义缓存的存储路径及其他参数（缓存键、过期时间等）：
 
 ```nginx
 proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=7d use_temp_path=off;
 ```
 
-**注意事项：**
+几个关键参数：
 
--   keys\_zone定义了缓存键及其大小，是必须设置的。
--   max\_size控制缓存区域的最大大小。
--   inactive定义了在指定时间内未被访问的内容自动清除的时间。
+- `keys_zone` 定义缓存键的共享内存区及其大小，必须设置。
+- `max_size` 控制缓存区域的最大磁盘占用。
+- `inactive` 定义多长时间未被访问的内容自动清除。
 
-#### 2\. proxy\_cache\_key
+### proxy_cache_key
 
-设置用于缓存的键的字符串，通常包括请求的元素，如URL、请求方法等。
-**示**例：
+设置缓存键的字符串，通常由请求的相关要素组成（URL、请求方法等）：
 
 ```nginx
 proxy_cache_key "$request_method$request_uri$http_cookie";
 ```
 
-#### 3\. proxy\_cache
+键里放什么直接决定命中率：带上 `$request_uri` 区分不同路径，带上 `$http_cookie` 可以让登录用户各用各的缓存。
 
-启用缓存并指定缓存区域。
-**示例：**
+### proxy_cache
+
+启用缓存并指定使用哪个缓存区域：
 
 ```nginx
 proxy_cache my_cache;
 ```
 
-#### 4\. proxy\_cache\_valid
+### proxy_cache_valid
 
-设置不同的响应代码或内容类型的缓存时间。
-**示例：**
+按响应代码设置缓存时间：
 
 ```nginx
 proxy_cache_valid 200 302 10m;
 proxy_cache_valid 404 1m;
 ```
 
-#### 5\. proxy\_cache\_bypass 和 proxy\_no\_cache
+200/302 缓存 10 分钟，404 只缓存 1 分钟，错误页少缓存可以避免故障被放大。
 
-proxy\_cache\_bypass用于定义条件跳过缓存，proxy\_no\_cache用于避免缓存特定响应。
-**示例（绕过缓存）：**
+### proxy_cache_bypass 与 proxy_no_cache
 
-```nginx
-proxy_cache_bypass $cookie_no_cache $arg_no_cache$ http_pragma$ http_authorization;
-```
+这两个指令成对出现：`proxy_cache_bypass` 定义条件，命中条件时跳过缓存直接回源；`proxy_no_cache` 定义条件，命中条件时不把响应写入缓存。
 
-**示例（不缓存响应）：**
+绕过缓存：
 
 ```nginx
-proxy_no_cache $cookie_no_cache $arg_no_cache$ http_pragma$ http_authorization;
+proxy_cache_bypass $cookie_no_cache $arg_no_cache $http_pragma $http_authorization;
 ```
 
-### 不需要缓存的内容的配置
+不缓存响应：
 
-在配置Nginx时，对于动态内容或敏感信息，常常需要设置不被缓存。以下是如何配置Nginx，以确保特定内容不被缓存。
+```nginx
+proxy_no_cache $cookie_no_cache $arg_no_cache $http_pragma $http_authorization;
+```
 
-#### 实例配置
+> 注：原文这两行的变量写作 `$arg_no_cache$ http_pragma$`（变量名首尾 `$` 错位），本文已按同一文档末尾完整示例的正确写法修正。
 
-确保用户个人页面不缓存：
+## 不缓存内容的配置
+
+动态内容和个人数据通常不该进缓存。比如用户个人页面：
 
 ```nginx
 location /profile {
@@ -88,7 +88,11 @@ location /profile {
   # 禁用缓存
   proxy_cache_bypass 1;
 }
+```
 
+`proxy_cache_bypass 1` 的条件恒为真，等于这个 location 永远回源。而站点其他路径正常启用缓存，并加上 Cache-Control 旁路判断：
+
+```nginx
 location / {
   proxy_pass http://backend_server;
   proxy_cache my_cache;
@@ -98,9 +102,13 @@ location / {
 }
 ```
 
-### 完整的配置示例
+`X-Proxy-Cache` 响应头会把命中状态（HIT/MISS/BYPASS）带给调试者，排查缓存问题时很好用。
 
-以下是一个集成了以上要点的完整的Nginx配置示例：
+## 完整配置示例
+
+把上面的要点合到一起：
+
+![配图](/images/csdn/figures/nginx-proxy-cache-csdn138807133.png)
 
 ```nginx
 proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=7d use_temp_path=off;
@@ -125,8 +133,14 @@ server {
 }
 ```
 
-通过上述配置，我们能够有效地管理缓存行为，提高网站的性能，同时保证敏感或动态数据的实时性和安全性。
+这套配置做到：常规内容按方法+URI+Cookie 做键缓存 10 分钟，带 no_cache Cookie、no_cache 参数、Pragma 或 Authorization 头的请求绕过缓存且不落盘，个人页面永远回源。
 
----
+## 注意事项
 
-> 本文迁移自作者 CSDN 博客，2024-05-13 首发于 CSDN，内容保持原貌。
+- `proxy_cache_path` 必须放在 http 层，`keys_zone` 是必填项；缓存目录要对 Nginx 可写。
+- 缓存键要包含区分用户身份的要素（如 Cookie），否则可能出现用户间串缓存。
+- 动态、敏感内容用 `proxy_cache_bypass` 明确排除，别只依赖后端的 Cache-Control 头。
+- 404 等错误响应单独设短缓存时间，避免后端故障时错误页被长期缓存。
+- 调试期加上 `add_header X-Proxy-Cache $upstream_cache_status`，命中与否一目了然。
+
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

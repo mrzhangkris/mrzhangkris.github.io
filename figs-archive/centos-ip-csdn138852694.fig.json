@@ -1,0 +1,13 @@
+{
+  "title": "ifcfg-eth0 static ip",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "DEVICE=eth0"},
+    {"t": "config", "s": "BOOTPROTO=none"},
+    {"t": "config", "s": "ONBOOT=yes"},
+    {"t": "config", "s": "IPADDR=192.168.1.100"},
+    {"t": "config", "s": "NETMASK=255.255.255.0"},
+    {"t": "config", "s": "GATEWAY=192.168.1.1"},
+    {"t": "note", "s": "文件位于 /etc/sysconfig/network-scripts/"}
+  ]
+}

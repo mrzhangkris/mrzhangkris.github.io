@@ -1,0 +1,13 @@
+{
+  "title": "tomcat daemon.sh run",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "apache-tomcat-9.0.33/bin/daemon.sh run"},
+    {"t": "out", "s": "Server version name: Apache Tomcat/9.0.33"},
+    {"t": "out", "s": "Java Home: /usr/lib/jvm/java-11-openjdk-..."},
+    {"t": "out", "s": "CATALINA_HOME: /root/apache-tomcat-9.0.33"},
+    {"t": "out", "s": "Initializing ProtocolHandler [\"http-nio-8080\"]"},
+    {"t": "out", "s": "Server startup in [1,887] milliseconds"},
+    {"t": "note", "s": "daemon 模式由 jsvc 托管，start/stop 管理"}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "title": "lastb: failed logins",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "lastb"},
+    {"t": "out", "s": "root    ssh:notty   192.168.0.201   Mon Feb 13 11:38  (00:00)"},
+    {"t": "out", "s": "erdaf   ssh:notty   192.168.0.201   Mon Feb 13 11:06  (00:00)"},
+    {"t": "cmd", "s": "lastb -n 1"},
+    {"t": "note", "s": "-n 限定条数，-d 把 IP 反解成主机名"}
+  ]
+}

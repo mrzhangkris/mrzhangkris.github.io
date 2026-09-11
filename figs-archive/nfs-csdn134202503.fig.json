@@ -1,0 +1,13 @@
+{
+  "title": "nfs exports config",
+  "type": "config",
+  "lines": [
+    {"t": "note", "s": "/etc/exports"},
+    {"t": "config", "s": "/export/nfs 192.168.0.0/24(rw,no_root_squash,no_all_squash,sync)"},
+    {"t": "cmd", "s": "exportfs -r"},
+    {"t": "note", "s": "重读 exports 并生效，无需重启服务"},
+    {"t": "cmd", "s": "systemctl start rpcbind"},
+    {"t": "cmd", "s": "systemctl restart nfs-server"},
+    {"t": "cmd", "s": "mount -t nfs 192.168.0.237:/export/nfs /data/"}
+  ]
+}

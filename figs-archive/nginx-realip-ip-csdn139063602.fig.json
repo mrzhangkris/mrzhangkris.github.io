@@ -1,0 +1,11 @@
+{
+  "title": "nginx realip",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "set_real_ip_from  192.168.1.0/24;  # 信任的代理网段"},
+    {"t": "config", "s": "set_real_ip_from  203.0.113.0/24;"},
+    {"t": "config", "s": "real_ip_header    X-Forwarded-For;"},
+    {"t": "config", "s": "real_ip_recursive on;"},
+    {"t": "note", "s": "从可信代理传来的请求头中还原真实客户端 IP"}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "title": "logrotate nginx config",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "/var/log/nginx/*.log"},
+    {"t": "config", "s": "{"},
+    {"t": "config", "s": "    weekly                  # 每周轮换日志"},
+    {"t": "config", "s": "    rotate 4                # 保留 4 个旧文件"},
+    {"t": "config", "s": "    compress                # 压缩旧文件"},
+    {"t": "config", "s": "    create 0644 nginx nginx # 新日志权限与属主"},
+    {"t": "config", "s": "    postrotate"},
+    {"t": "config", "s": "        /usr/sbin/nginx -s reopen >/dev/null 2>&1"},
+    {"t": "config", "s": "    endscript"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "干跑测试：logrotate -d /etc/logrotate.d/nginx"}
+  ]
+}

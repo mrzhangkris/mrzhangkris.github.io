@@ -1,41 +1,36 @@
 ---
-title: "reposync同步镜像源库到本地"
+title: "reposync：把 YUM 镜像源同步到本地"
 date: 2020-04-10 23:10:19
+updated: 2026-09-11
 categories: [技术]
 tags: [运维]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/reposync-csdn105444446.png
 ---
 
-#### 文章目录
+内网机器没法直连公网 YUM 源时，常见做法是找一台能上网的机器把整个仓库同步下来，再搭成本地源。`reposync` 干的就是这件事：把远端仓库的 rpm 包按 repoid 拉到本地目录。整个流程分四步——装工具、建目录、查 repoid、执行同步。
 
--   [reposync命令](#reposync_1)
--   [下载工具包](#_3)
--   [创建下载目录](#_9)
--   [获取repoid](#repoid_14)
--   [同步存储库](#_34)
+### 下载工具包
 
-## reposync命令
-
-## 下载工具包
+`reposync` 命令在 yum-utils 工具包里：
 
 ```bash
 [root@localhost ~]# yum install -y yum-utils
 ```
 
--   reposync命令在yum-utils工具包中
+### 创建下载目录
 
-## 创建下载目录
+先建好存放目录，本地下载的 rpm 包都会落在这里：
 
 ```bash
 [root@localhost ~]# mkdir -p /data1/centos/$releasever
 ```
 
--   下载到本地的rpm包的存放目录
+`$releasever` 是 YUM 的系统版本变量，执行时会替换成当前系统的主版本号，这样不同版本的包天然分目录存放。
 
-## 获取repoid
+### 获取 repoid
 
-使用yum repolist获取repoid
+要同步哪些仓库，得先知道它们的 repoid：
 
 ```bash
 [root@localhost data1]# yum repolist
@@ -53,20 +48,25 @@ updates                                                        CentOS-6 - Update
 repolist: 20,299
 ```
 
--   repoid有4个分别为base、epel、extras、updates。
--   在.repo文件中\[serverid\]就是repoid
--   serverid解释：用于区别各个不同的repository，必须有一个独一无二的名称。若重复后面的会覆盖前面的。
+从输出看，这台机器的 repoid 有 4 个：base、epel、extras、updates。repoid 对应 `.repo` 配置文件里的 `[serverid]`——用于区分各个不同的 repository，必须独一无二，若重名，后面的会覆盖前面的。
 
-## 同步存储库
+### 同步存储库
 
-同步存储库时可以指定一个repoid，也可以指定多个repoid，当然前提是下载目录一致。
+![配图](/images/csdn/figures/reposync-csdn105444446.png)
+
+把 4 个仓库一次同步下来，落到之前建好的目录：
 
 ```bash
 [root@localhost ~]# reposync -n --repoid=base --repoid=epel --repoid=extras --repoid=updates -p /data1/centos/$releasever
 ```
 
--   会自动创建以repoid命令的目录
+这条命令在做什么：`--repoid` 指定要同步的仓库，可以写一个也可以写多个（前提是下载目录一致）；`-p` 指定目标路径；`-n` 即 `--newest`，只下载每个软件包的最新版本，跳过旧版本，能省下大量磁盘空间。执行时 reposync 会自动在目标路径下按 repoid 建同名目录，包就分仓库躺在各自目录里。
 
----
+## 注意事项
 
-> 本文迁移自作者 CSDN 博客，2020-04-10 首发于 CSDN，内容保持原貌。
+- 仓库多大，同步时间就有多长，base 加 epel 这类大仓库首次同步建议放在后台执行。
+- `-n` 只拉最新包；如果本地源要照顾混布旧包的场景，评估好再去掉这个参数。
+- 同步完成后记得 `createrepo` 生成元数据，客户端才能把它当仓库用（本文只覆盖同步环节）。
+- 磁盘空间提前算好，仓库全量同步动辄几十 GB。
+
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

@@ -1,0 +1,13 @@
+{
+  "title": "check port 8080 conflict",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo netstat -tulnp | grep :8080"},
+    {"t": "note", "s": "Tomcat 默认监听 8080，被占用会启动失败"},
+    {"t": "note", "s": "改 conf/server.xml 中 Connector 的 port"},
+    {"t": "config", "s": "<Connector port=\"8081\" protocol=\"HTTP/1.1\""},
+    {"t": "config", "s": "           connectionTimeout=\"20000\""},
+    {"t": "config", "s": "           redirectPort=\"8443\" />"},
+    {"t": "note", "s": "换端口后重新启动 Tomcat"}
+  ]
+}

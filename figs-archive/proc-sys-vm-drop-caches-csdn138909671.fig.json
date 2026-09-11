@@ -1,0 +1,12 @@
+{
+  "title": "drop caches memory release",
+  "type": "cmd",
+  "lines": [
+    {"t": "note", "s": "执行前先 sync,把脏数据刷盘"},
+    {"t": "cmd", "s": "sync"},
+    {"t": "cmd", "s": "echo 1 | sudo tee /proc/sys/vm/drop_caches"},
+    {"t": "note", "s": "1=页面缓存 2=dentries+inodes 3=全部"},
+    {"t": "cmd", "s": "echo 3 | sudo tee /proc/sys/vm/drop_caches"},
+    {"t": "note", "s": "清理后性能短暂下降,生产低峰期用"}
+  ]
+}

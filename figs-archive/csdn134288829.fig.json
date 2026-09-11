@@ -1,0 +1,11 @@
+{
+  "title": "port to cwd lookup",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "#!/bin/bash"},
+    {"t": "config", "s": "PID=$(netstat -nlp|grep :$1|awk '{print $7}'|awk -F\"/\" '{ print $1 }')"},
+    {"t": "config", "s": "DIR=$(/usr/bin/pwdx $PID)"},
+    {"t": "config", "s": "FILTERDIR=$(echo $DIR |awk -F ' ' '{print $2}')"},
+    {"t": "note", "s": "传端口号，输出 PID 与进程工作目录"}
+  ]
+}

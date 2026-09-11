@@ -1,0 +1,14 @@
+{
+  "title": "lvm: pv -> vg -> lv",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "pvcreate /dev/sdb /dev/sdc"},
+    {"t": "note", "s": "初始化物理卷"},
+    {"t": "cmd", "s": "vgcreate my_volume_group /dev/sdb /dev/sdc"},
+    {"t": "note", "s": "两块盘合成卷组存储池"},
+    {"t": "cmd", "s": "lvcreate -L 30G -n my_logical_volume my_volume_group"},
+    {"t": "note", "s": "从池中切出 30G 逻辑卷"},
+    {"t": "cmd", "s": "mkfs.ext4 /dev/my_volume_group/my_logical_volume"},
+    {"t": "note", "s": "格式化后挂载即可使用"}
+  ]
+}

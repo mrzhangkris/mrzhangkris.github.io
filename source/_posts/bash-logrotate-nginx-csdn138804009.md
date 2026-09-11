@@ -1,17 +1,18 @@
 ---
-title: "使用Bash脚本和Logrotate实现Nginx日志切割"
+title: "Nginx 日志切割：Bash 脚本与 logrotate 两种做法"
 date: 2024-05-13 15:13:45
+updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/bash-logrotate-nginx-csdn138804009.png
 ---
 
-Nginx是一个广泛使用的高性能Web服务器，它能够处理大量的并发连接，但同时也会生成大量的日志文件。为了有效管理这些日志文件并确保系统的正常运行，我们需要定期对Nginx的日志文件进行切割和归档。本文将介绍如何使用Bash脚本和Logrotate来实现Nginx日志的切割。
+Nginx 跑久了，access.log 会一路膨胀，大到 grep 都卡。日志切割要解决两件事：把旧日志按时间归档压缩，同时让 nginx 换一个新文件继续写。这篇文章给出两种做法：一个手写 Bash 脚本，一个用系统自带的 logrotate。
 
-### Bash脚本实现
+## 方案一：Bash 脚本
 
-假设Nginx的访问日志文件位于/var/log/nginx/access.log
+假设访问日志位于 `/var/log/nginx/access.log`：
 
 ```bash
 #!/bin/bash
@@ -33,24 +34,28 @@ gzip "$ARCHIVE_DIR/access_$DATE.log"
 kill -USR1 $(cat /var/run/nginx.pid)
 ```
 
-以上脚本的功能包括：
+脚本做了三件事：
 
--   检查归档目录是否存在，如果不存在则创建。
--   将当前的访问日志文件移动到归档目录，并使用gzip进行压缩。
--   向Nginx发送USR1信号，以便重新打开日志文件，使Nginx能够继续写入新的日志。
+- 归档目录不存在就先创建。
+- 把当前日志移动到归档目录并 gzip 压缩，文件名带上时间戳，不会互相覆盖。
+- 向 nginx 主进程发送 USR1 信号，让它重新打开日志文件。这一步不能省：nginx 写日志用的是文件句柄，不通知它，日志还会继续写进刚被移走的旧文件，新的 access.log 一直是空的。
 
-### Logrotate实现
+把脚本放进 crontab 每天跑一次即可。
 
-> Logrotate是一个Linux系统上用来管理日志文件的工具，它可以定期轮转日志文件、压缩旧的日志文件以及删除过期的日志文件。Logrotate通过配置文件定义轮转规则，并由系统的cron任务周期性地执行。
+## 方案二：logrotate
 
-假设Nginx的有两个访问日志文件分为位于
+logrotate 是 Linux 上专门管理日志的工具：定期轮转日志、压缩旧日志、删除过期归档，规则写在配置文件里，由系统的 cron 周期性执行。
 
--   /apps/openresty/nginx/logs/head/access.log
--   /apps/openresty/nginx/logs/domain/access.log。
+假设 OpenResty 有两个访问日志，分别位于：
 
-在/etc/logrotate.d目录下创建一个名为nginx的文件，并添加以下内容
+- /apps/openresty/nginx/logs/head/access.log
+- /apps/openresty/nginx/logs/domain/access.log
 
-```latex
+在 `/etc/logrotate.d` 目录下创建一个名为 `nginx` 的文件：
+
+![配图](/images/csdn/figures/bash-logrotate-nginx-csdn138804009.png)
+
+```conf
 /apps/openresty/nginx/logs/head/access.log
 /apps/openresty/nginx/logs/domain/access.log
 {
@@ -74,18 +79,27 @@ kill -USR1 $(cat /var/run/nginx.pid)
 }
 ```
 
-以上配置的含义如下：
+各配置项的含义：
 
--   daily：每天轮转一次日志。
--   missingok：如果日志文件不存在，则不报错。
--   rotate 7：保留最近的7个归档文件。
--   compress：使用gzip压缩轮转后的日志文件。
--   delaycompress：延迟压缩，直到下一次轮转时才压缩上一次的日志文件。
--   notifempty：如果日志文件为空，则不轮转。
--   create：设置新创建的日志文件的权限和属主。
--   sharedscripts：在所有日志文件轮转之后执行一次脚本。
--   postrotate和endscript：在轮转后执行的内容。
+- daily：每天轮转一次日志。
+- missingok：日志文件不存在时不报错。
+- rotate 7：保留最近的 7 个归档文件，更早的自动删除。
+- compress：轮转后使用 gzip 压缩。
+- delaycompress：延迟压缩，上一次轮转的文件要到下一次轮转时才压缩。
+- notifempty：日志文件为空就不轮转。
+- create：设置轮转后新建日志文件的权限和属主。
+- sharedscripts：多个日志文件一起轮转时，脚本只执行一次。
+- postrotate / endscript：轮转后执行的动作。这里是给两个 nginx 实例的主进程分别发 USR1 信号，让它们重开日志文件。
+
+两个日志文件写在同一个配置里，配合 sharedscripts，USR1 只发一轮，不会重复。
+
+## 注意事项
+
+- 无论哪种方案，切割后都必须让 nginx 重开日志文件（USR1 信号），漏了这步新日志文件会一直是空的。
+- logrotate 的执行由系统 cron 周期触发，不需要自己再挂定时任务。
+- `rotate 7` 加 `daily` 意味着归档只保留一周，磁盘紧张可以调小，需要留更久就调大。
+- `delaycompress` 让最近一份归档保持未压缩状态，查最近的日志不用先解压。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-05-13 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

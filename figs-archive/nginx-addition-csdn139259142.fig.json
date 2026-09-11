@@ -1,0 +1,12 @@
+{
+  "title": "nginx addition",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "location /ad {"},
+    {"t": "config", "s": "  addition on;"},
+    {"t": "config", "s": "  addition_types text/html text/css;"},
+    {"t": "config", "s": "  addition_output_charset utf-8;"},
+    {"t": "config", "s": "  proxy_pass http://backend;"},
+    {"t": "config", "s": "}"}
+  ]
+}

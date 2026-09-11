@@ -1,45 +1,49 @@
 ---
-title: "ORACLE网络传输加密"
+title: "Oracle 网络传输加密：sqlnet.ora 服务端与 JDBC 客户端配置"
 date: 2024-06-03 08:45:00
+updated: 2026-09-11
 categories: [技术]
 tags: [Oracle, 网络服务]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/oracle-csdn139348961.png
 ---
 
-在这篇博客中，我们将探讨如何通过使用Oracle数据库进行加密传输来提升安全性。我们的重点将是配置Oracle的网络环境以启用加密和数据完整性验证，并通过一个Java示例来演示如何创建一个加密的数据库连接。
+数据库里存的是最值钱的数据，但客户端到服务器之间的传输链路常常是裸奔的——同一内网不等于安全。Oracle 内置了网络加密和数据完整性校验机制，服务端在 `sqlnet.ora` 里配置，客户端在 JDBC 连接属性里配置，两边对上就能启用加密传输。这篇记录两端的配置方法和一个可运行的 Java 示例。
 
-#### 一、Oracle 网络加密配置
+### 服务器端：sqlnet.ora
 
-在企业环境中，数据传输的安全性至关重要。Oracle提供了一套机制，用于保护数据在客户端和服务器之间传输时的安全性和完整性。以下是配置Oracle服务器和客户端以使用加密传输的步骤：
+在数据库服务器的 `sqlnet.ora` 文件中添加：
 
-##### 服务器端配置
-
-1. 在sqlnet.ora文件中，需要添加以下内容：
-```
+```conf
 SQLNET.ENCRYPTION_SERVER = REQUIRED # 开启加密
 SQLNET.ENCRYPTION_TYPES_SERVER = (AES256, AES192, AES128) # 采用AES对称加密算法
 SQLNET.CRYPTO_CHECKSUM_SERVER = REQUIRED # 需要对数据完整性进行验证
 SQLNET.CRYPTO_CHECKSUM_TYPES_SERVER = SHA1 # 签名算法
 ```
 
-这些设置确保服务器端要求加密，并且指定了使用AES算法的三种强度和SHA1签名算法进行数据完整性验证。
+这四行的含义：加密和校验都设为 `REQUIRED`，意味着不加密、不做完整性校验的连接请求会被直接拒绝；算法按括号里的顺序协商，优先 AES256，逐级降到 AES128；完整性用 SHA1 做签名。
 
-##### 客户端配置
+> 注：原文采用行内 `#` 注释的写法。不同版本的 sqlnet.ora 对行内注释的解析行为存疑，稳妥的做法是把注释单独成行（以 `#` 开头），参数值本身保持干净。
 
-在客户端，我们需要设置JDBC连接属性，以确保所有传输都通过加密进行：
+### 客户端：JDBC 连接属性
 
-```
+客户端不需要动配置文件，把加密要求写进连接属性即可：
+
+```java
 Properties props = new Properties();
 props.setProperty("oracle.net.encryption_client", "REQUIRED");
 props.setProperty("oracle.net.encryption_types_client", "(AES256, AES192, AES128)");
 ```
 
-#### 二、Java 示例：创建加密的数据库连接
+属性名和服务端一一对应，取值同样支持 `REQUIRED` / `ACCEPTED` 等级别；两端都设 `REQUIRED` 才能保证链路上没有明文回退的余地。
 
-以下是一个Java应用程序，它演示了如何建立到Oracle数据库的加密连接。这个例子使用JDBC驱动程序。
+### Java 完整示例
 
-```
+![配图](/images/csdn/figures/oracle-csdn139348961.png)
+
+下面用 JDBC 驱动演示建立加密连接并执行一次查询：
+
+```java
 import java.sql.*;
 import java.util.Properties;
 import oracle.jdbc.OracleConnection;
@@ -82,11 +86,13 @@ public class EncryptedConnectionDemo {
 }
 ```
 
-#### 总结
+连接串还是普通的 thin 连接，加密由 `props` 里的两个属性触发。如果连接成功打印出 `Connection established successfully with encryption.`，说明协商到了加密通道。
 
-通过正确配置Oracle的加密设置并在客户端实施相应的加密策略，可以大大增强数据传输过程中的安全性。示例代码展示了如何在Java中实现这一点，从而确保数据在传输过程中的保密性和完整性。
-希望这篇博客能够帮助你理解如何在Oracle数据库环境中使用加密技术来保护数据传输。如果有任何疑问或需要进一步的帮助，请随时留言讨论。
+## 注意事项
 
----
+- 服务端和客户端的算法列表要有交集，否则协商失败直接连不上——排查"突然连不上数据库"时先对一下两边的 `ENCRYPTION_TYPES`。
+- `REQUIRED` 是硬开关，上线前先在测试环境验证所有存量客户端都支持加密，避免业务中断。
+- SHA1 在如今的安全标准下偏弱，新环境可评估更高强度的校验算法。
+- 加密有少量 CPU 开销，高吞吐场景留意服务端负载变化。
 
-> 本文迁移自作者 CSDN 博客，2024-06-03 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

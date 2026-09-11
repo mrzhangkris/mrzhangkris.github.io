@@ -1,32 +1,25 @@
 ---
-title: "Rewrite 模块的入门指南"
+title: "Nginx Rewrite 模块入门：重写、重定向与防循环"
 date: 2024-05-21 10:09:19
+updated: 2026-09-11
 categories: [技术]
 tags: [运维]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/rewrite-csdn139085203.png
 ---
 
-Nginx 的 rewrite 模块是一个功能强大的工具，可以在处理请求时修改 URL。它通常用于 URL 重写、重定向、条件性处理等。在这篇博客将通过完整的示例和注释详细介绍如何使用 Nginx 的 rewrite 模块及其使用场景和注意事项。
+旧链接要平滑跳到新地址、请求路径要按语言分发，这类需求在 Nginx 上都归 rewrite 模块管：它基于正则匹配和条件判断来修改请求的 URI，重写结果既可以走内部重定向，也可以把浏览器引到别的 URL。下面用三个由浅入深的例子说明常见写法。
 
-##### 什么是 Nginx Rewrite 模块？
+### 使用场景
 
-Nginx 的 rewrite 模块允许基于正则表达式匹配和条件来修改请求的 URI。重写可以在请求处理阶段进行，并用于内部重定向或外部重定向到其他 URL。
+1. 简化用户请求的 URL 路径。
+2. 为缺失的文件提供友好的错误页面。
+3. 把旧 URL 重定向到新 URL。
+4. 根据条件把用户导向不同的网站或内容。
 
-##### 使用场景
+### 示例 1：基本的 URL 重写
 
-1. 简化用户请求的URL路径
-2. 为缺失的文件提供友好的错误页面
-3. 重定向旧的URL到新的URL
-4. 根据条件重定向用户到不同的网站或内容
-
-##### 示例和注释
-
-以下是一些使用 Nginx rewrite 模块的常见示例和详细注释：
-
-###### 示例1：基本的 URL 重写
-
-将 URL example.com/old-path 重写为 example.com/new-path。
+把 `example.com/old-path` 永久重定向到 `example.com/new-path`：
 
 ```nginx
 server {
@@ -42,16 +35,18 @@ server {
 }
 ```
 
-**注释**：
+两条规则各自的含义：
 
--   rewrite ^/old-path$ /new-path permanent; 这行代码使用正则表达式匹配请求的 URI，然后将其重写为新的路径并返回 301 永久重定向状态码。
--   try\_files $uri $uri/ =404; 确保 Nginx 尝试请求实际文件或文件夹，如果没有找到则返回404错误。
+- `rewrite ^/old-path$ /new-path permanent;` 用正则匹配请求的 URI，改写为新路径，并返回 301 永久重定向状态码。
+- `try_files $uri $uri/ =404;` 让 Nginx 先尝试请求的实际文件或目录，找不到就返回 404。
 
-###### 示例2：使用变量重写 URL
+### 示例 2：使用变量重写 URL
 
-用一个变量表示用户请求的语言版本，以实现动态 URL 重写。
+用一个变量表示用户的语言版本，实现动态 URL 重写——中文用户请求 `/docs/...` 时自动落到 `zh` 目录：
 
-```
+![配图](/images/csdn/figures/rewrite-csdn139085203.png)
+
+```nginx
 server {
     listen 80;
     server_name example.com;
@@ -71,17 +66,17 @@ server {
 }
 ```
 
-**注释**：
+规则含义：
 
--   set $lang en; 设置了一个默认的语言变量，这里默认语言是英语。
--   if ($http\_accept\_language ~\* “^zh”) { set $lang zh; } 通过检查请求头中的语言，自动设置语言变量，如果首选语言是中文则设置为zh。
--   rewrite ^/docs/(.\*)$ /$lang/docs/$1 break; 重写 /docs/ 下的所有路径到相应的语言目录。
+- `set $lang en;` 设置默认语言变量为英语。
+- `if ($http_accept_language ~* "^zh") { set $lang zh; }` 检查请求头中的语言偏好，是中文就改写变量为 zh。
+- `rewrite ^/docs/(.*)$ /$lang/docs/$1 break;` 把 `/docs/` 下的所有路径重写到对应语言目录，`$1` 保留原路径后半段，`break` 终止后续重写处理。
 
-###### 示例3：条件重写和防止循环
+### 示例 3：条件重写和防止循环
 
-基于条件进行重写，并防止重写规则自己无限循环。
+当重写目标还可能再次命中重写条件时，要加标记防止规则自己无限循环：
 
-```
+```nginx
 server {
     listen 80;
     server_name example.com;
@@ -103,19 +98,17 @@ server {
 }
 ```
 
-**注释**：
+规则含义：
 
--   set $done 0; 初始化一个变量，用于标记是否已经完成了重写。
--   if (uri /old−pathuri ~ ^/old-pathuri /old−path) { set $done 1; } 如果 URI 匹配旧路径，设置 $done 为 1。
--   if ($done) { rewrite ^ /new-path break; } 在 $done 被设置的情况下进行重写，并使用 break 终止重写规则，以防止循环。
+- `set $done 0;` 初始化标记变量，记录是否已完成重写。
+- `if ($uri ~ ^/old-path$) { set $done 1; }` URI 命中旧路径时把标记置 1。
+- `if ($done) { rewrite ^ /new-path break; }` 标记已设置才执行重写，并用 `break` 终止重写规则的处理，避免新路径再次进入判断造成死循环。
 
-##### 注意事项
+## 注意事项
 
-1. **重定向类型**： 有两种主要重定向类型，permanent (301) 和 redirect (302)。使用时根据需要选择适当的重定向类型。
-2. **性能问题**：过于复杂的正则表达式可能会影响性能，尽量简化正则表达式并避免不必要的重写。
-3. **条件匹配**： 避免在 if 语句中执行复杂逻辑，因为这可能会增加配置的复杂性和调试难度。官方文档建议只在极其需要的情况下使用 if。
-4. **测试配置**： 任何更改都应在部署前进行测试，以确保不会导致意外的行为或影响现有流量。
+- **重定向类型**：`permanent`（301）和 `redirect`（302）是两种主要选择，301 会告诉搜索引擎和浏览器地址永久变更，按需选对。
+- **性能**：过于复杂的正则会影响性能，尽量简化表达式，避免不必要的重写规则。
+- **少用 if**：if 里塞复杂逻辑会让配置难读难调；官方文档也建议只在确实需要时使用 if。
+- **先测再上**：rewrite 改的是流量走向，任何更改都应先在测试环境验证，避免影响线上请求。
 
----
-
-> 本文迁移自作者 CSDN 博客，2024-05-21 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

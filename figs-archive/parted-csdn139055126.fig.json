@@ -1,0 +1,14 @@
+{
+  "title": "parted print disk layout",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo parted /dev/sda print"},
+    {"t": "out", "s": "Model: ATA ST1000DM003-1ER1 (scsi)"},
+    {"t": "out", "s": "Disk /dev/sda: 1000GB"},
+    {"t": "out", "s": "Partition Table: gpt"},
+    {"t": "out", "s": "Number  Start   End     Size    File system"},
+    {"t": "out", "s": " 1      1049kB  538MB   537MB   fat32"},
+    {"t": "out", "s": " 2      538MB   1000GB  999GB   ext4"},
+    {"t": "note", "s": "先确认分区表类型与布局,再动手"}
+  ]
+}

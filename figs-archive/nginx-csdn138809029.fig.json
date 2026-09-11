@@ -1,0 +1,17 @@
+{
+  "title": "nginx stream loadbalance",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "stream {"},
+    {"t": "config", "s": "  upstream backend {"},
+    {"t": "config", "s": "    server backend1.example.com:12345;"},
+    {"t": "config", "s": "    server backend2.example.com:12345;"},
+    {"t": "config", "s": "  }"},
+    {"t": "config", "s": "  server {"},
+    {"t": "config", "s": "    listen 12345;"},
+    {"t": "config", "s": "    proxy_pass backend;"},
+    {"t": "config", "s": "    proxy_next_upstream off;"},
+    {"t": "config", "s": "  }"},
+    {"t": "config", "s": "}"}
+  ]
+}

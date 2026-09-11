@@ -1,0 +1,18 @@
+{
+  "title": "bind named.conf forward and reverse zones",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "options {"},
+    {"t": "config", "s": "  listen-on port 53 { any; };"},
+    {"t": "config", "s": "  allow-query { any; };"},
+    {"t": "config", "s": "};"},
+    {"t": "config", "s": "zone \"example.com\" IN {"},
+    {"t": "config", "s": "  type master;"},
+    {"t": "config", "s": "  file \"/var/named/forward.example.com\";"},
+    {"t": "config", "s": "};"},
+    {"t": "config", "s": "zone \"1.168.192.in-addr.arpa\" IN {"},
+    {"t": "config", "s": "  type master;"},
+    {"t": "config", "s": "  file \"/var/named/reverse.example.com\";"},
+    {"t": "config", "s": "};"}
+  ]
+}

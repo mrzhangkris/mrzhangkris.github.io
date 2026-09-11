@@ -1,0 +1,11 @@
+{
+  "title": "nginx valid_referers",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "valid_referers none blocked yourwebsite.com;"},
+    {"t": "config", "s": "if ($invalid_referer) {"},
+    {"t": "config", "s": "    return 403;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "Referer 不在允许列表时直接拒绝"}
+  ]
+}

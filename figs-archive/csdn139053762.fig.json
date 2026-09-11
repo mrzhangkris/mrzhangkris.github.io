@@ -1,0 +1,10 @@
+{
+  "title": "growpart resize fs",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo growpart /dev/sda 2"},
+    {"t": "note", "s": "把 sda 第 2 个分区扩到整盘可用空间"},
+    {"t": "cmd", "s": "sudo resize2fs /dev/sda2"},
+    {"t": "note", "s": "ext4 在线扩展；xfs 用 xfs_growfs /"}
+  ]
+}

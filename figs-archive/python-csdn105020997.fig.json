@@ -1,0 +1,14 @@
+{
+  "title": "python subprocess realtime output",
+  "type": "cmd",
+  "lines": [
+    {"t": "note", "s": "问题: 子进程输出被缓冲, 父进程读不到"},
+    {"t": "cmd", "s": "res = subprocess.Popen(["},
+    {"t": "cmd", "s": "  \"/usr/bin/python3 -u /root/system_time.py\"],"},
+    {"t": "cmd", "s": "  shell=True, stdout=subprocess.PIPE,"},
+    {"t": "cmd", "s": "  stderr=subprocess.PIPE)"},
+    {"t": "note", "s": "或子进程侧 print(..., flush=True)"},
+    {"t": "cmd", "s": "while res.poll() is None:"},
+    {"t": "cmd", "s": "  print(res.stdout.readline())"}
+  ]
+}

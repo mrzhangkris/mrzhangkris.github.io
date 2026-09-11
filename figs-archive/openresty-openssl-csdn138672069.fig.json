@@ -1,0 +1,11 @@
+{
+  "title": "openresty openssl conf",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "CORE_INCS=\"$CORE_INCS $OPENSSL/include\""},
+    {"t": "config", "s": "CORE_DEPS=\"$CORE_DEPS $OPENSSL/include/openssl/ssl.h\""},
+    {"t": "config", "s": "CORE_LIBS=\"$CORE_LIBS $OPENSSL/lib/libssl.a\""},
+    {"t": "config", "s": "CORE_LIBS=\"$CORE_LIBS $OPENSSL/lib/libcrypto.a\""},
+    {"t": "note", "s": "去掉默认的 .openssl 前缀，适配系统 OpenSSL 布局"}
+  ]
+}

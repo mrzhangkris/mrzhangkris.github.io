@@ -1,0 +1,12 @@
+{
+  "title": "lvm cache: ssd 加速 hdd",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "pvcreate /dev/sdb /dev/sdc"},
+    {"t": "cmd", "s": "vgcreate vg0 /dev/sdb /dev/sdc"},
+    {"t": "cmd", "s": "lvcreate -L 100G -n data vg0"},
+    {"t": "cmd", "s": "lvcreate -L 10G -n cache vg0"},
+    {"t": "cmd", "s": "lvconvert --type cache --cachevol cache vg0/data"},
+    {"t": "note", "s": "cache 卷是 SSD 上的 10G 缓存层，热数据自动迁移"}
+  ]
+}

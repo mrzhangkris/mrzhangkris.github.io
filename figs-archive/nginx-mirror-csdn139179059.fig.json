@@ -1,0 +1,18 @@
+{
+  "title": "nginx mirror",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "upstream mirror_backend { server mirror.example.com; }"},
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "  proxy_pass http://main_backend;"},
+    {"t": "config", "s": "  if ($http_mirror_enabled = \"true\") {"},
+    {"t": "config", "s": "    mirror /mirror;"},
+    {"t": "config", "s": "  }"},
+    {"t": "config", "s": "}"},
+    {"t": "config", "s": "location /mirror {"},
+    {"t": "config", "s": "  internal;"},
+    {"t": "config", "s": "  proxy_pass http://mirror_backend;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "internal 保证镜像路径仅限内部调用"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "oracle expdp backup via bash",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "expdp ${db_user}/${db_password}@${IP}:${PORT}/${ORACLE_SID} \\"},
+    {"t": "cmd", "s": "  DIRECTORY=${ORACLE_DIRECTORY} DUMPFILE=${DUMPFILE} \\"},
+    {"t": "cmd", "s": "  LOGFILE=${LOGFILE} SCHEMAS=${db_user}"},
+    {"t": "note", "s": "每天凌晨 3 点由 crontab 触发"},
+    {"t": "cmd", "s": "zip -r ${ZIP_DIR}${db_user}_${BAKUP_TIME}.zip \\"},
+    {"t": "cmd", "s": "  ${EXPD_DIR}${DUMPFILE} ${EXPD_DIR}${LOGFILE}"},
+    {"t": "note", "s": "压缩后 curl 上传异地备份"}
+  ]
+}

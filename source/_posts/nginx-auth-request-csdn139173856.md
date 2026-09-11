@@ -1,49 +1,40 @@
 ---
-title: "Nginx的auth_request 模块详解与应用指南"
+title: "Nginx auth_request 模块：把认证交给外部服务"
 date: 2024-05-25 09:00:00
+updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-auth-request-csdn139173856.png
 ---
 
-### 前言
+给某个路径加访问控制，又不想把认证逻辑复制进每个后端服务，Nginx 的 auth_request 模块就是为这个场景准备的：Nginx 先把请求转给一个认证端点，拿到状态码再决定放行还是拒绝。这篇讲它的原理、配置和一个可跑的完整示例。
 
-对于Web开发者来说，Nginx是一个强大且灵活的Web服务器和反向代理服务器。其模块化设计让我们可以根据需求定制Nginx的功能。在安全性和访问控制方面，Nginx的auth\_request模块是一个非常有用的工具。本文将详细介绍auth\_request模块的用途、使用场景，并通过示例代码来说明其具体应用。
+## auth_request 模块简介
 
-### 1\. auth\_request 模块简介
+auth_request 是 Nginx 的官方模块，处理客户端请求时先把请求交给外部认证服务，认证服务根据请求内容（如 HTTP 头或查询参数）返回状态码：认证通过，Nginx 继续处理请求；不通过，Nginx 返回错误码拒绝访问。
 
-#### 什么是 auth\_request 模块？
+它的三个典型用途：
 
-auth\_request 模块是Nginx的一个官方模块，用于在处理客户端请求时，将这些请求传递给一个外部的认证服务进行认证。认证服务根据请求的内容（如HTTP头部或查询参数）决定请求是否被允许访问后端资源。如果认证通过，Nginx将继续处理请求；否则，Nginx会返回相应的错误码，拒绝访问。
+- **身份验证**：请求到达后端之前先验证用户身份。
+- **访问控制**：借助外部认证服务实现复杂的权限判断逻辑。
+- **单点登录**：与 SSO 系统集成，各服务共享一套登录状态。
 
-#### 模块用途
+## 常见使用场景
 
--   **身份验证**：在处理客户端请求之前，验证用户的身份。
--   **访问控制**：利用外部认证服务实现复杂的访问控制逻辑。
--   **单点登录**：与SSO系统集成，简化用户登录过程。
+- **API 网关**：作为 API 网关的一部分，确保只有通过认证的请求才能访问 API。
+- **保护管理后台**：只有授权用户能进后台。
+- **Web 应用防火墙**：与 WAF 系统配合，做更细粒度的请求过滤和检测。
 
-### 2\. 使用场景
+## 配置示例
 
-auth\_request 模块常用于以下场景：
+### 示例环境
 
--   **API网关**：作为API网关的一部分，确保只有经过身份验证的请求才能访问API。
--   **保护管理后台**：确保只有授权用户才能访问管理后台。
--   **Web应用防火墙（WAF）**：与WAF系统集成，进行更细粒度的请求过滤和检测。
+假设有一个外部认证服务，通过 /auth 端点做用户认证并返回 HTTP 状态码：成功返回 200，失败返回 401 或 403。自编译 Nginx 时需要加 `--with-http_auth_request_module` 参数启用该模块；然后编辑 nginx.conf 或虚拟主机配置文件，写入下面的配置。
 
-### 3\. 配置和示例
+### 完整配置
 
-下面通过一个示例配置来演示如何使用auth\_request模块进行请求认证。
-
-#### 示例环境
-
-假设有一个外部认证服务，通过/auth端点进行用户认证，并返回相应的HTTP状态码。认证成功返回200，否则返回401或403。
-
-#### 配置示例
-
-首先，确保Nginx已经安装并启用了auth\_request模块。然后，编辑Nginx配置文件（通常是nginx.conf或某个虚拟主机配置文件）。
-
-> 通过–with-http\_auth\_request\_module添加auth\_request模块
+![配图](/images/csdn/figures/nginx-auth-request-csdn139173856.png)
 
 ```nginx
 http {
@@ -95,80 +86,29 @@ http {
 }
 ```
 
-#### 配置说明
+### 配置说明
 
-1. **定义认证服务：**
-```nginx
-server {
-  listen 127.0.0.1:8080;
-  location /auth {
-    if ($http_authorization = "Basic dXNlcm5hbWU6cGFzc3dvcmQ=") {
-      return 200;
-    }
-    return 401;
-  }
-}
-```
+**认证服务**：第一个 server 块监听 127.0.0.1:8080，模拟一个简单认证服务——检查请求头 Authorization 是否等于预设的 Basic Auth 值，等于返回 200，否则 401。实际项目中，这里应该换成调用真实认证服务的代理配置。
 
-这个server块模拟了一个简单的认证服务，它监听127.0.0.1:8080，根据请求头Authorization判断用户是否经过认证。在实际应用中，这个应该是一个调用外部服务的代理配置。
+**主站点**：location / 里的核心指令：
 
-2. **主站点配置：**
-```nginx
-server {
-  listen 80;
-  server_name example.com;
+- `auth_request /auth;` 处理用户请求前，先向 /auth 发起子请求做认证；
+- `error_page 401 = @error401;` 与 `error_page 403 = @error403;` 把认证失败的状态码交给对应的内部处理块；
+- `proxy_pass http://backend;` 认证通过后，把请求代理到后端服务器。
 
-  location / {
-    auth_request /auth;
-    error_page 401 = @error401;
-    error_page 403 = @error403;
-    proxy_pass http://backend;
-  }
+**认证失败处理**：@error401 和 @error403 两个命名 location 分别返回 401 "Unauthorized" 和 403 "Forbidden"。
 
-  location @error401 {
-    return 401 "Unauthorized";
-  }
+**认证端点的代理设置**：location /auth 把子请求转给 127.0.0.1:8080 的认证服务，三条配套指令各有用途——`proxy_pass_request_body off` 不把请求体发给认证服务；`proxy_set_header Content-Length ""` 清空内容长度头，与上一条配套；`proxy_set_header X-Original-URI $request_uri` 把用户访问的原始 URI 传给认证服务，认证逻辑可以据此做路径级判断。
 
-  location @error403 {
-    return 403 "Forbidden";
-  }
+### 测试与验证
 
-  location /auth {
-    proxy_pass http://127.0.0.1:8080/auth;
-    proxy_pass_request_body off;
-    proxy_set_header Content-Length "";
-    proxy_set_header X-Original-URI $request_uri;
-  }
-}
-```
+启动 Nginx 后访问 http://example.com，用不同的 Authorization 头测试认证行为：带上正确的值（本例中为 "Basic dXNlcm5hbWU6cGFzc3dvcmQ="）应能正常访问后端资源；不带或带错则拿到 401，由 @error401 返回错误信息。
 
--   **auth\_request /auth;**：该指令告诉Nginx，在处理用户请求前，先将请求发送到/auth进行认证。
--   **error\_page 401 = @error401;和error\_page 403 = @error403;**：定义认证失败时的处理逻辑，将401或403错误重定向到相应的处理块。
--   **proxy\_pass http://backend;**：成功认证后，将请求代理到后端服务器。
+## 注意事项
 
-3. **认证失败处理：**
-```nginx
-location @error401 {
-  return 401 "Unauthorized";
-}
+- auth_request 按子请求状态码判断结果：2xx 放行，401/403 拒绝，认证服务务必按这个约定返回。
+- 子请求默认不带请求体（配置里明确关掉了 proxy_pass_request_body），需要读请求体才能判断的认证场景不适合直接用它。
+- 示例里的认证服务只用于演示；生产环境要换成真实认证服务，并只监听本机或内网地址。
+- location /auth 是公开可达的，外部用户可以直接请求它探测认证服务；给该 location 加 internal 指令可限制为仅内部子请求访问。
 
-location @error403 {
-  return 403 "Forbidden";
-}
-```
-
-认证失败时，根据实际情况返回401或403状态码，并附带相应的错误信息。
-
-#### 测试与验证
-
-启动Nginx，尝试访问http://example.com，并使用不同的Authorization头部测试认证行为。如果头部包含正确的用户名和密码（在本例中为"Basic dXNlcm5hbWU6cGFzc3dvcmQ="），请求应被允许访问后端资源，否则返回相应的错误状态码。
-
-### 4\. 总结
-
-Nginx的auth\_request模块提供了一种灵活而强大的方式来实现请求认证和访问控制。通过将认证逻辑分离到独立的认证服务，开发者可以更好地管理和扩展验证逻辑，从而提高系统的安全性和可维护性。在实际项目中，结合具体需求和安全策略，使用auth\_request模块能够有效地保护敏感资源和服务。
-
-**希望本文能帮助你更好地理解和应用auth\_request模块。**
-
----
-
-> 本文迁移自作者 CSDN 博客，2024-05-25 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

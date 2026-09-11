@@ -1,91 +1,71 @@
 ---
-title: "CentOS8上安装OpenResty安装"
+title: "CentOS 8 上安装 OpenResty"
 date: 2020-04-10 23:09:21
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/centos8-openresty-csdn105444421.png
+updated: 2026-09-11
 ---
 
-#### 文章目录
+OpenResty 把 Nginx 和一组 Lua 模块打成了一个包，需要定制编译选项时，源码安装是常规路子。这篇记录在 CentOS 8 上源码安装 OpenResty 1.19.3.1 的完整步骤，重点是让编译指向手动编译的 OpenSSL。
 
--   [步骤1：安装依赖项](#1_3)
--   [步骤2：下载和解压OpenResty](#2OpenResty_9)
--   [步骤3：配置和编译](#3_16)
--   [步骤4：验证安装](#4_24)
--   [步骤5：启动OpenResty](#5OpenResty_34)
--   [注意事项](#_39)
--   [结论](#_43)
+## 安装依赖
 
-OpenResty是一个基于Nginx的高性能Web平台，它通过将Nginx与一组强大的Lua模块打包在一起，提供了更加灵活和强大的功能。本文将指导您在CentOS 8上安装OpenResty，并包括手动编译的OpenSSL的注意事项。
-
-## 步骤1：安装依赖项
-
-在开始安装OpenResty之前，需要安装一些必要的依赖项。在终端中执行以下命令：
+编译前先装齐工具链和库：
 
 ```bash
 sudo yum install pcre-devel openssl-devel gcc curl wget tar -y
 ```
 
-这些依赖项包括了编译和运行OpenResty所需的基本组件。
+这些依赖包含了编译和运行 OpenResty 所需的基本组件。
 
-## 步骤2：下载和解压OpenResty
+## 下载并解压源码
 
-从[OpenResty官网下载](https://openresty.org/en/download.html)最新版本的OpenResty源码包。
+从 [OpenResty 官网下载页](https://openresty.org/en/download.html) 获取最新版本的源码包：
 
-```
+```bash
 wget https://openresty.org/download/openresty-1.19.3.1.tar.gz
 tar -zxvf openresty-1.19.3.1.tar.gz
 cd openresty-1.19.3.1
 ```
 
-## 步骤3：配置和编译
+## 配置与编译
 
-在解压后的OpenResty目录中，执行以下命令配置和编译OpenResty：
+在解压出的目录里执行：
 
-```
+![配图](/images/csdn/figures/centos8-openresty-csdn105444421.png)
+
+```bash
 ./configure --with-http_ssl_module --with-http_v2_module --with-openssl=/usr/local/openssl
 make
 sudo make install
 ```
 
-这里的–with-openssl=/usr/local/openssl选项告诉OpenResty使用手动编译的OpenSSL而不是系统默认的OpenSSL。确保您已经按照需要手动编译了OpenSSL，并将其安装在/usr/local/openssl目录下。
+`--with-openssl=/usr/local/openssl` 这个选项让 OpenResty 使用手动编译的 OpenSSL，而不是系统默认的版本。前提是你已经按需手动编译了 OpenSSL，并安装在 /usr/local/openssl 目录下。
 
-## 步骤4：验证安装
+## 验证并启动
 
-安装完成后，验证OpenResty是否成功安装。执行以下命令：
+安装完成后验证一下：
 
-```
+```bash
 /usr/local/openresty/nginx/sbin/nginx -v
 ```
 
-应该看到类似以下输出：
-
-```
+```text
 nginx version: openresty/1.19.3.1
 ```
 
-这表明OpenResty已成功安装。
+看到版本号就说明安装成功了。最后启动服务：
 
-## 步骤5：启动OpenResty
-
-最后，您可以启动OpenResty服务。执行以下命令：
-
-```
+```bash
 sudo /usr/local/openresty/nginx/sbin/nginx
 ```
 
 ## 注意事项
 
--   确保在编译OpenResty时使用了正确的–with-openssl选项，并指定了手动编译的OpenSSL路径。
--   在配置OpenSSL时，务必按照[OpenSSL官方文档](https://www.openssl.org/source/)的指导进行操作，以确保安全性和兼容性。
+- 编译时的 --with-openssl 必须指向手动编译的 OpenSSL 路径，否则会用到系统默认的 OpenSSL。
+- OpenSSL 本身的编译按 [OpenSSL 官方文档](https://www.openssl.org/source/) 的指导操作，保证安全性和兼容性。
+- 源码方式安装的 OpenResty 位于 /usr/local/openresty/，启停都用其自带的 nginx 二进制。
 
-## 结论
-
-OpenResty是一个功能强大且灵活的Web平台，通过结合Nginx和Lua脚本，为开发人员提供了丰富的功能和扩展性。在CentOS 8上安装OpenResty需要一些步骤，包括安装依赖项、下载和解压源码包、配置和编译、验证安装和启动服务。同时，在安装过程中要注意指定手动编译的OpenSSL路径，以确保OpenResty正常工作。
-
-**希望这篇博客能够帮助您顺利在CentOS 8上安装和使用OpenResty。**
-
----
-
-> 本文迁移自作者 CSDN 博客，2020-04-10 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

@@ -1,0 +1,8 @@
+{
+  "title": "install nginx vim syntax",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "cp -r contrib/vim/* /usr/share/vim/vimfiles/"},
+    {"t": "note", "s": "拷贝 Nginx 源码自带的 Vim 语法文件到运行时目录"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "nginx sub_filter",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "    sub_filter 'old_string' 'new_string';"},
+    {"t": "config", "s": "    sub_filter_once off;"},
+    {"t": "config", "s": "    sub_filter_types *;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "响应返回前做字面字符串替换"}
+  ]
+}

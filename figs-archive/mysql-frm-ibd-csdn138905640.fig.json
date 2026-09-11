@@ -1,0 +1,12 @@
+{
+  "title": "mysql import tablespace",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "USE mydb;"},
+    {"t": "config", "s": "ALTER TABLE mytable DISCARD TABLESPACE;"},
+    {"t": "config", "s": "ALTER TABLE mytable IMPORT TABLESPACE;"},
+    {"t": "note", "s": "卸掉空表空间，再挂回备份的 .ibd"},
+    {"t": "cmd", "s": "SELECT * FROM mytable;"},
+    {"t": "note", "s": "验证数据是否恢复成功"}
+  ]
+}

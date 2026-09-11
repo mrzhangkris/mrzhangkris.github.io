@@ -1,0 +1,18 @@
+{
+  "title": "logrotate nginx daily rotation",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "/apps/openresty/nginx/logs/head/access.log"},
+    {"t": "config", "s": "/apps/openresty/nginx/logs/domain/access.log"},
+    {"t": "config", "s": "{"},
+    {"t": "config", "s": "  daily"},
+    {"t": "config", "s": "  rotate 7"},
+    {"t": "config", "s": "  compress"},
+    {"t": "config", "s": "  delaycompress"},
+    {"t": "config", "s": "  notifempty"},
+    {"t": "config", "s": "  create 640 qhdrsj qhdrsj"},
+    {"t": "config", "s": "  sharedscripts"},
+    {"t": "config", "s": "  postrotate"},
+    {"t": "note", "s": "postrotate 里 kill -USR1 重开日志，endscript 收尾"}
+  ]
+}

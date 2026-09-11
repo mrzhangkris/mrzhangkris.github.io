@@ -1,0 +1,10 @@
+{
+  "title": "install fcitx chinese input",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo apt update && sudo apt upgrade"},
+    {"t": "cmd", "s": "sudo apt-get install fcitx fcitx-pinyin \\"},
+    {"t": "cmd", "s": "  fcitx-googlepinyin fcitx-table-all"},
+    {"t": "note", "s": "装完在 语言支持 中把输入法系统切为 Fcitx，重启生效"}
+  ]
+}

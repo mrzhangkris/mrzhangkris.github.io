@@ -1,37 +1,36 @@
 ---
-title: "通过Bash脚本执行EXPDP实现本地和异地备份"
+title: "用 Bash 脚本 + expdp 实现 Oracle 定时备份与异地传输"
 date: 2024-06-01 09:15:00
+updated: 2026-09-11
 categories: [技术]
 tags: [Oracle]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/bash-expdp-csdn139348362.png
 ---
 
-在 Oracle 数据库管理中，定时执行备份是一个重要的任务，可以保证数据的安全性和可恢复性。本文将介绍如何使用 expdp 工具进行 Oracle 数据库备份，并使用 bash 脚本定时执行备份任务，并对备份文件进行压缩，传输。
+Oracle 数据库的备份要能兜底，光在数据库服务器上留一份还不够：本地盘挂了、机器没了，备份也就没了。这篇文章记录一套完整的做法——用 expdp 定时导出数据库，脚本负责压缩打包，再通过 OpenResty 搭的接收接口把备份传到另一台服务器上。
 
-#### 准备工作
+## 准备工作
 
-在执行备份任务之前，需要确保以下几点：
+1. **数据库连接信息**：能连上要备份的 Oracle 库，且账号有足够的权限执行备份。
+2. **备份目录**：选一个空间足够的目录存备份文件。
+3. **压缩工具**：备份完成后要压缩，确认装了 gzip 或 zip 之类工具。
 
-1. 数据库连接信息：确保能够连接到要备份的 Oracle 数据库，并拥有足够的权限执行备份操作。
-2. 备份目录：选择一个合适的目录用于存储备份文件，确保该目录具有足够的空间。
-3. 安装压缩工具：在执行备份完成后，需要使用压缩工具对备份文件进行压缩。可以安装 gzip 或 zip 等工具。
+## 创建 Oracle 目录对象
 
-#### 编写备份脚本
-
-1. 创建备份目录
-
-在数据库服务器上创建一个目录，用于存储备份文件。可以使用以下 SQL 语句在 Oracle 中创建目录：
+expdp 的导出位置由 Oracle 的 DIRECTORY 对象决定，先在数据库里建一个指向备份目录的对象：
 
 ```plsql
 CREATE DIRECTORY dumpdir AS '/path/to/backup/directory';
 ```
 
-确保目录的路径是正确的，并且 Oracle 用户有权限在该目录下写入文件。
+目录路径要真实存在，且 Oracle 用户有写权限。
 
-2. 编写备份脚本
+## 备份脚本
 
-创建一个名为 backup\_script.sh 的 bash 脚本，并将以下内容添加到脚本中：
+新建 `backup_script.sh`，内容如下：
+
+![配图](/images/csdn/figures/bash-expdp-csdn139348362.png)
 
 ```bash
 #!/bin/sh
@@ -83,14 +82,30 @@ zip -r ${ZIP_DIR}${db_user}_${BAKUP_TIME}.zip ${EXPD_DIR}${DUMPFILE} ${EXPD_DIR}
 # 异地备份
 curl -X POST http://172.16.194.5:8082/oraclebak -F "file=@${ZIP_DIR}${db_user}_${BAKUP_TIME}.zip"
 ```
-3. 设置定时任务
 
-使用 crontab -e 命令编辑 crontab 文件，添加以下行来设置定时执行备份任务，例如每天凌晨 3 点执行备份：
+> 注：脚本保留了原文写法，但有两处值得存疑：一是 `rm -rf $EXPD_DIR${ORACLE_SID}_${BAKUP_TIME}*` 位于压缩之前，会先删掉刚导出的 `.dmp`/`.log`，后面的 zip 将拿不到文件，推测原意是清理过期备份；二是变量 `DEL_TIME`（90 天前）定义后从未被使用。落地前这两处需要按自己的清理策略改写并验证。
 
-```
+脚本各段在做什么：
+
+- **环境变量**：`ORACLE_HOME` 指向 Oracle 安装目录并加进 `PATH`，保证脚本在 cron 环境里也能找到 expdp。
+- **连接信息**：用户名、密码、SID、IP、端口拼成 expdp 的连接串；`SCHEMAS=${db_user}` 表示按 schema 导出。
+- **时间戳**：`BAKUP_TIME` 让每个备份文件名都带上 `%Y%m%d%H%M%S`，互不覆盖。
+- **expdp**：`DIRECTORY=dumpdir` 对应前面创建的 Oracle 目录对象，导出的 `.dmp` 和 `.log` 都落在 `/path/to/backup/directory`。
+- **zip**：把当次的 `.dmp` 和 `.log` 打成一个 zip，移到压缩目录，避免导出目录被历史文件撑爆。
+- **curl**：`-F "file=@..."` 以 multipart 形式把 zip POST 到远端的 `/oraclebak` 接口，完成异地备份。
+
+## 设置定时任务
+
+`crontab -e` 编辑定时任务，每天凌晨 3 点执行：
+
+```cron
 0 3 * * * /bin/bash /path/to/backup_script.sh
 ```
-4. 编写异地备份脚本
+
+## 异地备份：OpenResty 接收端
+
+远端机器用 OpenResty 搭一个上传接口。`upload.lua` 基于 resty.upload 处理 multipart 上传，把文件写到本地目录：
+
 ```lua
 -- upload.lua
 --==========================================
@@ -178,7 +193,9 @@ if ret_save then
 end
 ```
 
-在OpenResty的配置文件中添加
+接收逻辑的核心是循环调用 `form:read()`：读到 header 就解析出文件名并创建目标文件，读到 body 就写入，`part_end` 关闭文件，`eof` 结束。
+
+在 OpenResty 配置文件里挂上接口：
 
 ```nginx
 set $store_dir "/data/oraclebak/";
@@ -197,11 +214,15 @@ location /oracledownload {
 }
 ```
 
-#### 备份完成
+两个 location 各管一头：`/oraclebak` 只收上传（`client_max_body_size 2048M` 允许大文件），`/oracledownload` 开了 autoindex，供人工下载核验备份。
 
-当定时任务执行时，会自动执行备份脚本，并将备份文件存储在指定的备份目录中，并且备份文件会被压缩到其他目录。同时上传到其他服务器。
-通过本文介绍的方法，可以轻松地定时执行 Oracle 数据库备份，以确保数据的安全性和可恢复性。
+## 注意事项
+
+- 脚本里的连接串把密码明文写在命令行和变量里，落地时注意文件权限，最好换成 Oracle 钱包或受控的凭证文件。
+- 原文中备份端 curl 的目标 `172.16.194.5` 与接收端 `allow 172.10.0.0/16` 网段不一致，实际部署时两边的 IP 与网段要对齐，否则 `deny all` 会直接把上传拒掉。
+- 清理过期备份的策略要自己补上（原文的 `DEL_TIME` 没有用起来），否则备份目录和远端磁盘迟早被写满。
+- 定时任务的时间要避开业务高峰，备份期间的 IO 占用不可忽视。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-06-01 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

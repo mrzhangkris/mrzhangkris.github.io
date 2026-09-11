@@ -1,0 +1,11 @@
+{
+  "title": "nginx split_clients",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "split_clients \"${remote_addr}${http_user_agent}\" $variant {"},
+    {"t": "config", "s": "    50%   \"A\";"},
+    {"t": "config", "s": "    *     \"B\";"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "按哈希切分流量，同一用户结果固定"}
+  ]
+}

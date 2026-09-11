@@ -1,0 +1,13 @@
+{
+  "title": "nginx return",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "    return 503;  # 维护页"},
+    {"t": "config", "s": "}"},
+    {"t": "config", "s": "location /redirect {"},
+    {"t": "config", "s": "    return 301 https://www.example.com;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "按 URI 返回不同状态码与跳转"}
+  ]
+}

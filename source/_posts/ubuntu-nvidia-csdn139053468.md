@@ -1,25 +1,26 @@
 ---
-title: "如何在Ubuntu上安装NVIDIA显卡驱动并禁止自动更新"
+title: "Ubuntu 安装 NVIDIA 显卡驱动并禁止自动更新"
 date: 2024-05-20 09:18:13
+updated: 2026-09-11
 categories: [技术]
 tags: [Linux]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/ubuntu-nvidia-csdn139053468.png
 ---
 
-在Ubuntu上安装NVIDIA显卡驱动后，有时为了避免兼容性问题或驱动稳定性问题，可能需要禁止自动更新显卡驱动。本文将逐步介绍如何在Ubuntu上安装NVIDIA显卡驱动，并配置系统以禁止驱动的自动更新。
+Ubuntu 上装好 NVIDIA 驱动后，有时系统更新会顺手把驱动也升上去，版本一变就可能带来兼容性或稳定性问题。这篇分两部分：先把 NVIDIA 驱动装好，再用 APT pin 和 apt-mark 两道手段把驱动版本锁死，不让它被自动更新。
 
-### 1\. 准备工作
+## 准备工作
 
-在开始之前，请确保你的系统已备份，并且有管理员权限（sudo）。首先，更新你的Ubuntu系统：
+开始之前，确保你的系统已备份，并且有管理员权限（sudo）。先更新系统：
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2\. 确定NVIDIA显卡型号
+## 确定显卡型号
 
-确定你的NVIDIA显卡型号，以便下载正确的驱动程序。使用以下命令查看显卡型号：
+先弄清你的 NVIDIA 显卡型号，以便下载正确的驱动程序：
 
 ```bash
 lspci | grep -i nvidia
@@ -27,22 +28,22 @@ lspci | grep -i nvidia
 
 输出示例如下：
 
-```
+```text
 01:00.0 VGA compatible controller: NVIDIA Corporation [型号] (rev a1)
 ```
 
-### 3\. 添加图形驱动PPA
+## 添加图形驱动 PPA
 
-加入NVIDIA图形驱动PPA，可以获得最新的驱动程序版本：
+加入 NVIDIA 图形驱动 PPA，可以获得最新的驱动程序版本：
 
 ```bash
 sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt update
 ```
 
-### 4\. 安装NVIDIA驱动
+## 安装 NVIDIA 驱动
 
-检测并安装推荐的NVIDIA驱动版本：
+先检测系统推荐的驱动版本：
 
 ```bash
 ubuntu-drivers devices
@@ -50,7 +51,7 @@ ubuntu-drivers devices
 
 输出示例：
 
-```
+```text
 driver : nvidia-driver-440 - distro non-free recommended
 ```
 
@@ -60,43 +61,45 @@ driver : nvidia-driver-440 - distro non-free recommended
 sudo apt install nvidia-driver-440
 ```
 
-### 5\. 禁止自动更新NVIDIA驱动
+![配图](/images/csdn/figures/ubuntu-nvidia-csdn139053468.png)
 
-为了防止NVIDIA驱动在系统更新时被自动更新，你需要采取以下步骤：
+## 禁止自动更新 NVIDIA 驱动
 
-#### 修改APT配置文件
+为了防止 NVIDIA 驱动在系统更新时被自动更新，需要两道措施。
 
-创建一个新的APT配置文件或编辑现有的配置文件以禁止自动更新某些包。例如，创建并编辑/etc/apt/preferences.d/nvidia文件：
+### 修改 APT 配置文件
+
+创建并编辑 `/etc/apt/preferences.d/nvidia` 文件：
 
 ```bash
 sudo nano /etc/apt/preferences.d/nvidia
 ```
 
-添加以下内容，确保替换nvidia-driver-440为实际安装的驱动程序包名：
+添加以下内容（确保替换 `nvidia-driver-440` 为实际安装的驱动程序包名）：
 
-```
+```text
 Package: nvidia-driver-440
 Pin: version 440.*
 Pin-Priority: 1001
 ```
 
-这将使APT将nvidia-driver-440固定到指定版本，不再自动更新。
+这会让 APT 把 nvidia-driver-440 固定到指定版本，不再自动更新。
 
-#### 锁定包版本
+### 锁定包版本
 
-使用apt-mark hold命令锁定NVIDIA驱动包的版本：
+再用 `apt-mark hold` 命令锁定 NVIDIA 驱动包的版本：
 
 ```bash
 sudo apt-mark hold nvidia-driver-440
 ```
 
-要确认锁定状态，可以运行：
+确认锁定状态：
 
 ```bash
 apt-mark showhold
 ```
 
-### 6\. 重启系统
+## 重启系统
 
 安装并配置完成后，重启计算机使更改生效：
 
@@ -104,17 +107,17 @@ apt-mark showhold
 sudo reboot
 ```
 
-### 7\. 验证安装
+## 验证安装
 
-重启后，使用nvidia-smi命令确认驱动安装情况：
+重启后，用 `nvidia-smi` 命令确认驱动安装情况：
 
 ```bash
 nvidia-smi
 ```
 
-输出将包含GPU信息、驱动版本等，确认驱动已成功安装：
+输出会包含 GPU 信息、驱动版本等，确认驱动已成功安装：
 
-```
+```text
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 440.82       Driver Version: 440.82       CUDA Version: 10.2     |
 |-------------------------------+----------------------+----------------------+
@@ -126,34 +129,46 @@ nvidia-smi
 +-------------------------------+----------------------+----------------------+
 ```
 
-### 常见故障排除
+## 常见故障排除
 
-#### 系统无法启动
+### 系统无法启动
 
-1. 在启动时按Shift进入GRUB菜单。
-2. 选择“Advanced options for Ubuntu”。
-3. 选择恢复模式并进入root终端。
-4. 卸载NVIDIA驱动：
+1. 在启动时按 Shift 进入 GRUB 菜单。
+2. 选择 "Advanced options for Ubuntu"。
+3. 选择恢复模式并进入 root 终端。
+4. 卸载 NVIDIA 驱动：
+
 ```bash
 sudo apt-get purge nvidia-*
 ```
+
 5. 重启系统：
+
 ```bash
 sudo reboot
 ```
 
-#### 黑屏或低分辨率
+### 黑屏或低分辨率
 
-1. 使用Ctrl+Alt+F1切换到TTY终端。
+1. 用 Ctrl+Alt+F1 切换到 TTY 终端。
 2. 登录并重新安装驱动：
+
 ```bash
 sudo apt install --reinstall nvidia-driver-440
 ```
+
 3. 重启系统：
+
 ```bash
 sudo reboot
 ```
 
----
+## 注意事项
 
-> 本文迁移自作者 CSDN 博客，2024-05-20 首发于 CSDN，内容保持原貌。
+- 禁止自动更新是两道措施配合：APT pin 把版本钉在 `440.*`，`apt-mark hold` 再锁一层，单独用一道都可能出现例外。
+- pin 文件里的包名和版本号要与实际安装的驱动一致，装的是 440 就写 `440.*`，别照抄示例后忘了改。
+- 驱动版本锁死后，想要升级时先 `apt-mark unhold`，再调整或删除 pin 文件，升级完重新锁上。
+- 驱动装坏导致进不了系统时不用慌：GRUB 恢复模式进 root 终端 `purge nvidia-*` 就能退回开源驱动救急。
+- 黑屏时 Ctrl+Alt+F1 切 TTY 是最快的自救路径，重装驱动后记得重启。
+
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

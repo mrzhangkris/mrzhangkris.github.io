@@ -1,0 +1,9 @@
+{
+  "title": "openresty configure openssl",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "./configure --with-http_ssl_module --with-http_v2_module \\"},
+    {"t": "config", "s": "  --with-openssl=/usr/local/openssl"},
+    {"t": "note", "s": "openssl 指向手动编译的路径，不用系统默认"}
+  ]
+}

@@ -1,67 +1,66 @@
 ---
-title: "tomcat以daemon模式启动"
+title: "Tomcat 以 daemon 模式启动（jsvc）"
 date: 2020-03-25 01:04:21
+updated: 2026-09-11
 categories: [技术]
 tags: [Tomcat]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/tomcat-daemon-csdn105083974.png
 ---
 
-#### 文章目录
-
--   [环境检查](#_1)
--   [安装](#_11)
--   -   [验证](#_337)
-    -   [daemon模式的基本操作](#daemon_388)
+用 `startup.sh` 起的 Tomcat 是挂在当前 shell 下的，退出终端或用户权限一变就容易出问题。daemon 模式通过 jsvc 把 Tomcat 托管成独立的服务进程，可以用专用的 `daemon.sh` 启停。这篇记录在 CentOS 8 上把 Tomcat 9 配成 daemon 模式的全过程，包括编译 jsvc 时踩到的几个坑。
 
 ## 环境检查
 
-java -version查看jdk环境
+先看服务器上有没有 JDK 环境：
 
 ```bash
 [root@localhost ~]# java -version
 -bash: /usr/bin/java: No such file or directory
 ```
 
--   not found说明当前服务器没有JDK环境，需要安装JDK。
+not found 说明当前服务器没有 JDK 环境，需要安装 JDK。
 
-> OpenJDK默认安装路径/usr/lib/jvm/
+> OpenJDK 默认安装路径 `/usr/lib/jvm/`
 
 ## 安装
 
-创建不可登录的tomcat组和用户
+创建不可登录的 tomcat 组和用户：
 
 ```bash
 [root@localhost ~]# groupadd tomcat
 [root@localhost ~]# useradd -g tomcat -s /usr/sbin/nologin tomcat
 ```
 
-进入Tomcat/bin目录解压commons-daemon-native.tar.gz
+进入 Tomcat 的 bin 目录，解压 commons-daemon-native.tar.gz：
 
 ```bash
 tar -zxvf commons-daemon-native.tar.gz
 ```
 
-> -   出现-bash: tar: command not found，需使用yum安装tar
-> -   不存在commons-daemon-native.tar.gz文件，可以在相同版本的tomcat中拷贝到当前tomcat/bin目录下，也可以去[http://www.apache.org/dist/commons/daemon/source/](http://www.apache.org/dist/commons/daemon/source/)下载
+两个可能遇到的问题：
 
-解压完毕后进入commons-daemon-1.2.2-native-src/unix/
+> - 出现 `-bash: tar: command not found`，需使用 yum 安装 tar
+> - 不存在 commons-daemon-native.tar.gz 文件，可以在相同版本的 tomcat 中拷贝到当前 tomcat/bin 目录下，也可以去 [http://www.apache.org/dist/commons/daemon/source/](http://www.apache.org/dist/commons/daemon/source/) 下载
+
+解压完毕后进入 `commons-daemon-1.2.2-native-src/unix/`：
 
 ```bash
 [root@localhost bin]# cd commons-daemon-1.2.2-native-src/unix/
 [root@localhost unix]# ls
 configure  configure.in  INSTALL.txt  Makedefs.in  Makefile.in  man  native  support
 [root@localhost unix]#
-
 ```
 
-执行./configure命令
+### 编译 jsvc：三个常见的 configure 报错
+
+执行 `./configure`：
 
 ```bash
 ./configure
 ```
 
-出现下面错误
+第一次执行报错：
 
 ```bash
 [root@localhost unix]# ./configure
@@ -76,16 +75,15 @@ checking for cl.exe... no
 configure: error: in `/root/apache-tomcat-9.0.33/bin/commons-daemon-1.2.2-native-src/unix':
 configure: error: no acceptable C compiler found in $PATH
 See `config.log' for more details
-
 ```
 
--   该错误说明当前环境没有c编辑器，可以使用yum安装gcc来解决
+该错误说明当前环境没有 C 编译器，用 yum 安装 gcc 解决：
 
 ```bash
 yum install gcc -y
 ```
 
-安装gcc后。重新执行,结果如下图
+安装 gcc 后重新执行，这次走到了 JDK 检查一步：
 
 ```bash
 [root@localhost unix]# ./configure
@@ -109,14 +107,15 @@ checking for strip... strip
 checking C flags dependant on host system type... ok
 *** Java compilation tools ***
 checking for JDK location... configure: error: Java Home not defined. Rerun with --with-java=... parameter
-
 ```
 
--   若已经安装JDK需要使用–with-java参数指定JDK路径
--   若未安装JDK需要先安装JDK再使用–with-java参数指定JDK路径
--   openJDK的安装位置可以在/usr/lib/jvm/目录下找到
+这个报错的处理：
 
-加上–with-java参数再次执行
+- 若已经安装 JDK，需要使用 `--with-java` 参数指定 JDK 路径
+- 若未安装 JDK，需要先安装 JDK，再使用 `--with-java` 参数指定 JDK 路径
+- OpenJDK 的安装位置可以在 `/usr/lib/jvm/` 目录下找到
+
+加上 `--with-java` 参数再次执行：
 
 ```bash
 [root@localhost unix]# ./configure --with-java=/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
@@ -144,10 +143,9 @@ checking for JDK os include directory... Cannot find jni_md.h in /usr/lib/jvm/ja
 configure: error: You should retry --with-os-type=SUBDIR
 ```
 
--   /usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8\_1.x86\_64是我的JDK路径
--   需要加上–with-os-type参数指定JDK/include中的jni\_md.h文件
+`/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64` 是我的 JDK 路径，你的可能不同。这次的报错是找不到 `jni_md.h`，需要加上 `--with-os-type` 参数指定 JDK include 中的 `jni_md.h` 文件。
 
-若JDK内不存在include文件夹或jni\_md.h文件,可以使用yum安装当前JDK的管理包，若存在跳过此步骤。具体操作如下
+若 JDK 内不存在 include 文件夹或 `jni_md.h` 文件，可以用 yum 安装当前 JDK 的 devel 管理包；若存在则跳过此步骤：
 
 ```bash
 [root@localhost unix]# java -version
@@ -173,10 +171,9 @@ java-11-openjdk-devel.x86_64 : OpenJDK Development Environment 11
 java-1.8.0-openjdk-devel.x86_64 : OpenJDK Development Environment 8
 java-11-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 11
 java-11-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 11
-java-1.8.0-openjdk-accessibility.x86_64 : OpenJDK 8 accessibility connector
+java-11-openjdk-accessibility.x86_64 : OpenJDK 8 accessibility connector
 java-1.8.0-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 8
 java-11-openjdk-javadoc-zip.x86_64 : OpenJDK 11 API documentation compressed in single archive
-java-1.8.0-openjdk-javadoc-zip.noarch : OpenJDK 8 API documentation compressed in single archive
 ================================================================================== Summary Matched: *jdk* ===================================================================================
 icedtea-web.noarch : Additional Java components for OpenJDK - Java browser plug-in and Web Start implementation
 [root@localhost unix]# yum install java-11-openjdk-devel.x86_64 -y
@@ -213,10 +210,9 @@ Installed:
 
 Complete!
 [root@localhost unix]#
-
 ```
 
-安装JDK-devel包后，重新执行
+安装 JDK devel 包后重新执行 configure：
 
 ```bash
 [root@localhost unix]# ./configure --with-java=/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
@@ -267,28 +263,27 @@ config.status: creating native/Makefile
 *** All done ***
 Now you can issue "make"
 [root@localhost unix]#
-
 ```
 
-出现All done说明可以进行编译安装了
-若还存在configure: error: You should retry --with-os-type=SUBDIR信息，可以使用find / -name "jni\_md.h"找到路径，指定–with-os-type。出现All done可进行编译
+出现 `All done` 说明 configure 通过，可以进行编译安装了。若还是报 `configure: error: You should retry --with-os-type=SUBDIR`，可以用 `find / -name "jni_md.h"` 找到路径，指定 `--with-os-type`，出现 `All done` 即可进行编译。
 
-执行make进行编译
+### make 编译
+
+执行 make：
 
 ```bash
 [root@localhost unix]# make
 -bash: make: command not found
 [root@localhost unix]#
-
 ```
 
--   command not found需要安装使用yun安装make
+command not found，用 yum 安装 make：
 
 ```bash
 yum install make -y
 ```
 
-安装make包后重新执行make
+安装 make 包后重新执行：
 
 ```bash
 [root@localhost unix]# make
@@ -317,60 +312,57 @@ make[1]: Leaving directory '/root/apache-tomcat-9.0.33/bin/commons-daemon-1.2.2-
 [root@localhost unix]# ls
 config.log  config.nice  config.status  configure  configure.in  INSTALL.txt  jsvc  Makedefs  Makedefs.in  Makefile  Makefile.in  man  native  support
 [root@localhost unix]#
-
 ```
 
-生成一个jsvc文件，将其复制到tomcat的bin目录
+编译生成了一个 `jsvc` 文件，把它复制到 tomcat 的 bin 目录：
 
 ```bash
 [root@localhost unix]# cp jsvc ../../
-[root@localhost unix]# cd ../../
+[root@localhost bin]# cd ../../
 [root@localhost bin]# ls
 bootstrap.jar  catalina-tasks.xml  commons-daemon-1.2.2-native-src  configtest.bat  digest.bat  makebase.bat      setclasspath.sh  startup.bat      tomcat-native.tar.gz  version.bat
 catalina.bat   ciphers.bat         commons-daemon.jar               configtest.sh   digest.sh   makebase.sh       shutdown.bat     startup.sh       tool-wrapper.bat      version.sh
 catalina.sh    ciphers.sh          commons-daemon-native.tar.gz     daemon.sh       jsvc        setclasspath.bat  shutdown.sh      tomcat-juli.jar  tool-wrapper.sh
 [root@localhost bin]#
-
 ```
 
-编辑daemon.sh文件,找到如下内容
+## 配置 daemon.sh
+
+编辑 `daemon.sh` 文件，找到如下内容：
 
 ```bash
 test ".$TOMCAT_USER" = . && TOMCAT_USER=tomcat
 # Set JAVA_HOME to working JDK or JRE
 # JAVA_HOME=/opt/jdk-1.6.0.22
-
 ```
 
-修改TOMCAT\_USER=tomcat，将tomcat修改为你所需要的用户
-修改# JAVA\_HOME=/opt/jdk-1.6.0.22，路径为你的JDK路径
-修改后的结果如下
+做两处修改：`TOMCAT_USER=tomcat` 的 tomcat 改成你所需的用户；`# JAVA_HOME=/opt/jdk-1.6.0.22` 的路径改为你的 JDK 路径。修改后的结果：
 
 ```bash
 test ".$TOMCAT_USER" = . && TOMCAT_USER=tomcat
 # Set JAVA_HOME to working JDK or JRE
 JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
-
 ```
 
--   tomcat是我创建的用户
--   /usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8\_1.x86\_64是我的JDK路径
+tomcat 是我创建的用户，`/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64` 是我的 JDK 路径。
 
-修改tomcat的所属用户和组，并赋予daemon.sh文件可执行权限
+然后修改 tomcat 目录的所属用户和组，并给 `daemon.sh` 赋可执行权限：
 
 ```bash
 [root@localhost bin]# cd
 [root@localhost ~]# chown -R tomcat:tomcat apache-tomcat-9.0.33
 [root@localhost ~]# chmod a+x apache-tomcat-9.0.33/bin/daemon.sh
-
 ```
 
-到此所有的配置都完成了，若tomcat中项目需要读取其他文件夹，需要确认该文件夹的权限是否满足需求
+到此所有配置都完成了。若 tomcat 中的项目需要读取其他文件夹，需要确认该文件夹的权限是否满足 tomcat 用户的需求。
 
-### 验证
+![配图](/images/csdn/figures/tomcat-daemon-csdn105083974.png)
+
+## 验证
+
+使用 `apache-tomcat-9.0.33/bin/daemon.sh run` 命令启动：
 
 ```bash
-使用apache-tomcat-9.0.33/bin/daemon.sh run命令启动
 [root@localhost ~]# apache-tomcat-9.0.33/bin/daemon.sh run
 25-Mar-2020 00:43:13.119 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version name:   Apache Tomcat/9.0.33
 25-Mar-2020 00:43:13.122 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Mar 11 2020 09:31:38 UTC
@@ -410,24 +402,25 @@ JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
 25-Mar-2020 00:43:15.806 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/root/apache-tomcat-9.0.33/webapps/manager] has finished in [68] ms
 25-Mar-2020 00:43:15.836 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
 25-Mar-2020 00:43:15.939 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [1,887] milliseconds
-
 ```
 
-启动后可以在浏览器中访问到tomcat，若访问不到检查防火墙的中是否添加了tomcat端口，防火墙是否开启
-![在这里插入图片描述](/images/csdn/105083974-1.png)
+启动后可以在浏览器中访问到 tomcat。若访问不到，检查防火墙中是否添加了 tomcat 端口、防火墙是否开启。
 
-动态效果图
-![在这里插入图片描述](/images/csdn/105083974-2.gif)
+## daemon 模式的基本操作
 
-### daemon模式的基本操作
-
-```bash
-bin/daemon.sh start 启动
-bin/daemon.sh stop 停止
+```text
+bin/daemon.sh start   启动
+bin/daemon.sh stop    停止
 bin/daemon.sh version 查看版本
 logs/catalina-daemon.out 查看日志
 ```
 
----
+## 注意事项
 
-> 本文迁移自作者 CSDN 博客，2020-03-25 首发于 CSDN，内容保持原貌。
+- 编译 jsvc 的三连坑都跟缺包有关：缺 gcc、缺 JDK include（装 `java-11-openjdk-devel`）、缺 make，报错信息里都有明确提示，对症安装即可。
+- `--with-java` 要指向 JDK 的实际路径，OpenJDK 默认在 `/usr/lib/jvm/` 下；`jni_md.h` 找不到时用 `find / -name "jni_md.h"` 定位再配 `--with-os-type`。
+- daemon.sh 里的 `TOMCAT_USER` 决定 Tomcat 以哪个用户运行，配套的 `chown -R` 别漏，否则启动后写不了日志和临时目录。
+- tomcat 用户是 `/usr/sbin/nologin` 的不可登录用户，专门用于跑服务，不要图省事用 root 跑。
+- 项目若要读写 tomcat 目录之外的文件夹，记得确认该文件夹对 tomcat 用户的权限，这是 daemon 模式最常见的启动后故障。
+
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

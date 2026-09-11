@@ -1,0 +1,15 @@
+{
+  "title": "salt-key -A accept all minions",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "salt-key -A"},
+    {"t": "out", "s": "The following keys are going to be accepted:"},
+    {"t": "out", "s": "Unaccepted Keys:"},
+    {"t": "out", "s": "master-node1"},
+    {"t": "out", "s": "minion-node2"},
+    {"t": "out", "s": "Proceed? [n/Y] y"},
+    {"t": "out", "s": "Key for minion master-node1 accepted."},
+    {"t": "out", "s": "Key for minion minion-node2 accepted."},
+    {"t": "note", "s": "一次性接受全部待认证 Minion，公钥互换后即可远程执行"}
+  ]
+}

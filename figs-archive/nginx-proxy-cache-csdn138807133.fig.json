@@ -1,0 +1,16 @@
+{
+  "title": "nginx proxy_cache",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "proxy_cache_path /data/nginx/cache levels=1:2"},
+    {"t": "config", "s": "  keys_zone=my_cache:10m max_size=10g inactive=7d"},
+    {"t": "config", "s": "  use_temp_path=off;"},
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "  proxy_pass http://backend;"},
+    {"t": "config", "s": "  proxy_cache my_cache;"},
+    {"t": "config", "s": "  proxy_cache_valid 200 302 10m;"},
+    {"t": "config", "s": "  proxy_cache_valid 404 1m;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "keys_zone 必设；inactive 内未访问的缓存被清除"}
+  ]
+}

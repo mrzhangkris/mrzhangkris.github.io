@@ -1,0 +1,13 @@
+{
+  "title": "nginx concat",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "location /css {"},
+    {"t": "config", "s": "  concat on;"},
+    {"t": "config", "s": "  concat_max_files 20;"},
+    {"t": "config", "s": "  concat_unique off;"},
+    {"t": "config", "s": "  concat_types text/css;"},
+    {"t": "config", "s": "  root /path/to/css/files;"},
+    {"t": "config", "s": "}"}
+  ]
+}

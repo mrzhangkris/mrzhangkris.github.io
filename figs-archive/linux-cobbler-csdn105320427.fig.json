@@ -1,0 +1,14 @@
+{
+  "title": "cobbler import and sync",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "cobbler import --path=/mnt/ --name=Centos7-x86-64 --arch=x86_64"},
+    {"t": "out", "s": "Found a matching signature: breed=redhat, version=rhel7"},
+    {"t": "out", "s": "creating new distro: Centos7-64-x86_64"},
+    {"t": "out", "s": "creating new profile: Centos7-64-x86_64"},
+    {"t": "note", "s": "导入镜像自动生成 distro 与 profile"},
+    {"t": "cmd", "s": "cobbler sync"},
+    {"t": "out", "s": "generating /etc/dhcp/dhcpd.conf"},
+    {"t": "note", "s": "修改配置后同步，重新生成 PXE/DHCP 配置"}
+  ]
+}

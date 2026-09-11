@@ -1,0 +1,11 @@
+{
+  "title": "nginx satisfy",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "satisfy any;"},
+    {"t": "config", "s": "allow 192.168.1.0/24;"},
+    {"t": "config", "s": "deny all;"},
+    {"t": "config", "s": "auth_basic \"Restricted\";"},
+    {"t": "note", "s": "IP 白名单与密码验证过其一即可"}
+  ]
+}

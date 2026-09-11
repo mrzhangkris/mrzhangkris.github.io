@@ -1,62 +1,53 @@
 ---
-title: "SaltStack学习之远程执行"
+title: "SaltStack 远程执行：Targeting、常用模块与 Returner"
 date: 2020-05-06 10:55:52
+updated: 2026-09-11
 categories: [技术]
 tags: [SaltStack]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/saltstack-csdn105945846.png
 ---
 
-#### 文章目录
+装好 SaltStack 之后，日常用得最多的就是远程执行：一条命令让一批 Minion 同时干活。这篇把远程执行拆开讲——命令怎么构成、目标机器怎么圈定（Targeting）、有哪些常用模块、返回结果怎么落到外部系统（Returner），最后自己动手写一个模块。
 
--   [相关文档](#_1)
--   [远程执行命令结构](#_9)
--   [远程执行命令主要组成](#_14)
--   [Targeting](#Targeting_20)
--   -   [与Minion ID有关的Target](#Minion_IDTarget_22)
-    -   [与Minion ID无关的Target](#Minion_IDTarget_67)
--   [模块](#_105)
--   -   [常用的模块](#_121)
--   [返回结果](#_174)
--   -   [将数据返回到mysql服务器](#mysql_179)
--   [编写模块](#_298)
+相关文档：
 
-## 相关文档
-
-远程执行文档：https://docs.saltstack.com/en/latest/topics/tutorials/modules.html
-
-指定目标文档：https://docs.saltstack.com/en/master/topics/targeting/index.html
-
-执行模块文档：https://docs.saltstack.com/en/latest/ref/modules/all/index.html
-
-返回模块文档：https://docs.saltstack.com/en/master/ref/returners/all/index.html
+- 远程执行文档：https://docs.saltstack.com/en/latest/topics/tutorials/modules.html
+- 指定目标文档：https://docs.saltstack.com/en/master/topics/targeting/index.html
+- 执行模块文档：https://docs.saltstack.com/en/latest/ref/modules/all/index.html
+- 返回模块文档：https://docs.saltstack.com/en/master/ref/returners/all/index.html
 
 ## 远程执行命令结构
 
-```
+一条 salt 命令的骨架：
+
+```text
 salt '<target>' <function> [arguments]
 ```
 
-## 远程执行命令主要组成
+四个组成部分：
 
-1. 命令salt，这是固定不变的
-2. 目标target
-3. 模块function
-4. 执行后结果返回,是由Returnners组件来做的
+1. 命令 `salt`，固定不变
+2. 目标 target
+3. 模块 function
+4. 执行后结果返回，由 Returner 组件完成
 
 ## Targeting
 
-       指定那个或者是那些Minion运行
+Targeting 解决"指定哪个或哪些 Minion 运行"的问题。按是否依赖 Minion ID，分为两类。
 
-### 与Minion ID有关的Target
+### 与 Minion ID 有关的 Target
 
-1. 指定Minion ID
+**1. 直接指定 Minion ID：**
+
 ```bash
 [root@master-node1 ~]# salt "minion-node2" test.ping
 minion-node2:
     True
 ```
-2. 使用通配符
+
+**2. 使用通配符**（其他 Linux 通配符也可以用）：
+
 ```bash
 [root@master-node1 ~]# salt "*" test.ping
 minion-node2:
@@ -75,11 +66,8 @@ minion-node2:
     True
 ```
 
-其他的linux通配符也可以
+**3. 使用列表**，加参数 `-L`，Minion ID 间用逗号隔开：
 
-3. 使用列表
-4.
-5. 加参数-L,Minion ID间用逗号隔开
 ```bash
 [root@master-node1 ~]# salt -L "master-node1,minion-node2" test.ping
 minion-node2:
@@ -87,24 +75,29 @@ minion-node2:
 master-node1:
     True
 ```
-4. 正则表达式
-5.
-6. 使用-E参数
+
+**4. 正则表达式**，使用 `-E` 参数：
+
 ```bash
 [root@master-node1 ~]# salt -E "minion(1|2)*" test.ping
 minion-node2:
     True
 ```
 
-### 与Minion ID无关的Target
+![配图](/images/csdn/figures/saltstack-csdn105945846.png)
 
-1. 指定IP地址
+### 与 Minion ID 无关的 Target
+
+**1. 指定 IP 地址或子网**，使用 `-S` 参数：
+
 ```bash
 [root@master-node1 ~]# salt -S "192.168.3.100" test.ping
 master-node1:
     True
 ```
-2. 指定子网
+
+指定子网：
+
 ```bash
 [root@master-node1 ~]# salt -S "192.168.3.0/24" test.ping
 minion-node2:
@@ -112,22 +105,21 @@ minion-node2:
 master-node1:
     True
 ```
-3. 使用节点组
 
-在Master配置文件中编写nodegroups
+**2. 使用节点组**。先在 Master 配置文件中编写 nodegroups：
 
-```bash
+```yaml
 nodegroups:
   web: "L@master-node1,minion-node2"
 ```
 
-重启master
+重启 master 使配置生效：
 
 ```bash
 systemctl restart salt-master
 ```
 
-使用-N参数
+然后使用 `-N` 参数按组执行：
 
 ```bash
 [root@master-node1 ~]# salt -N web test.ping
@@ -139,13 +131,10 @@ master-node1:
 
 ## 模块
 
-salt使用Python写的，salt模块也就是.py文件。在Python软件包的目标目录(site-packages)/salt/modules下可以找到相关模块
+Salt 是用 Python 写的，salt 模块也就是 `.py` 文件。在 Python 软件包的目标目录（site-packages）`/salt/modules` 下可以找到相关模块。
 
-例如我的salt
+以我的环境为例，路径是 `/usr/lib/python2.7/site-packages/salt/modules`。看一眼 `test.py` 就能明白模块长什么样：
 
-```
-/usr/lib/python2.7/site-packages/salt/modules
-```
 ```bash
 [root@master-node1 modules]# ls test.py
 test.py
@@ -158,9 +147,9 @@ def ping():
 
 ### 常用的模块
 
-1. network
+**network** — 网络信息查询，比如获取标准域名：
+
 ```bash
-获取标准域名
 [root@master-node1 ~]# salt '*' network.get_fqdn
 master-node1:
     master-node1
@@ -168,22 +157,21 @@ minion-node2:
     minion-node2
 ```
 
-更多用法[传送门](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.network.html#module-salt.modules.network)
-2\. service
+更多用法见 [network 模块文档](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.network.html#module-salt.modules.network)。
+
+**service** — 服务管理，比如检查给定的服务是否可用：
 
 ```bash
-检查给定的服务是否可用
 [root@master-node1 ~]# salt '*' service.available sshd
 minion-node2:
     True
 master-node1:
     True
-[root@master-node1 ~]#
 ```
 
-更多用法参考[传送门](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.service.html#module-salt.modules.service)
-3\. cp
-可以直接使用salt-cp命令
+更多用法参考 [service 模块文档](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.service.html#module-salt.modules.service)。
+
+**cp** — 文件分发，可以直接使用 `salt-cp` 命令把文件推到目标机器：
 
 ```bash
 [root@master-node1 ~]# salt-cp "*" /etc/hosts /opt/test
@@ -202,9 +190,9 @@ master-node1:
     -rw-r--r--. 1 root root 158 May  5 14:43 /opt/test
 ```
 
-更多用法[传送门](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.cp.html#module-salt.modules.cp)
-4\. status
-控制Minion的状态系统
+更多用法见 [cp 模块文档](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.cp.html#module-salt.modules.cp)。
+
+**status / state** — 控制 Minion 的状态系统，比如查看当前 top 状态：
 
 ```bash
 [root@master-node1 ~]# salt '*' state.show_top
@@ -214,17 +202,19 @@ master-node1:
     ----------
 ```
 
-更多用法[传送门](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.state.html#module-salt.modules.state)
+更多用法见 [state 模块文档](https://docs.saltstack.com/en/latest/ref/modules/all/salt.modules.state.html#module-salt.modules.state)。
 
 ## 返回结果
 
-       由Returner实现。默认情况下，发送到Salt Minions的命令的返回值将返回到Slat Master。但Returner允许将返回的数据(Minion直接返回)发送到接受数据的任何系统。这意味着可以将返回数据发送到Redis，MySQL，elasticsearch或者其他的任何系统上
+返回由 Returner 实现。默认情况下，发送到 Salt Minions 的命令的返回值会返回到 Salt Master。但 Returner 允许将返回的数据（由 Minion 直接返回）发送到接受数据的任何系统——Redis、MySQL、Elasticsearch 或者其他任何系统。
 
-官方的文档:https://docs.saltstack.com/en/latest/ref/returners/all/index.html
+官方文档：https://docs.saltstack.com/en/latest/ref/returners/all/index.html
 
-### 将数据返回到mysql服务器
+### 将数据返回到 MySQL 服务器
 
-安装MySQL-python
+以 mysql returner 为例，走一遍完整流程。
+
+安装 MySQL-python：
 
 ```bash
 [root@master-node1 ~]# salt '*' state.single pkg.installed name=MySQL-python
@@ -276,9 +266,9 @@ Total states run:     1
 Total run time:  10.736 s
 ```
 
-创建数据库和表
+在 MySQL 上创建数据库和表：
 
-```
+```sql
 CREATE DATABASE  `salt`
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_general_ci;
@@ -330,16 +320,16 @@ KEY `tag` (`tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-远程访问
+授权远程访问：
 
-```
+```sql
 GRANT ALL PRIVILEGES ON *.* TO 'salt'@'%'IDENTIFIED BY 'salt' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 ```
 
-返回到数据库
+执行命令时加 `--return mysql`，结果就落库了：
 
-```
+```bash
 [root@master-node1 ~]# salt "*" test.ping --return mysql
 minion-node2:
     True
@@ -347,38 +337,34 @@ master-node1:
     True
 ```
 
-若返回数据库出现问题，可以在/var/log/salt/minion文件中查看错误日志
+若返回数据库出现问题，可以在 `/var/log/salt/minion` 文件中查看错误日志。
 
 ## 编写模块
 
-编写路径:/srv/salt/\_modules
+自定义模块的编写路径：`/srv/salt/_modules`；Minion 上外部模块存放路径：`/var/cache/salt/minion/extmods/`。官方文档：https://docs.saltstack.com/en/latest/ref/modules/index.html
 
-Minion上外部模块存放路径:/var/cache/salt/minion/extmods/
+写一个模块，封装一条 `df -h`：
 
-官方文档:https://docs.saltstack.com/en/latest/ref/modules/index.html
-
-编写模块
-
-```
+```python
 def list():
   ret = __salt__["cmd.run"]("df -h")
   return ret
 ```
 
-刷新模块
+把模块同步到各 Minion：
 
 ```bash
 salt "*" saltutil.sync_modules
 ```
 
-执行模块
+执行自定义模块（模块文件名是磁盘相关的命名，函数名为 `list`）：
 
 ```bash
 [root@master-node1 _modules]# salt "*" disk.list
 minion-node2:
     Filesystem               Size  Used Avail Use% Mounted on
     devtmpfs                 475M     0  475M   0% /dev
-    tmpfs                    487M   60K  487M   1% /dev/shm
+    tmpfs                    487M  60K  487M   1% /dev/shm
     tmpfs                    487M  7.7M  479M   2% /run
     tmpfs                    487M     0  487M   0% /sys/fs/cgroup
     /dev/mapper/centos-root   17G  2.1G   15G  13% /
@@ -395,6 +381,13 @@ master-node1:
     tmpfs                     98M     0   98M   0% /run/user/0
 ```
 
----
+## 注意事项
 
-> 本文迁移自作者 CSDN 博客，2020-05-06 首发于 CSDN，内容保持原貌。
+- Target 的圈定方式先想清楚再执行：通配符、`-L` 列表、`-E` 正则、`-S` 子网、`-N` 节点组各有适用场景，用错范围命令就会打到不该打的机器。
+- nodegroups 改完 Master 配置必须 `systemctl restart salt-master` 才生效。
+- 想知道某个函数怎么用，直接去 site-packages 下的模块源码看，每个函数的 docstring 就是说明。
+- Returner 的数据是由 Minion 直接写出的，所以每台 Minion 都要能连上 MySQL，而不只是 Master。
+- 自定义模块同步用 `salt "*" saltutil.sync_modules`，写完不刷新就执行会报模块不存在。
+- mysql returner 排错看 `/var/log/salt/minion` 日志，大多数是授权或网络不通。
+
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

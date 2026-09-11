@@ -1,0 +1,13 @@
+{
+  "title": "Oracle password profile",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "CREATE PROFILE SECURE_PROFILE LIMIT"},
+    {"t": "config", "s": "FAILED_LOGIN_ATTEMPTS 5   -- 错5次锁账号"},
+    {"t": "config", "s": "PASSWORD_LIFE_TIME 90     -- 90天强制换密码"},
+    {"t": "config", "s": "PASSWORD_REUSE_TIME 365   -- 一年不重用旧密码"},
+    {"t": "config", "s": "PASSWORD_LOCK_TIME 1/24   -- 锁定1小时"},
+    {"t": "config", "s": "PASSWORD_VERIFY_FUNCTION verify_function"},
+    {"t": "note", "s": "verify_function 校验长度与四类字符复杂度"}
+  ]
+}

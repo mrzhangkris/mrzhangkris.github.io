@@ -1,0 +1,12 @@
+{
+  "title": "nginx limit_req",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;"},
+    {"t": "config", "s": "location /api/ {"},
+    {"t": "config", "s": "  limit_req zone=one burst=5 nodelay;"},
+    {"t": "config", "s": "  proxy_pass http://backend_service;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "rate 为平均速率，burst 容忍突发，nodelay 立即处理"}
+  ]
+}

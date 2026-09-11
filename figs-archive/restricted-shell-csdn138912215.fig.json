@@ -1,0 +1,14 @@
+{
+  "title": "rbash restricted user setup",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo useradd -m -s /bin/rbash restricted_user"},
+    {"t": "cmd", "s": "sudo passwd restricted_user"},
+    {"t": "note", "s": "把允许的命令软链到家目录 bin 下"},
+    {"t": "cmd", "s": "mkdir /home/restricted_user/bin"},
+    {"t": "cmd", "s": "ln -s /bin/ls /home/restricted_user/bin/ls"},
+    {"t": "cmd", "s": "ln -s /bin/cat /home/restricted_user/bin/cat"},
+    {"t": "note", "s": "再把 PATH 收窄到这个目录"},
+    {"t": "cmd", "s": "echo \"PATH=$HOME/bin\" >> ~/.bash_profile"}
+  ]
+}

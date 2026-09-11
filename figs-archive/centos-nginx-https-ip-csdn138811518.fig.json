@@ -1,0 +1,11 @@
+{
+  "title": "nginx block ip access",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "listen 443 ssl http2;"},
+    {"t": "config", "s": "if ($host != yourdomain.com && $host != www.yourdomain.com) {"},
+    {"t": "config", "s": "    return 403;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "Host 不是域名时直接 403，挡掉 IP 直连"}
+  ]
+}

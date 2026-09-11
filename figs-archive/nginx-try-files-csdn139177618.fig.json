@@ -1,0 +1,10 @@
+{
+  "title": "nginx try_files",
+  "type": "config",
+  "lines": [
+    {"t": "note", "s": "依次找文件、目录，最后回退到入口页"},
+    {"t": "config", "s": "location / {"},
+    {"t": "config", "s": "    try_files $uri $uri/ /index.html;"},
+    {"t": "config", "s": "}"}
+  ]
+}

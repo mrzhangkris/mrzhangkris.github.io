@@ -1,0 +1,11 @@
+{
+  "title": "mariadb remote access sql",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "use mysql;"},
+    {"t": "config", "s": "UPDATE user SET PASSWORD=PASSWORD('root') where USER='root';"},
+    {"t": "config", "s": "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root';"},
+    {"t": "config", "s": "FLUSH PRIVILEGES;"},
+    {"t": "note", "s": "改 root 密码并授权任意主机远程连接"}
+  ]
+}

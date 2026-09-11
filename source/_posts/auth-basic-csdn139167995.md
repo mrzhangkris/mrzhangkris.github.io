@@ -1,114 +1,75 @@
 ---
-title: "使用auth_basic模块进行基础认证"
+title: "Nginx auth_basic 基础认证：配置示例与加固"
 date: 2024-05-24 10:24:22
+updated: 2026-09-11
 categories: [技术]
 tags: [运维]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/auth-basic-csdn139167995.png
 ---
 
-在建立和维护Web服务器时，身份认证是一个至关重要的环节。Nginx作为一个高性能的Web服务器，支持许多认证方法，其中较为简单和常用的一种即是基础身份认证（Basic Authentication），这需要借助auth\_basic模块实现。本文将详细介绍Nginx中auth\_basic模块的用途、使用场景、注意事项，并提供完整的示例和注释。此外，还将简要说明OpenResty上的auth\_basic模块。
+内部管理页、监控面板这类地址不想裸露在公网，又还没到要上 OAuth 的程度，Nginx 自带的 auth_basic 模块正好补这个位置——两行配置加一个密码文件，就能把所有匿名请求挡在门外。这篇文章讲清楚它的基础配置、常见使用场景，以及限速、自定义错误页、IP 白名单这几个常用的加固组合，最后带上 OpenResty 下的用法。
 
-### auth\_basic模块的用途
+## auth_basic 是什么，什么时候用
 
-auth\_basic模块用于对访问指定资源的客户端进行简单的用户认证。通过该模块，可以确保只有满足提供的用户名和密码的请求才能访问特定资源。它的认证机制相对较为简单和直观，适用于一些不涉密的数据或内部管理的环境。
+auth_basic 做的事很简单：对访问指定资源的客户端要求用户名密码，对不上就拒绝。认证机制直观，适合不涉密的数据或内部管理环境。典型的三个场景：
 
-### 使用场景
+1. **开发和测试环境**：只让相关的开发、测试人员能访问。
+2. **管理和维护页面**：运维后台、监控页这类必须限权的地方。
+3. **临时保护**：资源还没准备好完全公开，先加一道简单的门。
 
-1. **开发和测试环境**：在开发和测试环境中，确保只有相关开发人员或测试人员可以访问。
-2. **管理和维护页面**：如搭建运维管理页面、监控页面、后台管理页面等，需要限制只允许有权限的用户访问。
-3. **临时保护公开不合适的资源**：在部分资源还未准备好完全公开之前，临时性地加一道简单认证。
+用它之前先知道三个限制：
 
-### 注意事项
+- **用户名密码不是加密传输的**。Basic 认证通过 HTTP 头传递凭证，内容只是 base64 编码，等于明文。不适合保护敏感信息。
+- **必须结合 HTTPS**。否则认证信息可能被中间人窃取。
+- **大规模高并发场景会影响服务器效率**，这种时候应换更安全和高效的认证机制。
 
-1. **不适合传输敏感信息**：由于基础认证的原理是通过HTTP头传递用户名和密码，这些信息是通过base64编码的，不加密，因此不适合传输敏感信息。
-2. **HTTPS的结合**：为了避免用户名和密码在传输过程中被窃取，必须结合HTTPS使用，否则认证信息可能被中间人攻击窃取。
-3. **效率影响**：大规模、高并发的应用场景可能影响服务器效率，应寻求其他更安全和高效的认证机制。
+## 基础配置
 
-### 示例与解释
+### 第一步：创建用户密码文件
 
-配置一个基础身份认证非常简单，下面通过一个示例来逐步讲解如何实现：
-
-#### 配置基于文件的基础认证
-
-1. 创建一个用户密码文件
-
-通过htpasswd工具生成用户密码文件。这个工具是Apache HTTP Server常用的工具，Nginx完全兼容其生成的密码文件。
+用 htpasswd 工具生成。这个工具来自 Apache HTTP Server，Nginx 完全兼容它生成的密码文件格式：
 
 ```bash
 sudo yum install httpd-tools  # 安装 htpasswd 工具
 htpasswd -c /etc/nginx/.htpasswd user1  # 创建包含 user1 的用户密码文件
 ```
-2. 修改Nginx配置文件
 
-在Nginx配置文件中，使用auth\_basic来启用基础认证，并使用auth\_basic\_user\_file指令来指定包含用户信息的文件。
+### 第二步：修改 Nginx 配置
 
-```nginx
-server {
-  listen 80;
-  server_name example.com;
+![配图](/images/csdn/figures/auth-basic-csdn139167995.png)
 
-  location / {
-    auth_basic "Restricted Area";  # 设定弹出的对话框中的标题
-    auth_basic_user_file /etc/nginx/.htpasswd;  # 指定用户密码文件
-
-    proxy_pass http://localhost:8080;  # 示例：代理到后端服务
-  }
-}
-```
-
-#### 详解：
-
--   **auth\_basic “Restricted Area”;**：该指令启用基础认证，"Restricted Area"是在客户端弹出的认证对话框中的标题。
--   **auth\_basic\_user\_file /etc/nginx/.htpasswd;**：指定用户和密码文件的路径，这个文件是在上一步中通过htpasswd创建的。
--   **proxy\_pass http://localhost:8080;**：表示将通过认证的请求代理到后端的服务。
-
-#### 完整示例和注释
+在 server 或 location 里用 `auth_basic` 启用认证，用 `auth_basic_user_file` 指定密码文件：
 
 ```nginx
 server {
   listen 80;
   server_name example.com;
 
-  # 设置网站根目录的访问控制
   location / {
-    # 启用基础认证，客户端看到的对话框标题为 "Restricted Area"
-    auth_basic "Restricted Area";
+    auth_basic "Restricted Area";  # 认证对话框中显示的标题
+    auth_basic_user_file /etc/nginx/.htpasswd;  # 用户密码文件
 
-    # 基础认证的用户密码文件
-    auth_basic_user_file /etc/nginx/.htpasswd;
-
-    # 代理转发请求到本地8080端口的服务（如应用服务器）
-    proxy_pass http://localhost:8080;
+    proxy_pass http://localhost:8080;  # 认证通过后代理到后端服务
   }
 }
 ```
 
-### OpenResty上的auth\_basic模块
+三行各自的含义：
 
-OpenResty是基于Nginx的一个更强大的Web平台，集成了许多额外的模块和库。实际上，OpenResty完全继承了Nginx的auth\_basic模块，因此其使用方法和语法几乎没有变化。对于OpenResty来说，基础认证的配置与Nginx是相同的。
+- `auth_basic "Restricted Area";` 启用基础认证，引号里的字符串是客户端弹出的认证对话框标题。
+- `auth_basic_user_file /etc/nginx/.htpasswd;` 指定用户密码文件路径，就是上一步 htpasswd 生成的那个。
+- `proxy_pass http://localhost:8080;` 把通过认证的请求转发到后端服务。
 
-```nginx
-server {
-  listen 80;
-  server_name openresty-example.com;
+OpenResty 完全继承了 Nginx 的 auth_basic 模块，配置写法不变，把 `server_name` 换成自己的域名即可直接使用。
 
-  location / {
-    auth_basic "Restricted Area";  # 弹出对话框的标题
-    auth_basic_user_file /etc/nginx/.htpasswd;  # 用户密码文件路径
+## 常用加固组合
 
-    proxy_pass http://localhost:8080;  # 代理到后端服务
-  }
-}
-```
+基础认证只有一道门，实际使用中通常再叠加几层限制。
 
-## 高级用法
+### 结合 limit_req 限制访问速率
 
-虽然基础身份认证相对简单，但在实际应用中，可以结合一些高级技巧和模块来增强其功能和安全性。下面将介绍如何结合其他Nginx模块和设置来实现更强大的认证和访问控制。
-
-### 限制访问次数与速率
-
-结合Nginx的limit\_req模块，可以限制特定IP地址对受保护资源的访问次数和速率，从而减轻可能的暴力破解行为。
+用 limit_req 模块限制单个 IP 的访问速率，减轻暴力破解的威胁：
 
 ```nginx
 http {
@@ -132,14 +93,12 @@ http {
 }
 ```
 
-在上述例子中：
-
--   \*\*limit\_req\_zone $binary\_remote\_addr zone=one:10m rate=1r/s; \*\*定义了一个命名为one的限速区域，每秒允许一个请求，每个IP地址有10MB的内存空间来存储速率记录。
--   \*\*limit\_req zone=one burst=5 nodelay; \*\*在location块中应用了此限速规则，允许短时间内的突发请求数为5，超出速率限制的请求将被立即拒绝。
+- `limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;` 定义了一个名为 one 的限速区域，速率为每秒 1 个请求。`10m` 是这块共享内存区域的总大小，用来存放各 IP 的速率状态记录。
+- `limit_req zone=one burst=5 nodelay;` 在 location 里应用这条限速规则，允许 5 个突发请求，超出速率限制的请求立即拒绝。
 
 ### 自定义认证失败页面
 
-默认情况下，认证失败会返回一个简单的401 Unauthorized错误页面。这可能不适合所有应用场景。可以通过Nginx的error\_page指令自定义认证失败页面：
+认证失败默认返回一个 401 Unauthorized 错误页。想换成自己的页面，用 error_page 指令：
 
 ```nginx
 server {
@@ -152,7 +111,7 @@ server {
 
     error_page 401 /custom_401.html;
     location = /custom_401.html {
-      root /usr/share/nginx/html;  # 自定义错误页面的路径
+      root /usr/share/nginx/html;  # 自定义错误页面所在目录
       internal;  # 确保该页面不会被直接访问
     }
 
@@ -161,11 +120,11 @@ server {
 }
 ```
 
-在上述例子中，通过error\_page 401 /custom\_401.html;指定了自定义的401错误页面，并在location /custom\_401.html块中定义页面的路径和内容。
+`error_page 401 /custom_401.html;` 指定认证失败时跳转到自定义页面，`location = /custom_401.html` 块定义页面路径，`internal` 保证这个页面只能由 nginx 内部跳转到达，不能被直接访问。
 
-### 基于IP地址的访问控制
+### 结合 allow/deny 做 IP 白名单
 
-如果希望只有特定的IP地址范围可以进行身份认证，可以结合Nginx的allow和deny指令：
+来源相对固定时，可以先用 allow/deny 收窄 IP 范围，再叠加认证：
 
 ```nginx
 server {
@@ -185,16 +144,11 @@ server {
 }
 ```
 
-在上述例子中：
+`allow 192.168.1.0/24;` 放行 192.168.1.0 到 192.168.1.255 这段地址，`deny all;` 拒绝其余所有来源。
 
--   \*\*allow 192.168.1.0/24; \*\*允许192.168.1.0到192.168.1.255范围内的IP地址访问。
--   \*\*deny all; \*\*拒绝其他所有IP地址。
+## OpenResty 上的进阶玩法
 
-### OpenResty中的高级用法
-
-OpenResty作为Nginx的扩展平台，支持LUA脚本，这意味着可以在基础认证之外实现更复杂的逻辑。如基于数据库的认证或结合第三方OAuth服务。
-
-#### 基于自定义LUA脚本的认证示例
+OpenResty 支持嵌入 Lua 脚本，基础认证之外可以实现更复杂的逻辑，比如基于数据库的认证，或对接第三方 OAuth 服务。下面是一个用 Lua 自定义认证逻辑的例子，直接在代码里做用户名密码校验：
 
 ```nginx
 http {
@@ -207,17 +161,17 @@ http {
     location / {
       access_by_lua_block {
         local auth = ngx.var.http_authorization
-          if not auth or auth == "" then
-          ngx.headerWWW-Authenticate = 'Basic realm="Restricted Area"'
+        if not auth or auth == "" then
+          ngx.header["WWW-Authenticate"] = 'Basic realm="Restricted Area"'
           ngx.exit(ngx.HTTP_UNAUTHORIZED)
-          end
+        end
 
-          local user_pass = ngx.decode_base64(auth:sub(7))
-          local username, password = user_pass:match("^(.-):(.*)$")
+        local user_pass = ngx.decode_base64(auth:sub(7))
+        local username, password = user_pass:match("^(.-):(.*)$")
 
-          if not (username == "user1" and password == "password1") then
+        if not (username == "user1" and password == "password1") then
           ngx.exit(ngx.HTTP_UNAUTHORIZED)
-          end
+        end
       }
 
       proxy_pass http://localhost:8080;
@@ -226,9 +180,11 @@ http {
 }
 ```
 
-上述配置中，通过LUA脚本自定义了认证逻辑，直接在代码中定义了用户名和密码验证。
+> 注：原文此处的 `ngx.headerWWW-Authenticate` 应为排版时丢失了引号与方括号，已按 OpenResty 的 ngx.header API 恢复为 `ngx.header["WWW-Authenticate"]`。
 
-### 参考文献
+脚本流程：取到 `Authorization` 头后先解码 base64（`Basic ` 前缀占 6 个字符，所以 `sub(7)` 从第 7 位开始取），拆出用户名和密码做比对，不匹配就返回 401。
+
+## 参考文献
 
 1. [Nginx Documentation: HTTP Basic Auth](http://nginx.org/en/docs/http/ngx_http_auth_basic_module.html)
 2. [OpenResty Documentation](https://openresty.org/)
@@ -236,10 +192,13 @@ http {
 4. [Nginx Documentation: Limit Request](http://nginx.org/en/docs/http/ngx_http_limit_req_module.html)
 5. [Nginx Documentation: Error Page](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page)
 
-在Nginx中使用auth\_basic模块进行基础身份认证是一种简单有效的方法，适合用于开发、测试环境以及内部管理系统。通过阅读本文，您应该了解了该模块的用途、适用场景、注意事项以及如何配置和使用基础身份认证
+## 小结
 
-**希望本文对您的Web服务安全管理有所帮助。**
+- auth_basic 解决的是"谁能打开这个页面"，适合开发测试环境、内部管理系统和临时保护的资源。
+- 它的凭证只是 base64 编码而非加密，务必套在 HTTPS 后面使用，也不要用它保护敏感信息。
+- 单独一道认证不够时，limit_req 限速防爆破、error_page 自定义失败页、allow/deny 收窄来源，三者按需组合。
+- 需要更复杂的认证逻辑时，OpenResty 的 Lua 脚本是现成的扩展点。
 
 ---
 
-> 本文迁移自作者 CSDN 博客，2024-05-24 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

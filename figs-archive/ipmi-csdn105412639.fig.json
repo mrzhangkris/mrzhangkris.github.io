@@ -1,0 +1,14 @@
+{
+  "title": "ipmitool remote power",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "ipmitool -H yourIP -U myuser -P mypass power status"},
+    {"t": "note", "s": "查看电源状态"},
+    {"t": "cmd", "s": "ipmitool -H yourIP -U myuser -P mypass power on"},
+    {"t": "note", "s": "开机"},
+    {"t": "cmd", "s": "ipmitool -H yourIP -U myuser -P mypass power reset"},
+    {"t": "note", "s": "断电重启"},
+    {"t": "cmd", "s": "ipmitool -I lanplus -H yourIP -U myuser -P mypass mc reset warm"},
+    {"t": "note", "s": "重启 BMC，管理口卡死时用"}
+  ]
+}

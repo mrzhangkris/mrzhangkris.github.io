@@ -1,0 +1,12 @@
+{
+  "title": "Oracle read-only view grant",
+  "type": "cmd",
+  "lines": [
+    {"t": "note", "s": "目标:只读用户只见视图,碰不到基表"},
+    {"t": "cmd", "s": "CREATE VIEW employee_overview AS"},
+    {"t": "cmd", "s": "SELECT employee_id, first_name, last_name, email"},
+    {"t": "cmd", "s": "FROM employees;"},
+    {"t": "cmd", "s": "GRANT CONNECT TO readonly_user;"},
+    {"t": "cmd", "s": "GRANT SELECT ON employee_overview TO readonly_user;"}
+  ]
+}

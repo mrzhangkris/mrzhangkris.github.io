@@ -1,0 +1,13 @@
+{
+  "title": "tomcat auto restart script",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "chmod +x restart_tomcat.sh"},
+    {"t": "cmd", "s": "./restart_tomcat.sh"},
+    {"t": "out", "s": "Stopping Tomcat..."},
+    {"t": "out", "s": "Starting Tomcat..."},
+    {"t": "out", "s": "Tomcat restarted successfully"},
+    {"t": "note", "s": "shutdown 后 sleep 10，残留进程 kill -9"},
+    {"t": "note", "s": "对比重启前后 PID 判断成败"}
+  ]
+}

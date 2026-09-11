@@ -1,32 +1,25 @@
 ---
-title: "Nginx限制IP访问详解"
+title: "Nginx 限制 IP 访问：allow 与 deny"
 date: 2024-05-23 16:58:55
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-ip-csdn139152387.png
+updated: 2026-09-11
 ---
 
-在Web服务器管理中，限制某些IP地址访问网站是一个常见的需求。Nginx作为一款高性能的HTTP服务器和反向代理服务器，提供了灵活强大的配置选项来实现这一功能。本文将详细讲解如何在Nginx中限制IP访问，并通过示例代码展示具体操作。
+运维场景里经常要限制某些 IP 才能访问：后台入口只对公司网段开放、接口目录只留给监控机。Nginx 提供了 allow 和 deny 两个指令专门干这件事，本文把它们的用法和几个典型写法过一遍。
 
-### 一、Nginx配置文件
+## allow 与 deny 指令
 
-Nginx的配置文件通常位于/etc/nginx/nginx.conf或/etc/nginx/conf.d/目录下。可以通过编辑这些配置文件来实现IP访问限制。
+- **allow**：允许指定 IP 地址或子网范围的访问。
+- **deny**：拒绝指定 IP 地址或子网范围的访问。
 
-### 二、限制IP访问的方法
+这两个指令可以放在 http、server 或 location 块中，作用范围跟着块走。Nginx 按书写顺序逐条匹配，命中即停止，所以通常把允许的条目放前面，最后用 `deny all` 兜底。
 
-#### 1\. 基于allow和deny指令
+## 基本示例
 
-Nginx提供了allow和deny两个指令来控制IP访问。其中：
-
--   **allow**：允许指定IP地址或子网范围的访问。
--   **deny**：拒绝指定IP地址或子网范围的访问。
-
-这些指令可以在http、server或location块中使用。
-
-#### 2\. 基本示例
-
-假设有一个简单的Nginx配置文件，如下所示：
+假设有这样一个普通站点配置：
 
 ```nginx
 server {
@@ -40,7 +33,9 @@ server {
 }
 ```
 
-希望只有IP地址为192.168.1.1的用户能够访问这个站点，其他用户都被拒绝访问。以下是实现方法：
+要求只有 IP 为 192.168.1.1 的用户能访问，其余全部拒绝：
+
+![配图](/images/csdn/figures/nginx-ip-csdn139152387.png)
 
 ```nginx
 server {
@@ -59,11 +54,11 @@ server {
 }
 ```
 
-#### 3\. 详细示例及注释
+## 在不同配置块中的用法
 
-以下示例展示了在不同的配置块中使用allow和deny指令：
+### 在 server 块中限制
 
-##### 示例 1: 在server块中限制IP访问
+整个站点只对 10.0.0.1 和 10.0.0.0/24 网段开放：
 
 ```nginx
 http {
@@ -86,7 +81,9 @@ http {
 }
 ```
 
-##### 示例 2: 在location块中限制IP访问
+### 在 location 块中限制
+
+只锁 `/admin` 路径，允许 192.168.0.0/16 私有网段访问，其余路径不受影响：
 
 ```nginx
 http {
@@ -112,7 +109,9 @@ http {
 }
 ```
 
-##### 示例 3: 多个location块中限制IP访问
+### 多个 location 分别限制
+
+不同路径对应不同的允许名单，互相独立：
 
 ```nginx
 http {
@@ -146,9 +145,9 @@ http {
 }
 ```
 
-#### 4\. 测试配置
+## 测试配置
 
-编辑完配置文件后，测试配置并重新加载Nginx：
+改完配置不要直接 reload，先验证语法再应用：
 
 ```bash
 # 测试Nginx配置文件是否有语法错误
@@ -158,12 +157,11 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-### 三、总结
+## 注意事项
 
-通过使用Nginx的allow和deny指令，可以轻松地控制哪些IP地址或子网段能够访问网站资源。这对于保护敏感信息、限制恶意访问等场景非常有用。
+- allow/deny 是按书写顺序匹配的，规则写反了（比如 `deny all` 放最前）会让后面的 allow 全部失效。
+- 规则的作用范围跟所在块走：server 块管全站，location 块只管该路径。
+- 子网要用 CIDR 写法（如 10.0.0.0/24），单 IP 直接写地址。
+- 放行后台、管理接口这类敏感路径时，IP 白名单最好配合认证一起用，别只靠一层防护。
 
-**希望本文能帮助你更好地理解和配置Nginx的IP访问控制功能。**
-
----
-
-> 本文迁移自作者 CSDN 博客，2024-05-23 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

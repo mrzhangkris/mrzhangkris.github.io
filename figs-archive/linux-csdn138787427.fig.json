@@ -1,0 +1,11 @@
+{
+  "title": "alias rm guard",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "alias rm='echo can not use rm command'"},
+    {"t": "config", "s": "alias rmf='rm -i'"},
+    {"t": "note", "s": "rm 被拦成提示语，rmf 保留交互确认"},
+    {"t": "cmd", "s": "find $location -mtime +48 -type f |xargs rmf -f"},
+    {"t": "note", "s": "定时清理回收站目录 /data/recycleDir/"}
+  ]
+}

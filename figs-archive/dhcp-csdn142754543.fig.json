@@ -1,0 +1,16 @@
+{
+  "title": "dhcpd.conf MAC binding",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "subnet 192.168.254.0 netmask 255.255.255.0 {"},
+    {"t": "config", "s": "  range 192.168.254.150 192.168.254.200;"},
+    {"t": "config", "s": "  option routers 192.168.254.2;"},
+    {"t": "note", "s": "动态分配范围与网关"},
+    {"t": "config", "s": "  host myclient {"},
+    {"t": "config", "s": "    hardware ethernet 00:11:22:33:44:55;"},
+    {"t": "config", "s": "    fixed-address 192.168.254.150;"},
+    {"t": "config", "s": "  }"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "按 MAC 绑定固定 IP"}
+  ]
+}

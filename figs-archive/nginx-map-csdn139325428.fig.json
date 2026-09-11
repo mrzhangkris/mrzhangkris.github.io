@@ -1,0 +1,13 @@
+{
+  "title": "nginx map",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "map $uri $redirect_url {"},
+    {"t": "config", "s": "  /old-page   /new-page;"},
+    {"t": "config", "s": "  /about      /about-us;"},
+    {"t": "config", "s": "  default     /not-found;"},
+    {"t": "config", "s": "}"},
+    {"t": "config", "s": "location / { return 301 $redirect_url; }"},
+    {"t": "note", "s": "按 $uri 值查映射表，default 兜底"}
+  ]
+}

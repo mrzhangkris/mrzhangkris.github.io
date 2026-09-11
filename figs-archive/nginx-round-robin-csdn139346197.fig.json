@@ -1,0 +1,12 @@
+{
+  "title": "nginx upstream round-robin",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "upstream backend {"},
+    {"t": "config", "s": "    server backend1.example.com;"},
+    {"t": "config", "s": "    server backend2.example.com weight=2;"},
+    {"t": "config", "s": "    keepalive 32;"},
+    {"t": "config", "s": "}"},
+    {"t": "note", "s": "不写策略指令时默认按轮询分发"}
+  ]
+}

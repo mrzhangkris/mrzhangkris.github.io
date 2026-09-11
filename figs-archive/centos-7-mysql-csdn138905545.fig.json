@@ -1,0 +1,10 @@
+{
+  "title": "mysql 5.7 temp password first login",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo grep 'temporary password' /var/log/mysqld.log"},
+    {"t": "note", "s": "安装完成会生成临时 root 密码，先从日志找出来"},
+    {"t": "cmd", "s": "sudo mysql_secure_installation"},
+    {"t": "note", "s": "用临时密码进入后，设置新密码与安全选项"}
+  ]
+}

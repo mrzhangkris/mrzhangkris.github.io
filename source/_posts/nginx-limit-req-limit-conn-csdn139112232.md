@@ -1,33 +1,28 @@
 ---
-title: "Nginx中的limit_req模块和limit_conn模块详解"
+title: "Nginx 限流：limit_req 与 limit_conn 模块"
 date: 2024-05-22 10:06:41
 categories: [技术]
 tags: [Nginx]
-copyright_author: 张鹏
+copyright_author: 司南
 cover: /images/csdn/covers/nginx-limit-req-limit-conn-csdn139112232.png
+updated: 2026-09-11
 ---
 
-#### 引言
+高流量场景下，如果不对客户端做约束，一个失控的爬虫就能把服务拖垮。Nginx 的 limit_req 和 limit_conn 模块分别限制请求频率和并发连接数，是保护后端的第一道闸门。本文介绍这两个模块的生效阶段、生效范围和实际配置写法。
 
-在高流量场景下，良好的限流和连接控制策略至关重要，以防止服务器过载，确保服务稳定性和高可用性。Nginx 提供了 limit\_req 和 limit\_conn 模块，用以实现请求频率和并发连接数的限制。本文将详细介绍这两个模块的生效阶段和生效范围，并提供实际配置示例，解释相关指令的作用。
+## limit_req 模块
 
-### limit\_req模块
+limit_req 限制客户端请求的频率，防止单一客户端占用过多服务器资源。
 
-#### 功能介绍
+**生效阶段**：在请求处理的访问阶段（access phase）生效，即收到完整 HTTP 请求后、转发到后端之前。
 
-limit\_req 模块用于限制客户端请求的频率，以防止单一客户端占用过多服务器资源，提升稳定性。
+**生效范围**：指令可以放在三个层级——
 
-#### 生效阶段
+- http：全局生效，作用于所有 server 和 location。
+- server：作用于该 server 内的所有 location。
+- location：只作用于匹配该 URL 路径的 location。
 
-limit\_req 在请求处理的“访问阶段（access phase）”生效。它在接收到完整的 HTTP 请求后，即将转发到后端之前进行限流。
-
-#### 生效范围
-
--   http：全局范围，作用于所有 server 和 location。
--   **server**：作用于特定 server block 内的所有 location。
--   **location**：作用于特定 URL 路径的 location。
-
-#### 配置示例和注释
+### 配置示例
 
 ```nginx
 http {
@@ -55,30 +50,22 @@ http {
 }
 ```
 
-#### 参数解析
+### 参数解析
 
--   **limit\_req\_zone**：声明一个限制请求的共享内存区域。
--   **limit\_req**：在指定的区域内启用请求频率限制。
--   **burst**：允许的突发请求数量。
--   **nodelay**：不延迟处理突发请求。
+- **limit_req_zone**：声明一个限制请求的共享内存区域。
+- **limit_req**：在指定区域内启用请求频率限制。
+- **burst**：允许的突发请求数量。
+- **nodelay**：不延迟处理突发请求。
 
-### limit\_conn模块
+## limit_conn 模块
 
-#### 功能介绍
+limit_conn 限制每个客户端的并发连接数，防止资源被单一客户端耗尽。
 
-limit\_conn 模块用于限制每个客户端的并发连接数，以防止资源被单一客户端耗尽。
+**生效阶段**：同样在访问阶段（access phase）生效，服务器建立新连接时立即按配置做并发限制。
 
-#### 生效阶段
+**生效范围**：与 limit_req 相同，指令可放在 http、server 或 location 层级。
 
-limit\_conn 在连接处理的“访问阶段（access phase）”生效。当服务器建立新连接时，立即根据配置进行并发连接限制。
-
-#### 生效范围
-
--   **http**：全局范围，作用于所有 server 和 location。
--   **server**：作用于特定 server block 内的所有 location。
--   l**ocation**：作用于特定 URL 路径的 location。
-
-#### 配置示例和注释
+### 配置示例
 
 ```nginx
 http {
@@ -104,34 +91,28 @@ http {
 }
 ```
 
-#### 参数解析
+### 参数解析
 
--   **limit\_conn\_zone**：声明一个限制连接数的共享内存区域。
--   **limit\_conn**：在指定的区域内启用连接数限制。
+- **limit_conn_zone**：声明一个限制连接数的共享内存区域。
+- **limit_conn**：在指定区域内启用连接数限制。
 
-### 日志和状态设置
+## 日志和状态码
 
-#### limit\_conn\_log\_level
+被限流时总得留下痕迹，两个指令控制这件事。
 
-limit\_conn\_log\_level 用于设置当连接被限制时的日志记录级别。
+### limit_conn_log_level
 
-##### 可选值
+设置连接被限制时的日志级别，可选 info（基本信息）、notice（详细信息）、warn（推荐）、error。
 
--   **info**：基本信息记录。
--   **notice**：详细信息记录。
--   **warn**：警告信息记录（推荐）。
--   **error**：错误信息记录。
+### limit_conn_status
 
-#### limit\_conn\_status
+设置连接被限制时返回的 HTTP 状态码，常用 503（服务不可用），也可以按需求自定义。
 
-limit\_conn\_status 用于设置当连接被限制时返回的 HTTP 状态码。
+## 完整配置示例
 
-##### 常用状态码
+把频率限制、连接限制、日志级别和状态码组合到一起：
 
--   **503**：服务不可用（推荐）。
--   **其他自定义状态码**：根据具体需求设置。
-
-### 完整配置示例和注释
+![配图](/images/csdn/figures/nginx-limit-req-limit-conn-csdn139112232.png)
 
 ```nginx
 http {
@@ -161,18 +142,14 @@ http {
 }
 ```
 
-#### 解析与说明
+两个 zone 声明在 http 层供全局引用，location 里分别挂上 limit_req 和 limit_conn，限流触发时记 warn 日志并返回 503。
 
--   **limit\_req\_zone 和 limit\_conn\_zone**：分别定义请求和连接限制的共享内存区域。
--   **limit\_req 和 limit\_conn**：在指定的区域内启用请求频率和连接数限制。
--   **limit\_conn\_log\_level 和 limit\_conn\_status**：分别设置连接限制触发时的日志级别和返回状态码。
+## 注意事项
 
-### 结论
+- `limit_req_zone` / `limit_conn_zone` 只能声明在 http 层，`limit_req` / `limit_conn` 才是挂在 server 或 location 里生效的。
+- `$binary_remote_addr` 比文本形式的 `$remote_addr` 省内存，一般都用它做键。
+- rate 是平均速率，burst 决定容忍多大的突发；加不加 nodelay 直接影响突发请求是立刻处理还是排队延迟。
+- 限流触发默认记日志并返回 503，通过 limit_conn_log_level / limit_conn_status 可以调整。
+- 参数要根据业务实际流量调，压得太紧会误伤正常用户。
 
-通过 Nginx 的 limit\_req 和 limit\_conn 模块，可以有效实现精确的请求频率和连接数控制。这不仅可以防止恶意请求和流量激增对服务器的冲击，还能提高服务的稳定性和可用性。结合日志级别和状态码设置，可以轻松监控和管理限流情况。
-
-**希望这篇博客能够帮助你更好地理解和应用 Nginx 的限流功能，提高配置能力。**
-
----
-
-> 本文迁移自作者 CSDN 博客，2024-05-22 首发于 CSDN，内容保持原貌。
+> 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

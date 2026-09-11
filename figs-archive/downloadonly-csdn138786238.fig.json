@@ -1,0 +1,13 @@
+{
+  "title": "yum --downloadonly",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "sudo yum install yum-plugin-downloadonly"},
+    {"t": "note", "s": "先装插件（CentOS）"},
+    {"t": "cmd", "s": "sudo yum update --downloadonly"},
+    {"t": "note", "s": "只下载所有可用更新，不安装"},
+    {"t": "note", "s": "默认保存到 /var/cache/yum/x86_64/7/"},
+    {"t": "cmd", "s": "yum install --downloadonly --downloaddir=/opt/ update"},
+    {"t": "note", "s": "用 --downloaddir 指定保存路径"}
+  ]
+}

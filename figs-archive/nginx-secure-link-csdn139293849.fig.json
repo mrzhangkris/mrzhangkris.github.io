@@ -1,0 +1,11 @@
+{
+  "title": "nginx secure_link",
+  "type": "config",
+  "lines": [
+    {"t": "config", "s": "secure_link $arg_md5,$arg_expires;"},
+    {"t": "config", "s": "secure_link_md5 \"$secure_link_expires$uri$remote_addr\";"},
+    {"t": "config", "s": "if ($secure_link = \"\") { return 403; }"},
+    {"t": "config", "s": "if ($secure_link = \"0\") { return 410; }"},
+    {"t": "note", "s": "签名错 403；签名对但过期 410"}
+  ]
+}
