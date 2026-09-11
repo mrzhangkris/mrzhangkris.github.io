@@ -3,7 +3,7 @@ title: 我给 AI 搭了一条博客产线，然后被首篇文章教育了
 date: 2026-09-11 20:00:00
 categories: [技术]
 tags: [AI, agent, 工作流]
-cover: https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&q=80&fm=jpg
+cover: https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80&fm=jpg
 ---
 
 # 我给 AI 搭了一条博客产线，然后被首篇文章教育了
