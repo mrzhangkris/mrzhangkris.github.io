@@ -1,0 +1,207 @@
+---
+title: "通过Bash脚本执行EXPDP实现本地和异地备份"
+date: 2024-06-01 09:15:00
+categories: [技术]
+tags: [Oracle]
+copyright_author: 张鹏
+cover: /images/csdn/covers/bash-expdp-csdn139348362.png
+---
+
+在 Oracle 数据库管理中，定时执行备份是一个重要的任务，可以保证数据的安全性和可恢复性。本文将介绍如何使用 expdp 工具进行 Oracle 数据库备份，并使用 bash 脚本定时执行备份任务，并对备份文件进行压缩，传输。
+
+#### 准备工作
+
+在执行备份任务之前，需要确保以下几点：
+
+1. 数据库连接信息：确保能够连接到要备份的 Oracle 数据库，并拥有足够的权限执行备份操作。
+2. 备份目录：选择一个合适的目录用于存储备份文件，确保该目录具有足够的空间。
+3. 安装压缩工具：在执行备份完成后，需要使用压缩工具对备份文件进行压缩。可以安装 gzip 或 zip 等工具。
+
+#### 编写备份脚本
+
+1. 创建备份目录
+
+在数据库服务器上创建一个目录，用于存储备份文件。可以使用以下 SQL 语句在 Oracle 中创建目录：
+
+```plsql
+CREATE DIRECTORY dumpdir AS '/path/to/backup/directory';
+```
+
+确保目录的路径是正确的，并且 Oracle 用户有权限在该目录下写入文件。
+
+2. 编写备份脚本
+
+创建一个名为 backup\_script.sh 的 bash 脚本，并将以下内容添加到脚本中：
+
+```bash
+#!/bin/sh
+##########################################################################################
+####                             ORACLE    EXPD                                       ####
+##########################################################################################
+
+# 设置 Oracle 环境变量
+export ORACLE_HOME=/data/oracle/product/11.2.0
+export PATH=$ORACLE_HOME/bin:$PATH
+
+# 设置数据库连接信息
+db_user="username"
+db_password="password"
+ORACLE_SID="orcl"
+IP="192.168.0.1"
+PORT="1521"
+
+# 设置备份目录
+ORACLE_DIRECTORY="dumpdir"
+
+# 压缩目录
+ZIP_DIR="/data/oracle_bak/"
+
+# 导出目录
+EXPD_DIR="/path/to/backup/directory"
+
+# 备份时间
+BAKUP_TIME=`date +%Y%m%d%H%M%S`
+
+# 删除备份时间
+DEL_TIME=`date -d "90 days ago" +%Y%m%d`
+
+# 导出日志名称
+LOGFILE=${ORACLE_SID}_${BAKUP_TIME}.log
+
+# 导出备份名称
+DUMPFILE=${ORACLE_SID}_${BAKUP_TIME}.dmp
+
+# 执行备份
+$ORACLE_HOME/bin/expdp ${db_user}/${db_password}@${IP}:${PORT}/${ORACLE_SID} DIRECTORY=${ORACLE_DIRECTORY} DUMPFILE=${DUMPFILE} LOGFILE=${LOGFILE} SCHEMAS=${db_user}
+
+# 删除备份
+rm -rf $EXPD_DIR${ORACLE_SID}_${BAKUP_TIME}*
+
+# 压缩备份
+zip -r ${ZIP_DIR}${db_user}_${BAKUP_TIME}.zip ${EXPD_DIR}${DUMPFILE} ${EXPD_DIR}${LOGFILE}
+
+# 异地备份
+curl -X POST http://172.16.194.5:8082/oraclebak -F "file=@${ZIP_DIR}${db_user}_${BAKUP_TIME}.zip"
+```
+3. 设置定时任务
+
+使用 crontab -e 命令编辑 crontab 文件，添加以下行来设置定时执行备份任务，例如每天凌晨 3 点执行备份：
+
+```
+0 3 * * * /bin/bash /path/to/backup_script.sh
+```
+4. 编写异地备份脚本
+```lua
+-- upload.lua
+--==========================================
+-- 文件上传
+--==========================================
+local upload = require "resty.upload"
+local cjson = require "cjson"
+local chunk_size = 4096
+local form, err = upload:new(chunk_size)
+if not form then
+    ngx.log(ngx.ERR, "failed to new upload: ", err)
+    ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
+end
+form:set_timeout(1000)
+-- 字符串 split 分割
+string.split = function(s, p)
+    local rt= {}
+    string.gsub(s, '[^'..p..']+', function(w) table.insert(rt, w) end )
+    return rt
+end
+-- 支持字符串前后 trim
+string.trim = function(s)
+    return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+-- 文件保存的根路径
+local saveRootPath = ngx.var.store_dir
+-- 保存的文件对象
+local fileToSave
+--文件是否成功保存
+local ret_save = false
+while true do
+    local typ, res, err = form:read()
+    if not typ then
+        ngx.say("failed to read: ", err)
+        return
+    end
+    if typ == "header" then
+        -- 开始读取 http header
+        -- 解析出本次上传的文件名
+        local key = res[1]
+        local value = res[2]
+        if key == "Content-Disposition" then
+            -- 解析出本次上传的文件名
+            -- form-data; name="testFileName"; filename="testfile.txt"
+            local kvlist = string.split(value, ';')
+            for _, kv in ipairs(kvlist) do
+                local seg = string.trim(kv)
+                if seg:find("filename") then
+                    local kvfile = string.split(seg, "=")
+                    local filename = string.sub(kvfile[2], 2, -2)
+                    if filename then
+                        fileToSave = io.open(saveRootPath .. filename, "w+")
+                        if not fileToSave then
+                            ngx.say("saveRootPath: ", saveRootPath)
+                            ngx.say("failed to open file ", filename)
+                            return
+                        end
+                        break
+                    end
+                end
+            end
+        end
+    elseif typ == "body" then
+        -- 开始读取 http body
+        if fileToSave then
+            fileToSave:write(res)
+        end
+    elseif typ == "part_end" then
+        -- 文件写结束，关闭文件
+        if fileToSave then
+            fileToSave:close()
+            fileToSave = nil
+        end
+
+        ret_save = true
+    elseif typ == "eof" then
+        -- 文件读取结束
+        break
+    else
+        ngx.log(ngx.INFO, "do other things")
+    end
+end
+if ret_save then
+    ngx.say("save file ok")
+end
+```
+
+在OpenResty的配置文件中添加
+
+```nginx
+set $store_dir "/data/oraclebak/";
+# 数据库备份文件上传接口
+location /oraclebak {
+    client_max_body_size 2048M;
+    allow 172.10.0.0/16;
+    deny all;
+    content_by_lua_file conf/lua/upload.lua; # 实现文件上传的逻辑
+}
+location /oracledownload {
+    autoindex on;
+    allow 172.10.0.0/16;
+    deny all;
+    alias /data/oraclebak;
+}
+```
+
+#### 备份完成
+
+当定时任务执行时，会自动执行备份脚本，并将备份文件存储在指定的备份目录中，并且备份文件会被压缩到其他目录。同时上传到其他服务器。
+通过本文介绍的方法，可以轻松地定时执行 Oracle 数据库备份，以确保数据的安全性和可恢复性。
+
+---
+
+> 本文迁移自作者 CSDN 博客，2024-06-01 首发于 CSDN，内容保持原貌。
