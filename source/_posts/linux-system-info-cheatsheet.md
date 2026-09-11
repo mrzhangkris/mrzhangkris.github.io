@@ -2,7 +2,7 @@
 title: Linux 系统信息查询：比 cat /proc 时代更好用的命令
 categories: [技术]
 tags: [Linux, 命令行]
-cover: /img/linux-info/cover.png
+cover: https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=80&fm=jpg
 date: 2026-09-11 17:40:00
 ---
 
