@@ -4,7 +4,7 @@ date: 2024-05-26 09:15:00
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-mirror-csdn139179059.png
+cover: https://images.unsplash.com/photo-1515630278258-407f66498911?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

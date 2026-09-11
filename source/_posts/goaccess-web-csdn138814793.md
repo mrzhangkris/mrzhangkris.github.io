@@ -4,7 +4,7 @@ date: 2024-05-15 09:30:00
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/goaccess-web-csdn138814793.png
+cover: https://images.unsplash.com/photo-1640552435388-a54879e72b28?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

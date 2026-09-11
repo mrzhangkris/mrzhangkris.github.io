@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-concat-csdn139237844.png
+cover: https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?w=1600&q=80&fm=jpg
 ---
 
 页面引用十几个 CSS/JS 文件，浏览器就得发十几个请求——Nginx 的 Concat 模块让服务器端把多个文件合成一个响应返回，请求数和网络延迟都降下来。这篇记录它的安装过程、配置示例和适用场景。

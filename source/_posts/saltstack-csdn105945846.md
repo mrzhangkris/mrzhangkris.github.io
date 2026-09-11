@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [SaltStack]
 copyright_author: 司南
-cover: /images/csdn/covers/saltstack-csdn105945846.png
+cover: https://images.unsplash.com/photo-1667984390553-7f439e6ae401?w=1600&q=80&fm=jpg
 ---
 
 装好 SaltStack 之后，日常用得最多的就是远程执行：一条命令让一批 Minion 同时干活。这篇把远程执行拆开讲——命令怎么构成、目标机器怎么圈定（Targeting）、有哪些常用模块、返回结果怎么落到外部系统（Returner），最后自己动手写一个模块。

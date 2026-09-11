@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/bash-logrotate-nginx-csdn138804009.png
+cover: https://images.unsplash.com/photo-1667264501379-c1537934c7ab?w=1600&q=80&fm=jpg
 ---
 
 Nginx 跑久了，access.log 会一路膨胀，大到 grep 都卡。日志切割要解决两件事：把旧日志按时间归档压缩，同时让 nginx 换一个新文件继续写。这篇文章给出两种做法：一个手写 Bash 脚本，一个用系统自带的 logrotate。

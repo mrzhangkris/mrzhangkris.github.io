@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [MySQL]
 copyright_author: 司南
-cover: /images/csdn/covers/centos-7-mysql-csdn138905545.png
+cover: https://images.unsplash.com/photo-1529078155058-5d716f45d604?w=1600&q=80&fm=jpg
 ---
 
 这篇文章记录在 CentOS 7 上装 MySQL 的两条路：直接用系统仓库装，或者添加 MySQL 官方 YUM 仓库装指定版本（以 5.7 为例）。装完顺手把安全初始化和登录验证做完。

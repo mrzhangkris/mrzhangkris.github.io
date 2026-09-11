@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/ubuntu-csdn138717847.png
+cover: https://images.unsplash.com/photo-1667984390535-6d03cff0b11a?w=1600&q=80&fm=jpg
 ---
 
 装好 Ubuntu 想打中文，得先装一套输入法框架再把拼音挂上去。这篇以 Fcitx 框架为例，从安装到能正常切出中文输入，四步走完。

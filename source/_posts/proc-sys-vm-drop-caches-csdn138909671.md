@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/proc-sys-vm-drop-caches-csdn138909671.png
+cover: https://images.unsplash.com/photo-1575318633968-0383e7d07ca0?w=1600&q=80&fm=jpg
 ---
 
 Linux 会把空闲内存拿来做文件缓存，内存"占满"很多时候只是缓存在工作，并不是真的不够用。所以 `/proc/sys/vm/drop_caches` 不该天天清，但性能测试前要个干净基线、维护窗口想从干净状态开始时，它是标准工具——不用重启，往这个特殊文件里写个数字就能让内核释放对应类型的缓存。

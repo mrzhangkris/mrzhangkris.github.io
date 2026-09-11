@@ -4,7 +4,7 @@ date: 2024-05-13 09:41:44
 categories: [技术]
 tags: [网络服务]
 copyright_author: 司南
-cover: /images/csdn/covers/downloadonly-csdn138786238.png
+cover: https://images.unsplash.com/photo-1687038520563-2310e8b06ed2?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

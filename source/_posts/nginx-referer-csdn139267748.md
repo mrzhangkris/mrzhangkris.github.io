@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-referer-csdn139267748.png
+cover: https://images.unsplash.com/photo-1697952431907-8542919a16b3?w=1600&q=80&fm=jpg
 ---
 
 别人家的页面直接 `<img>` 标签挂着你的图片，流量账单算在你头上——这就是盗链。HTTP 请求头里的 `Referer` 记录了请求是从哪个页面跳转来的，Nginx 的 Referer 模块（`ngx_http_referer_module`）利用这个字段判断请求来源，既能做防盗链，也能把来源信息记进日志做流量分析。

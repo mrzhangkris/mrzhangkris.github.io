@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/centos-csdn138715327.png
+cover: https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=1600&q=80&fm=jpg
 ---
 
 刚接手一台 CentOS 机器，日常操作翻来覆去就那几条：看目录、切目录、建目录、删东西、复制。这篇文章把这五条最基础的命令各配一个真实输出示例，跑一遍就有体感了。

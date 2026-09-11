@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [运维]
 copyright_author: 司南
-cover: /images/csdn/covers/reposync-csdn105444446.png
+cover: https://images.unsplash.com/photo-1569428034239-f9565e32e224?w=1600&q=80&fm=jpg
 ---
 
 内网机器没法直连公网 YUM 源时，常见做法是找一台能上网的机器把整个仓库同步下来，再搭成本地源。`reposync` 干的就是这件事：把远端仓库的 rpm 包按 repoid 拉到本地目录。整个流程分四步——装工具、建目录、查 repoid、执行同步。

@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/parted-csdn139055126.png
+cover: https://images.unsplash.com/photo-1496664444929-8c75efb9546f?w=1600&q=80&fm=jpg
 ---
 
 给新盘分区、扩容时改分区大小，parted 是比 fdisk 更顺手的工具：它支持 MBR 和 GPT 两种分区表，fdisk 处理不了的大于 2TB 的磁盘它也能直接管。而且 parted 的命令形式适合写进脚本，自动化装机时很常用。这篇过一遍它的日常用法和几个容易出事的点。

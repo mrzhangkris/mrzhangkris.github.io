@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-return-http-csdn139065651.png
+cover: https://images.unsplash.com/photo-1651340550839-3b295d930048?w=1600&q=80&fm=jpg
 ---
 
 有时候你只想让 Nginx 直接"回话"：站点维护中返回 503，旧链接 301 跳新地址，某些路径直接 403。这些都不需要后端参与，一条 `return` 指令就够了。它属于 rewrite 模块（`ngx_http_rewrite_module`），是 Nginx 内置指令，用来指定服务器对请求的直接响应——状态码、跳转地址，甚至响应正文。

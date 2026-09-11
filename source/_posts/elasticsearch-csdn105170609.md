@@ -4,7 +4,7 @@ date: 2020-03-29 10:05:30
 categories: [技术]
 tags: [Elasticsearch]
 copyright_author: 司南
-cover: /images/csdn/covers/elasticsearch-csdn105170609.png
+cover: https://images.unsplash.com/photo-1762163516269-3c143e04175c?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-addition-csdn139259142.png
+cover: https://images.unsplash.com/photo-1680992046626-418f7e910589?w=1600&q=80&fm=jpg
 ---
 
 页面里经常有广告位、推荐位这类由后端单独提供的小片段，如果每个片段都让浏览器再发一次请求，请求数和后端压力都会跟着涨。Nginx 的 addition 模块提供了另一种思路：在 Nginx 层把多个响应体拼成一份再返回。这篇记录它的用途、配置方法和要注意的坑。

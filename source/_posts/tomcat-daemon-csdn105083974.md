@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Tomcat]
 copyright_author: 司南
-cover: /images/csdn/covers/tomcat-daemon-csdn105083974.png
+cover: https://images.unsplash.com/photo-1519086588705-c935fdedcc14?w=1600&q=80&fm=jpg
 ---
 
 用 `startup.sh` 起的 Tomcat 是挂在当前 shell 下的，退出终端或用户权限一变就容易出问题。daemon 模式通过 jsvc 把 Tomcat 托管成独立的服务进程，可以用专用的 `daemon.sh` 启停。这篇记录在 CentOS 8 上把 Tomcat 9 配成 daemon 模式的全过程，包括编译 jsvc 时踩到的几个坑。

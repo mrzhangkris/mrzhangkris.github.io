@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-satisfy-csdn139174686.png
+cover: https://images.unsplash.com/photo-1667670778881-537035257bd8?w=1600&q=80&fm=jpg
 ---
 
 同一个 location 上同时挂了 IP 白名单和密码验证时，请求要过几道关卡？`satisfy` 指令就是回答这个问题的：`any` 表示任意一道关卡放行即可，`all` 表示每道都得过。做"内网免密、外网要密码"这类策略，全靠它。

@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [运维]
 copyright_author: 司南
-cover: /images/csdn/covers/apache-csdn138910842.png
+cover: https://images.unsplash.com/photo-1535957998253-26ae1ef29506?w=1600&q=80&fm=jpg
 ---
 
 Apache 版本要升级时，直接卸旧装新会有一段服务中断。这篇文章记录的思路是：把新版本编译安装到一个独立目录，配置迁过去、单独起个端口测一遍，确认稳定后再做切换，把升级对线上服务的影响压到最低。

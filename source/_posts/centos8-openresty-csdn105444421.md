@@ -4,7 +4,7 @@ date: 2020-04-10 23:09:21
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/centos8-openresty-csdn105444421.png
+cover: https://images.unsplash.com/photo-1564457461758-8ff96e439e83?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

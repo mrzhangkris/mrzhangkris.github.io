@@ -4,7 +4,7 @@ date: 2024-05-15 17:01:14
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/linux-i-o-csdn138915131.png
+cover: https://images.unsplash.com/photo-1675495277087-10598bf7bcd1?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

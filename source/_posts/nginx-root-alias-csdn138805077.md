@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-root-alias-csdn138805077.png
+cover: https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?w=1600&q=80&fm=jpg
 ---
 
 配置静态文件服务时，`root` 和 `alias` 都负责告诉 Nginx 去文件系统的哪个目录找文件。这俩指令长得像、干的活不同，混淆的后果很直接：请求 404 或者返回了错误的文件。这篇文章把两者的行为、区别和适用场景讲清楚。

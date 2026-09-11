@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Oracle, 安全]
 copyright_author: 司南
-cover: /images/csdn/covers/oracle-csdn139348898.png
+cover: https://images.unsplash.com/photo-1597138768744-9f97be8cdd64?w=1600&q=80&fm=jpg
 ---
 
 数据库账号被弱密码撞开，是安全事件里最常见的入口之一。Oracle 自带可配置的密码策略机制，能让数据库自己拒绝太弱的密码，不必依赖使用者的自觉。这篇记录如何用 Profile 搭配自定义验证函数，把密码复杂度策略真正落地。

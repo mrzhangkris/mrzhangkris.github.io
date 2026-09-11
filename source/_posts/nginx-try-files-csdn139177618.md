@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-try-files-csdn139177618.png
+cover: https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?w=1600&q=80&fm=jpg
 ---
 
 很多站点都会遇到同一类问题：用户请求的 URL 在磁盘上没有对应的文件，直接返回 404 并不是想要的行为。Nginx 的 try_files 指令就是处理这种情况的：定义一组文件或 URI，按顺序依次检查，找到第一个存在且可访问的就返回，全部落空时走指定的回退。

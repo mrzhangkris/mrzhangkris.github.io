@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Tomcat]
 copyright_author: 司南
-cover: /images/csdn/covers/tomcat-csdn138719343.png
+cover: https://images.unsplash.com/photo-1515965885361-f1e0095517ea?w=1600&q=80&fm=jpg
 ---
 
 Tomcat 启动后进程直接退出，连日志都来不及看——这是典型的"闪退"。原因大多出在日志、JVM 内存、端口占用、环境变量或 Web 应用配置这几处。这篇按诊断顺序走一遍，先定位再动手解决。

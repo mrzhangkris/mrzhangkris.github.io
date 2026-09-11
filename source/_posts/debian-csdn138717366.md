@@ -4,7 +4,7 @@ date: 2024-05-11 15:22:09
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/debian-csdn138717366.png
+cover: https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

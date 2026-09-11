@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Oracle]
 copyright_author: 司南
-cover: /images/csdn/covers/bash-expdp-csdn139348362.png
+cover: https://images.unsplash.com/photo-1561233835-f937539b95b9?w=1600&q=80&fm=jpg
 ---
 
 Oracle 数据库的备份要能兜底，光在数据库服务器上留一份还不够：本地盘挂了、机器没了，备份也就没了。这篇文章记录一套完整的做法——用 expdp 定时导出数据库，脚本负责压缩打包，再通过 OpenResty 搭的接收接口把备份传到另一台服务器上。

@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx, 网络服务]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-round-robin-csdn139346197.png
+cover: https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=1600&q=80&fm=jpg
 ---
 
 Nginx 做反向代理时，多个后端怎么分流量是最先要回答的问题。Round-Robin（轮询）是最基础的答案：请求按顺序逐个分给后端服务器，分完一轮再从头来。它还是 Nginx 的默认策略——upstream 块里不写任何负载均衡指令时，用的就是轮询。

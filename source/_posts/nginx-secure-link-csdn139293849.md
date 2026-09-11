@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx, 安全]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-secure-link-csdn139293849.png
+cover: https://images.unsplash.com/photo-1557701197-2f99da0922dd?w=1600&q=80&fm=jpg
 ---
 
 有些资源不能裸奔在公网上：付费下载的文件、限时分享的压缩包，都需要"拿着有效凭证才能访问"。Nginx 的 secure_link 模块（`ngx_http_secure_link_module`）用 URL 签名实现这一点——请求带上了正确签名和未过期的有效期参数才放行，否则直接拒掉。

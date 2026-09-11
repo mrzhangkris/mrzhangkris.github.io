@@ -4,7 +4,7 @@ date: 2024-05-22 10:06:41
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-limit-req-limit-conn-csdn139112232.png
+cover: https://images.unsplash.com/photo-1580584126903-c17d41830450?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

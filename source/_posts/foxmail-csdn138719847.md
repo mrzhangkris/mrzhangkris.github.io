@@ -4,7 +4,7 @@ date: 2024-05-11 16:10:45
 categories: [技术]
 tags: [网络服务]
 copyright_author: 司南
-cover: /images/csdn/covers/foxmail-csdn138719847.png
+cover: https://images.unsplash.com/photo-1761507320645-b11a00bfcc34?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

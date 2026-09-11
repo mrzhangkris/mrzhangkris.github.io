@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [运维]
 copyright_author: 司南
-cover: /images/csdn/covers/rewrite-csdn139085203.png
+cover: https://images.unsplash.com/photo-1630233313373-a03df7d139c9?w=1600&q=80&fm=jpg
 ---
 
 旧链接要平滑跳到新地址、请求路径要按语言分发，这类需求在 Nginx 上都归 rewrite 模块管：它基于正则匹配和条件判断来修改请求的 URI，重写结果既可以走内部重定向，也可以把浏览器引到别的 URL。下面用三个由浅入深的例子说明常见写法。

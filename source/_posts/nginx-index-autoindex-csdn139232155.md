@@ -4,7 +4,7 @@ date: 2024-05-27 10:44:21
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-index-autoindex-csdn139232155.png
+cover: https://images.unsplash.com/photo-1562408590-e32931084e23?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

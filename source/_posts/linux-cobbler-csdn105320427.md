@@ -4,7 +4,7 @@ date: 2020-04-06 20:59:23
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/linux-cobbler-csdn105320427.png
+cover: https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

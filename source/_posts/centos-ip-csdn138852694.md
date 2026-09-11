@@ -4,7 +4,7 @@ date: 2024-05-16 08:30:00
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/centos-ip-csdn138852694.png
+cover: https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

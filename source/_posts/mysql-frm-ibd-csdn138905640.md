@@ -4,7 +4,7 @@ date: 2024-05-15 14:51:08
 categories: [技术]
 tags: [MySQL]
 copyright_author: 司南
-cover: /images/csdn/covers/mysql-frm-ibd-csdn138905640.png
+cover: https://images.unsplash.com/photo-1667372283496-893f0b1e7c16?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

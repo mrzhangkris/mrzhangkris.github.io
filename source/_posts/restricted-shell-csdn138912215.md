@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/restricted-shell-csdn138912215.png
+cover: https://images.unsplash.com/photo-1510519138101-570d1dca3d66?w=1600&q=80&fm=jpg
 ---
 
 外包人员临时上机、学生机开放账号，都不能让对方在系统里随便执行命令。Linux 自带的受限 Shell（rbash）就是干这个的：把用户的登录 shell 换成 bash 的受限模式，再配合一个只装"白名单命令"的目录和收紧的 PATH，用户就只能执行你放行的命令、访问你允许的路径。配置成本很低，适合教育环境、企业服务器和公共访问终端这类场景。

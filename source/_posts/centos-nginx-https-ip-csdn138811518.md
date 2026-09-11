@@ -4,7 +4,7 @@ date: 2024-05-14 08:30:00
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/centos-nginx-https-ip-csdn138811518.png
+cover: https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

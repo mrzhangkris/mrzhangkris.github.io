@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Python]
 copyright_author: 司南
-cover: /images/csdn/covers/python-csdn105020997.png
+cover: https://images.unsplash.com/photo-1605436247078-f0ef43ee8d5c?w=1600&q=80&fm=jpg
 ---
 
 用 `subprocess` 调用外部 Python 脚本时，常会遇到一个怪现象：子进程明明在逐行打印，父进程却要等它跑完才一次性拿到所有输出。原因是子进程的标准输出接了管道之后不再是终端，Python 会改用块缓冲，输出攒够一批才真正写出去。解法有两个：调用时给解释器加 `-u` 参数，或者在子进程的 `print` 里用 `flush=True`。下面用两个小脚本把两种方法都验证一遍。

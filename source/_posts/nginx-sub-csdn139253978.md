@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-sub-csdn139253978.png
+cover: https://images.unsplash.com/photo-1483058712412-4245e9b90334?w=1600&q=80&fm=jpg
 ---
 
 后端代码不方便改，但响应里的某个域名、某个敏感词必须换掉——这种活最适合交给 Nginx 的 sub 模块（`ngx_http_sub_module`）：在响应返回给客户端之前，把内容里的指定字符串替换掉。反代场景下做域名迁移、链接改写、敏感词过滤，都不用碰后端一行代码。

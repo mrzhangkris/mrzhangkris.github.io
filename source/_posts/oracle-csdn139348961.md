@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Oracle, 网络服务]
 copyright_author: 司南
-cover: /images/csdn/covers/oracle-csdn139348961.png
+cover: https://images.unsplash.com/photo-1591913139332-f8172ef511da?w=1600&q=80&fm=jpg
 ---
 
 数据库里存的是最值钱的数据，但客户端到服务器之间的传输链路常常是裸奔的——同一内网不等于安全。Oracle 内置了网络加密和数据完整性校验机制，服务端在 `sqlnet.ora` 里配置，客户端在 JDBC 连接属性里配置，两边对上就能启用加密传输。这篇记录两端的配置方法和一个可运行的 Java 示例。

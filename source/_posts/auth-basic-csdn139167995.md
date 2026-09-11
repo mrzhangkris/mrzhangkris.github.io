@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [运维]
 copyright_author: 司南
-cover: /images/csdn/covers/auth-basic-csdn139167995.png
+cover: https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?w=1600&q=80&fm=jpg
 ---
 
 内部管理页、监控面板这类地址不想裸露在公网，又还没到要上 OAuth 的程度，Nginx 自带的 auth_basic 模块正好补这个位置——两行配置加一个密码文件，就能把所有匿名请求挡在门外。这篇文章讲清楚它的基础配置、常见使用场景，以及限速、自定义错误页、IP 白名单这几个常用的加固组合，最后带上 OpenResty 下的用法。

@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-realip-ip-csdn139063602.png
+cover: https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1600&q=80&fm=jpg
 ---
 
 ![配图](/images/csdn/figures/nginx-realip-ip-csdn139063602.png)

@@ -4,7 +4,7 @@ date: 2024-05-20 08:45:00
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/logrotate-csdn138911849.png
+cover: https://images.unsplash.com/photo-1573164713988-8665fc963095?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

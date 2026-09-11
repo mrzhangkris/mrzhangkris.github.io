@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [ZooKeeper]
 copyright_author: 司南
-cover: /images/csdn/covers/zookeeper-csdn138916515.png
+cover: https://images.unsplash.com/photo-1667984390533-64bdefe719ea?w=1600&q=80&fm=jpg
 ---
 
 ZooKeeper 在分布式系统里干的活不算显眼，但缺了它很多组件跑不起来：配置管理、命名服务、分布式锁都靠它协调。这类组件的特点是一旦上线就轻易不动，所以第一次部署值得花心思装对。本文记录在 CentOS 7 上搭一套三节点 ZooKeeper 集群的完整过程，从装 Java 环境到集群验证。

@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-split-clients-csdn139325505.png
+cover: https://images.unsplash.com/photo-1496181133206-80ce9b88a851?w=1600&q=80&fm=jpg
 ---
 
 新首页设计到底比旧的好不好？新功能敢不敢直接全量上？A/B 测试和灰度发布都是同一个问题的不同问法：怎么把流量按比例、稳定地分成几组。Nginx 的 split_clients 模块（`ngx_http_split_clients_module`）在接入层就把这件事办了——对用户特征做哈希，按百分比切分流量，不需要应用代码参与。

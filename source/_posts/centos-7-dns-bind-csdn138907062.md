@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [网络服务]
 copyright_author: 司南
-cover: /images/csdn/covers/centos-7-dns-bind-csdn138907062.png
+cover: https://images.unsplash.com/photo-1518181835702-6eef8b4b2113?w=1600&q=80&fm=jpg
 ---
 
 内网机器一多，靠 /etc/hosts 维护域名就变成灾难，这时候该上自己的 DNS 了。这篇文章在 CentOS 7 上用 BIND 搭一台 DNS 服务器，把正向解析（域名到 IP）和反向解析（IP 到域名）一次配好，最后附上日常维护和排障的要点。

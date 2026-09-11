@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/openresty-openssl-csdn138672069.png
+cover: https://images.unsplash.com/photo-1611677806845-363fccca2c51?w=1600&q=80&fm=jpg
 ---
 
 自己编译 OpenResty、又想用系统里已装好的 OpenSSL（比如 `/usr/local/openssl`）时，configure 或 make 阶段经常直接报 OpenSSL 找不到。这不是 OpenSSL 没装，而是 Nginx 的构建脚本对目录布局有一个默认假设，和系统 OpenSSL 的实际布局对不上。以 OpenResty-1.19.9.1 为例，手动改一处构建脚本就能解决。

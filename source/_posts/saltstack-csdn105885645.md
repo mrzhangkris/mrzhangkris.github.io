@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [SaltStack]
 copyright_author: 司南
-cover: /images/csdn/covers/saltstack-csdn105885645.png
+cover: https://images.unsplash.com/photo-1509803874385-db7c23652552?w=1600&q=80&fm=jpg
 ---
 
 要在一批机器上统一执行命令、下发配置，一台台 SSH 上去敲显然不现实。SaltStack 就是为这个场景准备的：Master/Minion 架构下，控制端可以秒级触达成百上千台机器。这篇记录在两台 CentOS 7.7 上从零搭一套 SaltStack 的完整过程——装 Master 和 Minion、改配置、放行防火墙，最后完成密钥认证并用 `salt` 命令验证通信。

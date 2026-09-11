@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-auth-request-csdn139173856.png
+cover: https://images.unsplash.com/photo-1462826303086-329426d1aef5?w=1600&q=80&fm=jpg
 ---
 
 给某个路径加访问控制，又不想把认证逻辑复制进每个后端服务，Nginx 的 auth_request 模块就是为这个场景准备的：Nginx 先把请求转给一个认证端点，拿到状态码再决定放行还是拒绝。这篇讲它的原理、配置和一个可跑的完整示例。

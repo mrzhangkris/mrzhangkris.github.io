@@ -4,7 +4,7 @@ date: 2024-05-16 09:07:41
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/centos-csdn138853160.png
+cover: https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

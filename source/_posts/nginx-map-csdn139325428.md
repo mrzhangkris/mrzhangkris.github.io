@@ -4,7 +4,7 @@ date: 2024-05-30 15:19:33
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-map-csdn139325428.png
+cover: https://images.unsplash.com/photo-1640955785023-1854685dae05?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

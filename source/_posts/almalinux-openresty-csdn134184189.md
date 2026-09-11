@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/almalinux-openresty-csdn134184189.png
+cover: https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?w=1600&q=80&fm=jpg
 ---
 
 记录在 AlmaLinux 9.2 上用源码方式安装 OpenResty 的完整过程。OpenResty 官方提供 yum 源，但需要装进自定义目录、或环境不允许走外部仓库时，源码安装更可控。安装目录规划在 /apps/openresty。

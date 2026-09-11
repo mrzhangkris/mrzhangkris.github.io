@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Oracle]
 copyright_author: 司南
-cover: /images/csdn/covers/oracle-csdn139348914.png
+cover: https://images.unsplash.com/photo-1752742111841-f490c48aa668?w=1600&q=80&fm=jpg
 ---
 
 让某个用户只能查询、不能改动数据，Oracle 里最顺手的组合是"视图 + 只读授权"：把想暴露的列收进视图，再把视图的 SELECT 权限授出去，基表对用户完全不可见。同义词则是在这之上再加一层别名，让跨 schema 的访问更省事。这篇按完整流程走一遍：建视图、授权、回收，最后说同义词的用法和坑。

@@ -4,7 +4,7 @@ date: 2023-11-02 19:31:59
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/centos-openssh-openssl-csdn134189302.png
+cover: https://images.unsplash.com/photo-1608742213509-815b97c30b36?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

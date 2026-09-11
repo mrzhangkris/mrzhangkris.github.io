@@ -4,7 +4,7 @@ date: 2024-05-13 16:03:41
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-proxy-cache-csdn138807133.png
+cover: https://images.unsplash.com/photo-1617839625591-e5a789593135?w=1600&q=80&fm=jpg
 updated: 2026-09-11
 ---
 

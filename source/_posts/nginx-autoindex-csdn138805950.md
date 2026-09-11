@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Nginx]
 copyright_author: 司南
-cover: /images/csdn/covers/nginx-autoindex-csdn138805950.png
+cover: https://images.unsplash.com/photo-1639066648921-82d4500abf1a?w=1600&q=80&fm=jpg
 ---
 
 服务器上有一批文件想让同事在浏览器里直接翻，又不想专门写页面——autoindex 就是 Nginx 自带的目录列表功能：请求指向的目录里没有 index.html 这类默认索引文件时，Nginx 会自动生成一个列出全部文件和子目录链接的 HTML 页面。这篇记录它的用法和几个配套选项。

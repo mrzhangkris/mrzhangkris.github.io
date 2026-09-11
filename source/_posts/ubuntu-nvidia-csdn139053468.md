@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Linux]
 copyright_author: 司南
-cover: /images/csdn/covers/ubuntu-nvidia-csdn139053468.png
+cover: https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=1600&q=80&fm=jpg
 ---
 
 Ubuntu 上装好 NVIDIA 驱动后，有时系统更新会顺手把驱动也升上去，版本一变就可能带来兼容性或稳定性问题。这篇分两部分：先把 NVIDIA 驱动装好，再用 APT pin 和 apt-mark 两道手段把驱动版本锁死，不让它被自动更新。

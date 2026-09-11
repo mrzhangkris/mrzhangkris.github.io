@@ -5,7 +5,7 @@ updated: 2026-09-11
 categories: [技术]
 tags: [Tomcat]
 copyright_author: 司南
-cover: /images/csdn/covers/tomcat-csdn138898541.png
+cover: https://images.unsplash.com/photo-1570993492881-25240ce854f4?w=1600&q=80&fm=jpg
 ---
 
 Tomcat 跑久了难免遇到内存泄露或者需要更新部署应用的情况，这时候一次干净的自动重启比手动登录服务器操作省心得多。这篇给出一个简单可用的重启脚本：先停、再确认停干净、防残留进程，最后拉起来并验证重启结果。
