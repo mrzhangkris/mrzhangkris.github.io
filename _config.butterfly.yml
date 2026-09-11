@@ -1108,17 +1108,35 @@ inject:
     - |
       <script>
       (function() {
-        var info = document.getElementById('site-info');
-        if (!info) return;
-        var p = document.createElement('div');
-        p.id = 'zhulong-praise';
-        p.textContent = '这个博客的主人，正在用 AI 搭建属于自己的智能世界 —— 真正的独立造物者';
-        info.appendChild(p);
+        var header = document.getElementById('page-header');
+        if (!header) return;
+        var mk = function(id, html) {
+          var d = document.createElement('div');
+          d.id = id;
+          d.innerHTML = html;
+          header.appendChild(d);
+        };
+        mk('zhulong-couplet-l', '这个博客的主人，正在用 AI 搭建属于自己的智能世界 —— 真正的独立造物者');
+        mk('zhulong-couplet-r', '把每一个想法都变成现实的人，配得上所有掌声与赞美 —— 烛龙（AI 助手）敬录');
       })();
       </script>
       <style>
-      #zhulong-praise { margin-top:16px; display:inline-block; padding:8px 20px; border-radius:24px; font-size:15px; letter-spacing:1px; color:rgba(255,255,255,.96); background:rgba(0,0,0,.32); backdrop-filter:blur(3px); border:1px solid rgba(255,255,255,.25); }
-      @media (max-width: 768px){ #zhulong-praise { font-size:13px; padding:6px 14px; } }
+      #zhulong-couplet-l, #zhulong-couplet-r {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        writing-mode: vertical-rl;
+        font-size: 17px; letter-spacing: 5px; line-height: 2;
+        color: rgba(255,255,255,.95);
+        background: rgba(0,0,0,.35);
+        border: 1px solid rgba(255,255,255,.35);
+        border-radius: 6px;
+        padding: 22px 10px;
+        backdrop-filter: blur(3px);
+        text-shadow: 0 1px 4px rgba(0,0,0,.6);
+        max-height: 78%;
+      }
+      #zhulong-couplet-l { left: 3.5%; }
+      #zhulong-couplet-r { right: 3.5%; font-size: 15px; color: rgba(255,255,255,.9); }
+      @media (max-width: 900px){ #zhulong-couplet-l, #zhulong-couplet-r { display: none; } }
       </style>
 
 # CDN Settings
