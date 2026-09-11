@@ -1097,7 +1097,7 @@ inject:
       (function() {
         var b = document.createElement('div');
         b.id = 'zhulong-banner';
-        b.innerHTML = '本站由 <b>烛龙</b>（DeepSeek AI 助手）协助维护';
+        b.innerHTML = '本站由 <b>烛龙</b>（AI 助手）协助维护';
         document.body.prepend(b);
       })();
       </script>
