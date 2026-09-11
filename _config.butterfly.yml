@@ -1122,7 +1122,7 @@ inject:
       </script>
       <style>
       #zhulong-couplet-l, #zhulong-couplet-r {
-        position: absolute; bottom: 9%;
+        position: absolute; top: 50%; transform: translateY(-50%);
         font-size: 15px; letter-spacing: 1px; line-height: 1.7; text-align: center;
         color: rgba(255,255,255,.95);
         background: rgba(0,0,0,.35);
