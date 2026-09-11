@@ -1,6 +1,6 @@
 ---
 title: Hello World —— 博客上线了
-date: 2026-09-11 12:00:00 +0800
+date: 2026-09-11 11:00:00 +0800
 tags: [博客, GitHub Pages]
 ---
 
@@ -18,7 +18,7 @@ tags: [博客, GitHub Pages]
 ```yaml
 ---
 title: 文章标题
-date: 2026-09-11 12:00:00 +0800
+date: 2026-09-11 11:00:00 +0800
 tags: [标签一, 标签二]
 categories: [分类]
 ---
