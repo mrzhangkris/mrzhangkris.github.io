@@ -1,10 +1,14 @@
 {
-  "title": "nginx try_files",
-  "type": "config",
+  "title": "nginx 1.31.5 try_files 实测",
+  "type": "cmd",
   "lines": [
-    {"t": "note", "s": "依次找文件、目录，最后回退到入口页"},
-    {"t": "config", "s": "location / {"},
-    {"t": "config", "s": "    try_files $uri $uri/ /index.html;"},
-    {"t": "config", "s": "}"}
+    {"t": "config", "s": "try_files $uri $uri/ /index.html;"},
+    {"t": "cmd", "s": "curl -s localhost/about.html"},
+    {"t": "out", "s": "<h1>ABOUT</h1>"},
+    {"t": "cmd", "s": "curl -s localhost/nope.html"},
+    {"t": "out", "s": "<h1>INDEX</h1>  # 200,回退到入口页"},
+    {"t": "cmd", "s": "curl -s 'localhost/missing?id=42'"},
+    {"t": "out", "s": "qs=id=42 uri=/fallback.php"},
+    {"t": "note", "s": "?$query_string 才能带走参数"}
   ]
 }
