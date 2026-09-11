@@ -27,6 +27,11 @@ menu:
   分类: /categories/ || fas fa-folder
   标签: /tags/ || fas fa-tags
   关于: /about/ || fas fa-user
+  更多||fas fa-ellipsis:
+    友链: /link/ || fas fa-link
+    画廊: /gallery/ || fas fa-images
+    音乐: /music/ || fas fa-music
+    说说: /talk/ || fas fa-comment-dots
 
 # --------------------------------------
 # Code Blocks Settings
@@ -63,8 +68,8 @@ social:
 favicon: /img/favicon.png
 
 avatar:
-  img: /img/butterfly-icon.png
-  effect: false
+  img: /img/avatar.png
+  effect: true
 
 # Disable all banner images
 disable_top_img: false
@@ -73,13 +78,13 @@ disable_top_img: false
 default_top_img:
 
 # The banner image of index page
-index_img:
+index_img: /img/banner-stars.jpg
 
 # The banner image of archive page
-archive_img:
+archive_img: /img/banner-mountain.jpg
 
 # Note: tag page, not tags page
-tag_img:
+tag_img: /img/banner-gradient.jpg
 
 # The banner image of tag page, you can set the banner image for each tag
 # Format:
@@ -87,7 +92,7 @@ tag_img:
 tag_per_img:
 
 # Note: category page, not categories page
-category_img:
+category_img: /img/banner-gradient.jpg
 
 # The banner image of category page, you can set the banner image for each category
 # Format:
@@ -439,7 +444,7 @@ copy:
 
 # Need to install the hexo-wordcount plugin
 wordcount:
-  enable: false
+  enable: true
   # Display the word count of the article in post meta
   post_wordcount: true
   # Display the time to read the article in post meta
@@ -484,7 +489,7 @@ math:
 search:
   # Choose: algolia_search / local_search / docsearch
   # leave it empty if you don't need search
-  use:
+  use: local_search
   placeholder:
 
   # Algolia Search
@@ -495,9 +500,9 @@ search:
   # Local Search
   local_search:
     # Preload the search data when the page loads.
-    preload: false
+    preload: true
     # Show top n results per article, show all results by setting to -1
-    top_n_per_article: 1
+    top_n_per_article: -1
     # Unescape html strings to the readable one.
     unescape: false
     # Enable pagination for search results
@@ -543,16 +548,16 @@ comments:
   # Leave it empty if you don't need comments
   # Choose: Disqus/Disqusjs/Livere/Gitalk/Valine/Waline/Utterances/Facebook Comments/Twikoo/Giscus/Remark42/Artalk
   # Format of two comments system : Disqus,Waline
-  use:
+  use: Giscus
   # Display the comment name next to the button
   text: true
   # Lazyload: The comment system will be load when comment element enters the browser's viewport.
   # If you set it to true, the comment count will be invalid
   lazyload: false
   # Display comment count in post's top_img
-  count: false
+  count: true
   # Display comment count in Home Page
-  card_post_count: false
+  card_post_count: true
 
 # Disqus
 # https://disqus.com/
@@ -640,9 +645,9 @@ twikoo:
 # Giscus
 # https://giscus.app/
 giscus:
-  repo:
-  repo_id:
-  category_id:
+  repo: mrzhangkris/mrzhangkris.github.io
+  repo_id: R_kgDOUWBE-w
+  category_id: DIC_kwDOUWBE-84DFWzG
   light_theme: light
   dark_theme: dark
   js:

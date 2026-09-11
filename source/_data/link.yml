@@ -1,0 +1,15 @@
+# 友情链接配置
+# 可加多个分类(class_name + link_list)
+
+- class_name: 链接
+  link_list:
+    - name: Butterfly
+      link: https://butterfly.js.org/
+      avatar: https://butterfly.js.org/img/avatar.png
+      descr: 一个简洁、功能强大的 Hexo 主题
+      siteshot: https://butterfly.js.org/img/cover.jpg
+    - name: mrzhangkris
+      link: https://github.com/mrzhangkris
+      avatar: https://avatars.githubusercontent.com/u/92247501?v=4
+      descr: 我的 GitHub 主页
+      siteshot: https://opengraph.githubassets.com/1/https://github.com/mrzhangkris

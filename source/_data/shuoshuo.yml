@@ -1,0 +1,8 @@
+- date: 2026-09-11 14:00:00
+  content: 博客全新改版上线了!从 Jekyll 换到了 Hexo + Butterfly,顺便把友链、画廊、音乐、说说、评论都开了。写文章的工作流没变,依然是 Markdown + git push。
+  tags:
+    - 博客
+- date: 2026-09-11 12:00:00
+  content: 第一篇「Hello World」发布了。这是博客的新起点。
+  tags:
+    - 博客
