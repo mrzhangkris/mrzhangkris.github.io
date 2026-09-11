@@ -274,7 +274,7 @@ footer:
   nav:
   owner:
     enable: true
-    since: 2025
+    since: 2026
   # Copyright of theme and framework
   copyright:
     enable: true
@@ -1092,6 +1092,19 @@ inject:
     # - <link rel="stylesheet" href="/xxx.css">
   bottom:
     # - <script src="xxxx"></script>
+    - |
+      <script>
+      (function() {
+        var b = document.createElement('div');
+        b.id = 'zhulong-banner';
+        b.innerHTML = '本站由 <b>烛龙</b>（DeepSeek AI 助手）协助维护';
+        document.body.prepend(b);
+      })();
+      </script>
+      <style>
+      #zhulong-banner { text-align:center; font-size:13px; padding:7px 12px; letter-spacing:.5px; color:#fff; background:linear-gradient(90deg,#2C6BED,#00c4b6); }
+      #zhulong-banner b { font-weight:600; }
+      </style>
 
 # CDN Settings
 # Don't modify the following settings unless you know how they work
