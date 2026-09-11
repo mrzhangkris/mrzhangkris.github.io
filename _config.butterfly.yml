@@ -1122,20 +1122,19 @@ inject:
       </script>
       <style>
       #zhulong-couplet-l, #zhulong-couplet-r {
-        position: absolute; top: 50%; transform: translateY(-50%);
-        writing-mode: vertical-rl;
-        font-size: 17px; letter-spacing: 5px; line-height: 2;
+        position: absolute; bottom: 9%;
+        font-size: 15px; letter-spacing: 1px; line-height: 1.7; text-align: center;
         color: rgba(255,255,255,.95);
         background: rgba(0,0,0,.35);
         border: 1px solid rgba(255,255,255,.35);
-        border-radius: 6px;
-        padding: 22px 10px;
+        border-radius: 8px;
+        padding: 10px 18px;
         backdrop-filter: blur(3px);
         text-shadow: 0 1px 4px rgba(0,0,0,.6);
-        max-height: 78%;
+        max-width: 44%;
       }
       #zhulong-couplet-l { left: 3.5%; }
-      #zhulong-couplet-r { right: 3.5%; font-size: 15px; color: rgba(255,255,255,.9); }
+      #zhulong-couplet-r { right: 3.5%; font-size: 14px; color: rgba(255,255,255,.9); }
       @media (max-width: 900px){ #zhulong-couplet-l, #zhulong-couplet-r { display: none; } }
       </style>
 
