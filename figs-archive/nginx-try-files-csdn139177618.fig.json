@@ -3,12 +3,12 @@
   "type": "cmd",
   "lines": [
     {"t": "config", "s": "try_files $uri $uri/ /index.html;"},
-    {"t": "cmd", "s": "curl -s localhost/about.html"},
-    {"t": "out", "s": "<h1>ABOUT</h1>"},
     {"t": "cmd", "s": "curl -s localhost/nope.html"},
-    {"t": "out", "s": "<h1>INDEX</h1>  # 200,回退到入口页"},
+    {"t": "out", "s": "<h1>INDEX</h1>  # 200,SPA 回退"},
+    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost/report/"},
+    {"t": "out", "s": "403  # $uri/ 命中目录,无 index"},
     {"t": "cmd", "s": "curl -s 'localhost/missing?id=42'"},
-    {"t": "out", "s": "qs=id=42 uri=/fallback.php"},
-    {"t": "note", "s": "?$query_string 才能带走参数"}
+    {"t": "out", "s": "qs=id=42  # ?$query_string 带参数"},
+    {"t": "note", "s": "兜底目标指向自己 → 500 死循环"}
   ]
 }
