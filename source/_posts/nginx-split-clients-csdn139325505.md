@@ -12,7 +12,11 @@ cover: https://images.unsplash.com/photo-1496181133206-80ce9b88a851?w=1600&q=80&
 
 本文按配置实战组织：先交代实验环境，再实测三件事——分组是否稳定、比例是否可信、调整比例会发生什么。所有输出均为 nginx/1.31.5 实跑结果。
 
-![配图](/images/csdn/figures/nginx-split-clients-csdn139325505.png)
+![配图1](/images/csdn/figures/nginx-split-clients-csdn139325505-1.png)
+
+![配图2](/images/csdn/figures/nginx-split-clients-csdn139325505-2.png)
+
+![配图3](/images/csdn/figures/nginx-split-clients-csdn139325505-3.png)
 
 ## 使用场景
 

@@ -47,7 +47,9 @@ named -v
 sudo vi /etc/named.conf
 ```
 
-![配图](/images/csdn/figures/centos-7-dns-bind-csdn138907062.png)
+![配图1](/images/csdn/figures/centos-7-dns-bind-csdn138907062-1.png)
+
+![配图2](/images/csdn/figures/centos-7-dns-bind-csdn138907062-2.png)
 
 添加以下内容：
 

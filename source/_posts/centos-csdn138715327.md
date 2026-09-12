@@ -22,7 +22,7 @@ ls 用于显示目录里的文件和子目录。常用参数：
 
 查看当前目录所有文件（含隐藏文件）的详细列表：
 
-![配图](/images/csdn/figures/centos-csdn138715327.png)
+![配图1](/images/csdn/figures/centos-csdn138715327-1.png)
 
 ```bash
 ls -la

@@ -69,7 +69,7 @@ sudo make install
 
 编译安装完成的验证信号是新版本自己的 `apachectl -v` 能报出目标版本，实测输出为 `Server version: Apache/2.4.46 (Unix)`。
 
-![配图](/images/csdn/figures/apache-csdn138910842.png)
+![配图1](/images/csdn/figures/apache-csdn138910842-1.png)
 
 ### 步骤 4：迁移配置
 

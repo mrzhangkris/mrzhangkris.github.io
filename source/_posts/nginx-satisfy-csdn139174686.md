@@ -12,7 +12,13 @@ cover: https://images.unsplash.com/photo-1667670778881-537035257bd8?w=1600&q=80&
 
 本文按配置实战组织：先交代实验环境，再用四组配置加真实输出验证 any/all 两种组合语义、顺序陷阱和 return 的优先级。所有输出均为 nginx/1.31.5 实跑结果。
 
-![配图](/images/csdn/figures/nginx-satisfy-csdn139174686.png)
+![配图1](/images/csdn/figures/nginx-satisfy-csdn139174686-1.png)
+
+![配图2](/images/csdn/figures/nginx-satisfy-csdn139174686-2.png)
+
+![配图3](/images/csdn/figures/nginx-satisfy-csdn139174686-3.png)
+
+![配图4](/images/csdn/figures/nginx-satisfy-csdn139174686-4.png)
 
 ## 实验环境
 

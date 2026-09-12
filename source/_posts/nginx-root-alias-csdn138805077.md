@@ -12,7 +12,15 @@ cover: https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?w=1600&q=80&
 
 本文按配置实战组织：先交代实验环境，再用三组配置加真实输出把"追加"和"替换"两种行为跑给你看，然后实测两个最容易踩的路径拼接坑。所有输出均为 nginx/1.31.5 实跑结果。
 
-![配图](/images/csdn/figures/nginx-root-alias-csdn138805077.png)
+![配图1](/images/csdn/figures/nginx-root-alias-csdn138805077-1.png)
+
+![配图2](/images/csdn/figures/nginx-root-alias-csdn138805077-2.png)
+
+![配图3](/images/csdn/figures/nginx-root-alias-csdn138805077-3.png)
+
+![配图4](/images/csdn/figures/nginx-root-alias-csdn138805077-4.png)
+
+![配图5](/images/csdn/figures/nginx-root-alias-csdn138805077-5.png)
 
 ## 实验环境
 

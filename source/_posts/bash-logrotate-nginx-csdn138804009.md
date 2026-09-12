@@ -59,7 +59,9 @@ logrotate 是 Linux 上专门管理日志的工具：定期轮转日志、压缩
 
 在 `/etc/logrotate.d` 目录下创建一个名为 `nginx` 的文件：
 
-![配图](/images/csdn/figures/bash-logrotate-nginx-csdn138804009.png)
+![配图1](/images/csdn/figures/bash-logrotate-nginx-csdn138804009-1.png)
+
+![配图2](/images/csdn/figures/bash-logrotate-nginx-csdn138804009-2.png)
 
 ```conf
 /apps/openresty/nginx/logs/head/access.log

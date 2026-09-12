@@ -12,7 +12,9 @@ cover: https://images.unsplash.com/photo-1557701197-2f99da0922dd?w=1600&q=80&fm=
 
 按配置实战组织：先交代实验环境与签名生成，再验证放行、过期、无签名、篡改、换源五种请求的实际走向。所有输出均为 nginx/1.31.5 实跑结果。
 
-![配图](/images/csdn/figures/nginx-secure-link-csdn139293849.png)
+![配图1](/images/csdn/figures/nginx-secure-link-csdn139293849-1.png)
+
+![配图2](/images/csdn/figures/nginx-secure-link-csdn139293849-2.png)
 
 ## 实验环境
 

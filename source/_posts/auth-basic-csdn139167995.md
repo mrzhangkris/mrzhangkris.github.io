@@ -31,7 +31,13 @@ htpasswd -c /etc/nginx/.htpasswd user1  # 创建包含 user1 的用户密码文�
 
 ### 第二步：修改 Nginx 配置
 
-![配图](/images/csdn/figures/auth-basic-csdn139167995.png)
+![配图1](/images/csdn/figures/auth-basic-csdn139167995-1.png)
+
+![配图2](/images/csdn/figures/auth-basic-csdn139167995-2.png)
+
+![配图3](/images/csdn/figures/auth-basic-csdn139167995-3.png)
+
+![配图4](/images/csdn/figures/auth-basic-csdn139167995-4.png)
 
 在 server 或 location 里用 `auth_basic` 启用认证，用 `auth_basic_user_file` 指定密码文件：
 

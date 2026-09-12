@@ -30,7 +30,7 @@ CREATE DIRECTORY dumpdir AS '/path/to/backup/directory';
 
 新建 `backup_script.sh`，内容如下：
 
-![配图](/images/csdn/figures/bash-expdp-csdn139348362.png)
+![配图1](/images/csdn/figures/bash-expdp-csdn139348362-1.png)
 
 ```bash
 #!/bin/sh

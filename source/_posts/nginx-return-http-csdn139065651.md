@@ -12,7 +12,15 @@ cover: https://images.unsplash.com/photo-1651340550839-3b295d930048?w=1600&q=80&
 
 本文按配置实战组织：先交代实验环境，再给三组可直接复制的配置与真实输出（维护页、重定向、文本应答），加上 server 级整站开关，最后用实测说清两个容易踩的坑。所有输出均为 nginx/1.31.5 实跑结果，未验证的结论会明确标注。
 
-![配图](/images/csdn/figures/nginx-return-http-csdn139065651.png)
+![配图1](/images/csdn/figures/nginx-return-http-csdn139065651-1.png)
+
+![配图2](/images/csdn/figures/nginx-return-http-csdn139065651-2.png)
+
+![配图3](/images/csdn/figures/nginx-return-http-csdn139065651-3.png)
+
+![配图4](/images/csdn/figures/nginx-return-http-csdn139065651-4.png)
+
+![配图5](/images/csdn/figures/nginx-return-http-csdn139065651-5.png)
 
 ## 实验环境
 

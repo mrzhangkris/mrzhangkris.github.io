@@ -12,7 +12,11 @@ cover: https://images.unsplash.com/photo-1483058712412-4245e9b90334?w=1600&q=80&
 
 本文按配置实战组织：先交代实验环境，再依次实测替换次数、内容类型、压缩三个默认行为。所有输出均为 nginx/1.31.5 实跑结果（官方镜像默认编译了 sub 模块，`nginx -V` 可查）。
 
-![配图](/images/csdn/figures/nginx-sub-csdn139253978.png)
+![配图1](/images/csdn/figures/nginx-sub-csdn139253978-1.png)
+
+![配图2](/images/csdn/figures/nginx-sub-csdn139253978-2.png)
+
+![配图3](/images/csdn/figures/nginx-sub-csdn139253978-3.png)
 
 ## 能做什么
 

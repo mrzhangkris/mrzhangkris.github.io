@@ -111,7 +111,7 @@ sudo systemctl start mysqld
 sudo systemctl enable mysqld
 ```
 
-![配图](/images/csdn/figures/centos-7-mysql-csdn138905545.png)
+![配图1](/images/csdn/figures/centos-7-mysql-csdn138905545-1.png)
 
 MySQL 5.7 安装完成后会自动生成一个临时 root 密码，先从日志里找出来，再做安全初始化：
 

@@ -42,7 +42,9 @@ mirror 模块把客户请求镜像到一组后端服务器：请求不仅传递�
 
 默认构建的 Nginx 已启用 mirror 模块；如果是自定义编译，先确认模块已带上。
 
-![配图](/images/csdn/figures/nginx-mirror-csdn139179059.png)
+![配图1](/images/csdn/figures/nginx-mirror-csdn139179059-1.png)
+
+![配图2](/images/csdn/figures/nginx-mirror-csdn139179059-2.png)
 
 ```nginx
 http {

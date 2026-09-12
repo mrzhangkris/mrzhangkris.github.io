@@ -12,7 +12,11 @@ Nginx 做反向代理时，多个后端怎么分流量是最先要回答的问�
 
 本文按配置实战组织：先交代实验环境，然后实测轮询序列、加权分布、宕机转移三个关键行为，最后给一组容易写错的配置对比。所有输出均为 nginx/1.31.5 实跑结果。
 
-![配图](/images/csdn/figures/nginx-round-robin-csdn139346197.png)
+![配图1](/images/csdn/figures/nginx-round-robin-csdn139346197-1.png)
+
+![配图2](/images/csdn/figures/nginx-round-robin-csdn139346197-2.png)
+
+![配图3](/images/csdn/figures/nginx-round-robin-csdn139346197-3.png)
 
 ## 实验环境
 
