@@ -10,6 +10,8 @@ cover: https://images.unsplash.com/photo-1667984390533-64bdefe719ea?w=1600&q=80&
 
 ZooKeeper 在分布式系统里干的活不算显眼，但缺了它很多组件跑不起来：配置管理、命名服务、分布式锁都靠它协调。这类组件的特点是一旦上线就轻易不动，所以第一次部署值得花心思装对。本文记录在 CentOS 7 上搭一套三节点 ZooKeeper 集群的完整过程，从装 Java 环境到集群验证。
 
+> 环境与验证边界：CentOS 7 已于 2024-06 EOL，本文命令与配置流程为原文 CentOS 7 实战记录，未在容器复跑（el7 源需切 vault，且三节点集群验证需真实多机网络）；下载链接有效性已于 2026-09 逐条 curl 复核（见下文勘误）。RHEL 8/9 环境部署同版本集群步骤一致，仅 Java 包名需换成 `java-11-openjdk`（ZK 3.7+ 支持 JDK 11）。
+
 ## 系统和环境准备
 
 示例环境是三台 CentOS 7 机器，下文用 zk1、zk2、zk3 指代。开始前确认两件事：节点之间网络互通，机器时间保持同步。
@@ -27,10 +29,11 @@ java -version
 
 ### 安装 ZooKeeper
 
-从 Apache 官网下载稳定版，解压到所有服务器上相同的目录：
+从 Apache 下载二进制包，解压到所有服务器上相同的目录。**一处勘误**（2026-09 实测）：3.7.0 已从 downloads.apache.org 当前版本区下架（原链接 404），历史版本要从 archive 站取；如果你用当前维护版本（3.9.x），仍从 downloads 站下载：
 
 ```bash
-wget https://downloads.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz
+# 原文版本 3.7.0（已从主站下架，用 archive 源）
+wget https://archive.apache.org/dist/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz
 tar -zxvf apache-zookeeper-3.7.0-bin.tar.gz -C /opt
 mv /opt/apache-zookeeper-3.7.0-bin /opt/zookeeper
 ```

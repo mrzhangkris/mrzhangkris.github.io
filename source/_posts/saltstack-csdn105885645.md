@@ -10,6 +10,8 @@ cover: https://images.unsplash.com/photo-1509803874385-db7c23652552?w=1600&q=80&
 
 要在一批机器上统一执行命令、下发配置，一台台 SSH 上去敲显然不现实。SaltStack 就是为这个场景准备的：Master/Minion 架构下，控制端可以秒级触达成百上千台机器。这篇记录在两台 CentOS 7.7 上从零搭一套 SaltStack 的完整过程——装 Master 和 Minion、改配置、放行防火墙，最后完成密钥认证并用 `salt` 命令验证通信。
 
+> 环境与验证边界：CentOS 7 已 EOL，本文流程与图示输出为原文 CentOS 7.7 双机实战记录，未在容器复跑（密钥认证环节依赖两台独立主机与真实网络）。RHEL 8/9 上安装步骤一致：先启用 EPEL 仓库，再 `dnf install salt-master salt-minion`（实测 Rocky 9 的 EPEL 提供 Salt 3005.4，Python 3 运行时）。
+
 ## SaltStack 是什么
 
 Salt 是一种基础设施管理方式，部署轻松，几分钟内就能跑起来；扩展性好，很容易管理上万台服务器，服务器之间是秒级通讯。SaltStack 使用 Python 语言开发，支持 Rest API。

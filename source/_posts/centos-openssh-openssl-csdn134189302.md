@@ -1,5 +1,5 @@
 ---
-title: "在 CentOS 7.6 上源码升级 OpenSSH 9.5p1 与 OpenSSL 3.1.4"
+title: "源码升级 OpenSSH 9.5p1 与 OpenSSL 3.1.4：CentOS 7 场景，Rocky 9 复测"
 date: 2023-11-02 19:31:59
 updated: 2026-09-11
 categories: [技术]

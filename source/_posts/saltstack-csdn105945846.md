@@ -10,6 +10,8 @@ cover: https://images.unsplash.com/photo-1667984390553-7f439e6ae401?w=1600&q=80&
 
 装好 SaltStack 之后，日常用得最多的就是远程执行：一条命令让一批 Minion 同时干活。这篇把远程执行拆开讲——命令怎么构成、目标机器怎么圈定（Targeting）、有哪些常用模块、返回结果怎么落到外部系统（Returner），最后自己动手写一个模块。
 
+> 环境与验证边界：文中输出示例为原文 CentOS 7.7 双机环境的实测记录，未在容器复跑（远程执行依赖已配好的 Master/Minion 集群）；命令骨架与 Targeting 语法为 Salt 长期稳定的核心接口，与官方现行文档一致。
+
 相关文档：
 
 - 远程执行文档：https://docs.saltstack.com/en/latest/topics/tutorials/modules.html

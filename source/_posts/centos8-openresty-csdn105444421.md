@@ -1,5 +1,5 @@
 ---
-title: "CentOS 8 源码安装 OpenResty 1.19.3.1（链接自编 OpenSSL）"
+title: "源码安装 OpenResty 1.19.3.1（链接自编 OpenSSL）：RHEL 8/9 适用，Rocky 9 实测"
 date: 2020-04-10 23:09:21
 updated: 2026-09-11
 categories: [技术]

@@ -8,7 +8,7 @@ cover: https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=1600&q=80&
 updated: 2026-09-11
 ---
 
-机房里十几台新机器等着装系统，一台台插 U 盘不现实。Cobbler 把 PXE 引导、DHCP、kickstart 应答文件串成一整套，机器开机选网络启动就能自动装完。这篇按部署顺序完整走一遍，从装服务到按 MAC 定制装机。环境为 CentOS 7 + Cobbler 2.8（文中输出为当时实测记录）；openssl 密码生成命令已在 Rocky 9（OpenSSL 3.0.7）复核，结果一致。Cobbler 3.x 的配置与参数有变化，照搬本文前先核对官方文档。
+机房里十几台新机器等着装系统，一台台插 U 盘不现实。Cobbler 把 PXE 引导、DHCP、kickstart 应答文件串成一整套，机器开机选网络启动就能自动装完。这篇按部署顺序完整走一遍，从装服务到按 MAC 定制装机。环境为 CentOS 7 + Cobbler 2.8（文中输出为当时实测记录）；openssl 密码生成命令已在 Rocky 9（OpenSSL 3.0.7）复核，结果一致。Cobbler 3.x 的配置与参数有变化，照搬本文前先核对官方文档。CentOS 7 已于 2024-06 EOL：本文 `yum install cobbler` 等命令需先把 repo 的 `baseurl` 切到 `http://vault.centos.org`（注释掉 `mirrorlist` 后 `yum clean all`）才能装成；xinetd、koan 等配套包同样只存在于 vault。
 
 官方文档：[cobbler](https://cobbler.readthedocs.io/en/latest/)
 

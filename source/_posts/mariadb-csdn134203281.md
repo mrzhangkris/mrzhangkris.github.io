@@ -1,5 +1,5 @@
 ---
-title: "MariaDB 安装与远程访问配置（CentOS 7.6）"
+title: "MariaDB 安装与远程访问配置：Rocky 9 实测，附 CentOS 7.6 差异"
 date: 2023-11-03 14:54:52
 categories: [技术]
 tags: [MySQL]
@@ -8,30 +8,30 @@ cover: https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=1600&q=80&
 updated: 2026-09-11
 ---
 
-记录一次在 CentOS 7.6 上装 MariaDB 的完整过程，包括设置开机自启和放开 root 远程访问。装完你能得到：一台本机可登录、远程可连接的 MariaDB 服务。文中安装与授权 SQL 已在 Rocky 9（MariaDB 10.5.29）容器复测，10.5 与 CentOS 7.6 自带 5.5 的行为差异在对应步骤标明。
+原文是 2023 年 CentOS 7.6 上装 MariaDB 的操作记录。CentOS 7 已于 2024 年 6 月停止维护，本文按实测为准重写：**安装与授权 SQL 全部在 Rocky 9（MariaDB 10.5.29）容器复跑验证**，CentOS 7.6 的原始环境信息保留作对照——两代系统的行为差异（恰好在这套授权 SQL 上有个大坑）在对应步骤标明。装完你能得到：一台本机可登录、远程可连接的 MariaDB 服务。
 
 环境规划：
 
 | 服务器 | IP 地址 |
 | --- | --- |
-| CentOS | 192.168.0.35 |
+| Rocky Linux 9（原文为 CentOS 7.6） | 192.168.0.35 |
 
 ## 前置条件
 
-- CentOS 7.6，root 权限；
-- yum/EPEL 仓库可用（`yum makecache` 不报错）；
+- Rocky Linux 9（或同代 RHEL 系：AlmaLinux 9 / CentOS Stream 9），root 权限；CentOS 7.6 环境可照走，但 yum 源需切 vault（见注意事项）；
+- 仓库可用（`dnf makecache` / `yum makecache` 不报错；RHEL 9 的 appstream 默认含 MariaDB 10.5）；
 - 3306 端口未占用、防火墙准备放行（远程访问需要）；
-- 版本预期：CentOS 7.6 官方源自带 MariaDB 5.5.x——这影响后面授权 SQL 的写法，见"开启远程访问"一节的实测。
+- 版本预期：**Rocky 9 装到 MariaDB 10.5.x；CentOS 7.6 官方源自带的是 5.5.x**——这直接影响后面授权 SQL 的写法，见"开启远程访问"一节的实测。
 
 ## 安装
 
-用 yum 直接装客户端和服务端：
+用包管理器直接装客户端和服务端（Rocky 9 上 `yum` 是 `dnf` 的别名，两个写法等价）：
 
 ```bash
 yum install mariadb mariadb-server -y
 ```
 
-验证点：`rpm -q mariadb-server` 能看到版本号（CentOS 7.6 为 5.5.6x）。实测 Rocky 9 上包名相同，装到 10.5.29：
+验证点：`rpm -q mariadb-server` 能看到版本号——Rocky 9 实测装到 **10.5.29**（CentOS 7.6 为 5.5.6x）：
 
 ![配图1](/images/csdn/figures/mariadb-csdn134203281-1.png)
 
@@ -97,6 +97,7 @@ FLUSH PRIVILEGES;
 - 这套 SQL 是 MariaDB/MySQL 5.x 的授权写法，MySQL 8.0 已经移除 `IDENTIFIED BY` 语法，MariaDB 10.4+ 直接 UPDATE user 表也会失效，注意版本差异。
 - 改完记得 `FLUSH PRIVILEGES`，否则权限表不刷新，连接会被拒。
 - 装完建议跑一次 `mysql_secure_installation`：删匿名用户、禁 root 远程、移除 test 库——上面那个匿名用户坑它顺手就替你清了。
+- CentOS 7.6 已于 2024-06 EOL：官方镜像源下线，`yum install` 前需把 repo 文件里的 `mirrorlist` 注释、`baseurl` 指到 `http://vault.centos.org` 再 `yum clean all`；vault 偶尔限流（403），稍后重试即可。这也是本文改用 Rocky 9 复测的原因之一。
 
 ---
 
