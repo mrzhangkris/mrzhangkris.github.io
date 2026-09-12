@@ -216,13 +216,18 @@ location /oracledownload {
 
 两个 location 各管一头：`/oraclebak` 只收上传（`client_max_body_size 2048M` 允许大文件），`/oracledownload` 开了 autoindex，供人工下载核验备份。
 
+这条接收链路可以在 OpenResty 容器里完整实测（openresty/openresty:alpine，`conf/lua/upload.lua` 与上面的配置原样载入）：上传后接口返回 `save file ok`，文件按原名落地，`cat` 校验内容一致。
+
+![配图1](/images/csdn/figures/bash-expdp-csdn139348362-1.png)
+
 ## 注意事项
 
 - 脚本里的连接串把密码明文写在命令行和变量里，落地时注意文件权限，最好换成 Oracle 钱包或受控的凭证文件。
 - 原文中备份端 curl 的目标 `172.16.194.5` 与接收端 `allow 172.10.0.0/16` 网段不一致，实际部署时两边的 IP 与网段要对齐，否则 `deny all` 会直接把上传拒掉。
 - 清理过期备份的策略要自己补上（原文的 `DEL_TIME` 没有用起来），否则备份目录和远端磁盘迟早被写满。
 - 定时任务的时间要避开业务高峰，备份期间的 IO 占用不可忽视。
+- expdp 备份脚本整体未实跑（Oracle 环境无法容器化），落地前先在测试库演练一遍；接收端链路已在 OpenResty 容器实测通过。
 
----
+回到开头的担忧：这套方案的价值就在"备份不在本机"——数据库服务器连同本地盘一起消失时，异地的 zip 和下载接口还在。部署完用上面的实测方法传一个测试包，确认能落地、能下载，这套备份才算真的能兜底。
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

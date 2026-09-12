@@ -1,0 +1,13 @@
+{
+  "title": "BYPASS 的响应没有落盘（nginx/1.31.5 实测）",
+  "lines": [
+    {"t": "cmd", "s": "curl -si -H 'Pragma: no-cache' localhost/?v=2 | grep X-Proxy-Cache"},
+    {"t": "out", "s": "X-Proxy-Cache: BYPASS"},
+    {"t": "note", "s": "带 Pragma 头：读缓存被跳过"},
+    {"t": "cmd", "s": "curl -si localhost/?v=2 | grep X-Proxy-Cache"},
+    {"t": "out", "s": "X-Proxy-Cache: MISS"},
+    {"t": "note", "s": "若 BYPASS 落了盘这里应是 HIT——MISS 证明没落盘"},
+    {"t": "cmd", "s": "curl -si localhost/?v=2 | grep X-Proxy-Cache"},
+    {"t": "out", "s": "X-Proxy-Cache: HIT"}
+  ]
+}

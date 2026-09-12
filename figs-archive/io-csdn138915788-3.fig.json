@@ -1,0 +1,11 @@
+{"title": "LVM 基础流程实测（Rocky 9, lvm2 2.03）", "lines": [
+  {"t": "cmd", "s": "pvcreate /dev/loop20 /dev/loop21"},
+  {"t": "out", "s": "Physical volume \"/dev/loop20\" successfully created."},
+  {"t": "out", "s": "Physical volume \"/dev/loop21\" successfully created."},
+  {"t": "cmd", "s": "vgcreate vg0 /dev/loop20 /dev/loop21"},
+  {"t": "out", "s": "Volume group \"vg0\" successfully created"},
+  {"t": "cmd", "s": "lvcreate -L 100M -n data vg0; lvcreate -L 40M -n cache vg0"},
+  {"t": "out", "s": "Logical volume \"data\" created."},
+  {"t": "out", "s": "Logical volume \"cache\" created."},
+  {"t": "note", "s": "lvconvert 绑定依赖 dm-cache 模块，容器内核未含，未跑通"}
+]}

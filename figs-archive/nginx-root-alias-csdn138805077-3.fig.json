@@ -1,0 +1,6 @@
+{"title": "正则 location + 捕获组实测", "lines": [
+  {"t": "config", "s": "location ~ ^/images/(.+)$ { alias /data/uploads/$1; }"},
+  {"t": "cmd", "s": "curl -s localhost/images/logo.png"},
+  {"t": "out", "s": "UPLOAD"},
+  {"t": "note", "s": "alias 必须引用捕获组 $1，缺了它 Nginx 启动直接报错"}
+]}

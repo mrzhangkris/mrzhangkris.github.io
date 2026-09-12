@@ -1,0 +1,9 @@
+{
+  "title": "无 burst 严格限速：超节奏一律拒绝（实拍）",
+  "lines": [
+    {"t": "config", "s": "limit_req zone=z3;  (rate=3r/s，无 burst)"},
+    {"t": "cmd", "s": "for i in $(seq 1 10); do curl -s -o /dev/null -w %{http_code} ..; done"},
+    {"t": "out", "s": "200 503 503 503 503 503 503 503 503 503"},
+    {"t": "note", "s": "请求间隔 <333ms 的全部被拒，只放节奏内第 1 个"}
+  ]
+}

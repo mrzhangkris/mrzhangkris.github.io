@@ -1,0 +1,7 @@
+{"title": "改比例后的分组重排实测", "lines": [
+  {"t": "config", "s": "25% \"A\"; * \"B\";   # 从50%调到25%"},
+  {"t": "out", "s": "20个UA统计: 4 A / 16 B"},
+  {"t": "cmd", "s": "curl -A \"Mozilla/5.0 testUA\" localhost"},
+  {"t": "out", "s": "VERSION B   # 改比例前是 VERSION A"},
+  {"t": "note", "s": "调整比例会重排所有人，测试中途不要动"}
+]}

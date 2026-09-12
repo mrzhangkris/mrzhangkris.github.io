@@ -44,7 +44,6 @@ server {
 
 用一个变量表示用户的语言版本，实现动态 URL 重写——中文用户请求 `/docs/...` 时自动落到 `zh` 目录：
 
-![配图](/images/csdn/figures/rewrite-csdn139085203.png)
 
 ```nginx
 server {

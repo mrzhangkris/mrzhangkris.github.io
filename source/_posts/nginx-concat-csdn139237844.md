@@ -8,78 +8,78 @@ copyright_author: 司南
 cover: https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?w=1600&q=80&fm=jpg
 ---
 
-页面引用十几个 CSS/JS 文件，浏览器就得发十几个请求——Nginx 的 Concat 模块让服务器端把多个文件合成一个响应返回，请求数和网络延迟都降下来。这篇记录它的安装过程、配置示例和适用场景。
+页面引用十几个 CSS/JS 文件，浏览器就得发十几个请求——Concat 模块让服务器端把多个文件合成一个响应返回，请求数和网络延迟都降下来。它是阿里 Tengine 系的第三方模块，官方 Nginx 不带，这篇按原文的安装思路在容器里实编译一遍，再把它真正的用法（`??` URL 合并）、类型约束和超限保护逐个实测。
 
-## Concat 模块是干什么的
+## 安装：第三方模块要走 --add-module
 
-Concat 模块允许在服务器端动态合并多个文件，作为一个单独的响应传送给客户端。直接的好处是客户端对服务器的请求次数减少，网络延迟降低；资源文件的组织也更集中，网站维护起来更省事。
-
-## 安装
-
-安装分五步：
-
-1. 下载 Concat 模块源码，从 Nginx 官方网站或 GitHub 获取：
+Concat 不在官方发行版里，安装就是"取源码、编译进 Nginx"四步（以下在 Alpine 容器实测通过，模块仓库 alibaba/nginx-http-concat，Nginx 1.28.0）：
 
 ```bash
-git clone https://github.com/alibaba/ngx_http_concat_module.git
+git clone https://github.com/alibaba/nginx-http-concat.git
+cd nginx-1.28.0
+./configure --add-module=/path/to/nginx-http-concat
+make && make install
 ```
 
-> 注：concat 模块源自阿里巴巴（Tengine 系），官方仓库常见地址写作 nginx-http-concat，克隆前建议先到 GitHub 确认；原文 URL 存疑保留。
+> 注：原文写的仓库地址 `alibaba/ngx_http_concat_module` 实测不存在（GitHub 404），真实仓库名是 `nginx-http-concat`。
 
-2. 把源码文件解压到任意目录。
-3. 配置 Nginx 编译选项：编译 Nginx 时添加 `--add-module=/path/to/ngx_http_concat_module` 参数，路径即模块源码所在目录。
-4. 编译安装 Nginx：执行 `./configure` 和 `make && make install`，确保模块被正确编译链接进 Nginx。
-5. 修改 Nginx 配置文件，在需要使用的地方添加 concat 相关指令。
+**验证点**：编译完成后 `nginx -V` 应看到 `--add-module=.../nginx-http-concat`；`nginx -t` 不报 unknown directive 才算装好。
 
-![配图](/images/csdn/figures/nginx-concat-csdn139237844.png)
+## 核心机制一句话
 
-## 配置示例
+Concat 的触发方式很特别——**写在 URL 里**：请求 `/css/??a.css,b.css`，两个问号后面的文件名列表就是合并对象，Nginx 把这些文件按顺序拼成一个响应返回。指令只负责开开关、划边界。
 
-以合并 style1.css 和 style2.css 两个 CSS 文件为例：
+## 配置与实例
 
 ```nginx
 server {
   listen 80;
-  server_name example.com;
+  root /usr/local/nginx/html;
 
-  location /css {
+  location /css/ {
     concat on;
-    concat_max_files 20;
-    concat_unique off;
-    concat_types text/css;
-    root /path/to/css/files;
-
-    # 合并后的文件名和路径
-    concat_css /css/all.css;
-
-    # 指定要合并的文件
-    concat_css_allow all.css;
-    concat_css_allow style1.css;
-    concat_css_allow style2.css;
+    concat_max_files 10;
+    concat_types text/css application/javascript;
   }
 }
 ```
 
-示例在 /css 位置启用 concat，各指令的作用：
-
 - `concat on;` 打开合并功能；
-- `concat_max_files 20;` 限制单个合并请求最多 20 个文件，防止超长 URL 拖垮请求；
-- `concat_unique off;` 允许不同类型文件混在同一个合并请求里（on 则只允许同类型）；
-- `concat_types text/css;` 限定可合并的 MIME 类型；
-- `root /path/to/css/files;` 指定 CSS 文件所在目录。
+- `concat_max_files 10;` 单个合并请求最多 10 个文件，防超长 URL 攻击；
+- `concat_types` 限定可合并的 MIME 类型（默认已含 text/css 和 application/x-javascript）；
+- `concat_unique on`（默认）要求一次合并全是同类文件，`off` 才允许 CSS 和 JS 淡合。
 
-> 注：concat_css 与 concat_css_allow 两条指令在 concat 模块的公开文档中未见收录；该模块通行的用法是在 URL 中以 ?? 连接文件名（如 /css/??style1.css,style2.css）发起合并。原文示例可能无法直接运行，存疑保留。
+### 实例一：合并三个 CSS
 
-## 使用场景
+准备 style1.css、style2.css、style3.css，一条 URL 合并：
 
-- **合并静态资源文件**：把多个 CSS 或 JavaScript 文件合并传输，减少 HTTP 请求次数，加快网页加载。
-- **按请求组织合并内容**：根据客户端请求动态决定合并哪些文件，灵活应对不同的资源组合。
-- **节省带宽**：请求次数降下来，服务器带宽和资源消耗随之减少，网站整体性能和稳定性更好。
+![配图1](/images/csdn/figures/nginx-concat-csdn139237844-1.png)
+
+三个文件的规则体按 URL 里的顺序拼进一个响应。与逐个请求相比，浏览器只发一次请求、只走一次连接，HTTP/1.1 时代这是实打实的性能优化。
+
+### 实例二：混类型与 concat_unique
+
+默认 `concat_unique on` 时，把 CSS 和 JS 塞进同一个请求会被拒绝（400）；声明 `concat_unique off;` 后，css 与 js 才能合并返回——实测两种行为对比：
+
+![配图2](/images/csdn/figures/nginx-concat-csdn139237844-2.png)
+
+### 实例三：边界的三个 400
+
+合并请求的失败形态各有含义，实测三种：文件不存在返回 **404**；文件数超过 `concat_max_files` 返回 **400** 且 error.log 记录 `client sent too many concat filenames`；还有一个隐蔽形态——**MIME 类型不在 `concat_types` 里的文件混进请求，直接 400 且不写 error.log**。第三种最坑：忘了 `include mime.types;` 时所有 CSS 都会被判成默认类型，合并全部静默 400。
+
+![配图3](/images/csdn/figures/nginx-concat-csdn139237844-3.png)
 
 ## 注意事项
 
-- `concat_max_files` 给一个合理上限，避免单个 URL 拼接过多文件造成压力。
-- `concat_unique` 默认为 on，只允许合并同类型文件；关掉后混类型合并时，确认 `concat_types` 覆盖了涉及的类型。
-- 模块是编译进 Nginx 的，日后升级或重装 Nginx 时 `--add-module` 参数要记得带上，否则配置里的 concat 指令会报 unknown directive。
+- **mime.types 必须先就位**：`http` 块里 `include mime.types;` 之后再谈 concat，否则类型匹配失败、合并全部无日志 400（实测踩中）。
+- **升级 Nginx 记得带模块**：concat 是编译进去的，重装/升级时 `--add-module` 参数丢了，配置里的 concat 指令立刻 unknown directive。
+- **concat_max_files 给个贴合业务的值**：它是防滥用上限，不是性能参数；按页面真实引用数 + 余量设，太大失去保护意义。
+- **HTTP/2 时代收益要重估**：多路复用让请求合并的收益缩水，拼接还会破坏单独缓存——文件内容一变，整个合并 URL 的缓存全失效。历史项目按需保留，新项目先测再上。
+
+## 小结
+
+回到开头的场景：十几个静态文件请求压成一次——Concat 用一个 `??` URL 做到了，配置面只有 `concat on`、`concat_max_files`、`concat_types` 三五个指令。实跑下来要带走的是三条边界：仓库真实地址是 `alibaba/nginx-http-concat`；`concat_types` 覆盖不到的类型会静默 400（mime.types 先 include）；文件数超 `concat_max_files` 直接拒掉。要不要在新项目里用它，先看你的用户还在不在 HTTP/1.1 上。
+
+---
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

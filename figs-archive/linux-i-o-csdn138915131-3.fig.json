@@ -1,0 +1,10 @@
+{"title": "nr_requests 调整实测：能调小，调大被拒", "lines": [
+  {"t": "cmd", "s": "echo 64 > /sys/block/loop30/queue/nr_requests"},
+  {"t": "out", "s": "64    # 调小生效"},
+  {"t": "cmd", "s": "echo 256 > /sys/block/loop30/queue/nr_requests"},
+  {"t": "out", "s": "bash: echo: write error: Invalid argument"},
+  {"t": "cmd", "s": "cat /sys/block/loop30/queue/nr_requests"},
+  {"t": "out", "s": "64    # 原值未变，内核拒绝时不会写坏"},
+  {"t": "note", "s": "虚拟化/loop 设备常不接受调大，真实 SATA/SAS 一般可行"},
+  {"t": "note", "s": "echo 完必须读回验证，脚本里要检查退出码"}
+]}

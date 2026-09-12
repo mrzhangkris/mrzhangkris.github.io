@@ -1,0 +1,7 @@
+{"title": "调度器实测（Rocky 9, kernel 5.14）", "lines": [
+  {"t": "cmd", "s": "cat /sys/block/vda/queue/scheduler"},
+  {"t": "out", "s": "none [mq-deadline] kyber"},
+  {"t": "note", "s": "方括号 = 当前生效的调度器"},
+  {"t": "note", "s": "可选列表里没有 noop 和 cfq：cfq 于内核 5.0 移除"},
+  {"t": "note", "s": "新内核 SSD 选 none，HDD/通用负载选 mq-deadline"}
+]}

@@ -1,0 +1,9 @@
+{
+  "title": "allow/deny 白名单实测",
+  "lines": [
+    {"t": "note", "s": "allow 10.0.0.0/8 + deny all，本机来源不在白名单"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" localhost/wl/"},
+    {"t": "out", "s": "403"},
+    {"t": "note", "s": "白名单外的来源，到不了认证环节直接 403"}
+  ]
+}

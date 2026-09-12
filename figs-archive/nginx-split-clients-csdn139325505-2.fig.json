@@ -1,0 +1,7 @@
+{"title": "50% 分流统计实测", "lines": [
+  {"t": "cmd", "s": "# 20 个不同 UA 模拟 20 个用户"},
+  {"t": "cmd", "s": "for i in $(seq 20); do curl -A \"user$i\" localhost; done"},
+  {"t": "out", "s": "10 VERSION A"},
+  {"t": "out", "s": "10 VERSION B"},
+  {"t": "note", "s": "50% 是哈希意义上的均分，样本越大越接近"}
+]}

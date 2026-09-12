@@ -1,0 +1,12 @@
+{
+  "title": "OpenResty 接收端上传实测",
+  "lines": [
+    {"t": "note", "s": "openresty/openresty:alpine 容器实测"},
+    {"t": "cmd", "s": "cd /tmp"},
+    {"t": "cmd", "s": "curl -s -F \"file=@orcl_20240601030000.zip\" localhost:8082/oraclebak"},
+    {"t": "out", "s": "save file ok"},
+    {"t": "cmd", "s": "ls -l /data/oraclebak/"},
+    {"t": "out", "s": "-rw-r--r-- 1 nobody nobody 15 ... orcl_20240601030000.zip"},
+    {"t": "note", "s": "文件按原名落地，cat 校验内容一致"}
+  ]
+}

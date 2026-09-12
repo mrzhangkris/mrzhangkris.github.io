@@ -1,0 +1,9 @@
+{"title": "403 现场与 autoindex 开关", "lines": [
+  {"t": "cmd", "s": "rm index.htm && curl -so /dev/null -w '%{http_code}\\n' localhost/"},
+  {"t": "out", "s": "403"},
+  {"t": "note", "s": "默认文件全无 + autoindex off（默认）→ 403"},
+  {"t": "config", "s": "location / {  autoindex on;  }"},
+  {"t": "cmd", "s": "curl -s localhost/"},
+  {"t": "out", "s": "<h1>Index of /</h1><hr><pre>..."},
+  {"t": "note", "s": "开 autoindex 后，同一目录返回文件列表"}
+]}

@@ -1,0 +1,10 @@
+{"title": "cobbler check 复查（CentOS 7, cobbler 2.8）", "lines": [
+  {"t": "cmd", "s": "systemctl restart cobblerd && cobbler check"},
+  {"t": "out", "s": "1 : SELinux is enabled. ..."},
+  {"t": "out", "s": "2 : enable and start rsyncd.service with systemctl"},
+  {"t": "out", "s": "3 : debmirror package is not installed ..."},
+  {"t": "out", "s": "4 : fencing tools were not found ..."},
+  {"t": "out", "s": "Restart cobblerd and then run 'cobbler sync' to apply changes."},
+  {"t": "note", "s": "处理过的 server/next_server/密码/loaders/tftp 五条已消失"},
+  {"t": "note", "s": "剩下四条属于可选功能，不影响装机"}
+]}

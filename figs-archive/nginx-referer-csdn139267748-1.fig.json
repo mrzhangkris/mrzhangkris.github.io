@@ -1,0 +1,14 @@
+{
+  "title": "四种 Referer 请求的响应码矩阵（nginx:alpine 实拍）",
+  "lines": [
+    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost"},
+    {"t": "out", "s": "200"},
+    {"t": "note", "s": "无 Referer 头，none 放行"},
+    {"t": "cmd", "s": "curl ... -H 'Referer: https://yourwebsite.com/gallery' localhost"},
+    {"t": "out", "s": "200"},
+    {"t": "note", "s": "站内来源放行"},
+    {"t": "cmd", "s": "curl ... -H 'Referer: https://evil.example/hotlink' localhost"},
+    {"t": "out", "s": "403"},
+    {"t": "note", "s": "盗链来源命中 $invalid_referer，拒绝"}
+  ]
+}

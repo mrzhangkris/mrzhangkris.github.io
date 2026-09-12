@@ -1,13 +1,11 @@
 {
-  "title": "ifcfg-eth0 static ip",
-  "type": "config",
+  "title": "路由下一跳校验实测（Rocky Linux 9 容器 / iproute2）",
   "lines": [
-    {"t": "config", "s": "DEVICE=eth0"},
-    {"t": "config", "s": "BOOTPROTO=none"},
-    {"t": "config", "s": "ONBOOT=yes"},
-    {"t": "config", "s": "IPADDR=192.168.1.100"},
-    {"t": "config", "s": "NETMASK=255.255.255.0"},
-    {"t": "config", "s": "GATEWAY=192.168.1.1"},
-    {"t": "note", "s": "文件位于 /etc/sysconfig/network-scripts/"}
+    {"t": "cmd", "s": "ip route add 10.1.1.0/24 via 10.0.0.1 dev eth0"},
+    {"t": "note", "s": "via 10.0.0.1 与 eth0（172.17.0.x/16）不同网段"},
+    {"t": "out", "s": "Error: Nexthop has invalid gateway."},
+    {"t": "cmd", "s": "ip route add 10.9.9.0/24 via 172.17.0.1 dev eth0"},
+    {"t": "out", "s": "10.9.9.0/24 via 172.17.0.1 dev eth0"},
+    {"t": "note", "s": "ip route show 可见；route-ethN 文件语法与此一致"}
   ]
 }

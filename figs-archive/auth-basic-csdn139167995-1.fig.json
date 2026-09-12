@@ -1,0 +1,13 @@
+{
+  "title": "auth_basic 基础流程实测",
+  "lines": [
+    {"t": "note", "s": "nginx/1.31.5 容器实测，后端以静态页模拟"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" localhost"},
+    {"t": "out", "s": "401"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" -u user1:password1 localhost"},
+    {"t": "out", "s": "200"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" -u user1:wrong localhost"},
+    {"t": "out", "s": "401"},
+    {"t": "note", "s": "无凭证与错密码同为 401，正确凭证放行"}
+  ]
+}

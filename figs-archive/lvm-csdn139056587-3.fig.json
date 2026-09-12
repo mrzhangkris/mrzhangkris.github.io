@@ -1,0 +1,9 @@
+{"title": "lvreduce 防呆实测（缩容有闸门）", "lines": [
+  {"t": "cmd", "s": "lvreduce -L 10M my_volume_group/my_logical_volume"},
+  {"t": "out", "s": "Rounding size to boundary between physical extents: 12.00 MiB."},
+  {"t": "out", "s": "File system ext4 found on my_volume_group/my_logical_volume."},
+  {"t": "out", "s": "File system size (52.00 MiB) > requested (12.00 MiB)."},
+  {"t": "out", "s": "File system reduce is required (see resize2fs or --resizefs.)"},
+  {"t": "note", "s": "检测到里面有 ext4，拒绝直接缩——先缩文件系统再缩 LV"},
+  {"t": "note", "s": "换设备名/加 --resizefs 强来就是丢数据的开始"}
+]}

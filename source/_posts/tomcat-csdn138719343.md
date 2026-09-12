@@ -32,7 +32,6 @@ Tomcat 默认使用 8080 端口，如果该端口已被其他应用占用，Tomc
 sudo netstat -tulnp | grep :8080
 ```
 
-![配图](/images/csdn/figures/tomcat-csdn138719343.png)
 
 如果 8080 端口被占用，修改 `conf/server.xml` 中的端口号（见下一节）。
 

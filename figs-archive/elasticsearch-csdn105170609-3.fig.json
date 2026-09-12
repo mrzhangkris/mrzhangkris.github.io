@@ -1,0 +1,10 @@
+{"title": "启动成功：curl 9200 返回版本信息", "lines": [
+  {"t": "cmd", "s": "curl 127.0.0.1:9200"},
+  {"t": "out", "s": "{"},
+  {"t": "out", "s": "  \"cluster_name\" : \"elasticsearch\","},
+  {"t": "out", "s": "  \"version\" : {"},
+  {"t": "out", "s": "    \"number\" : \"7.6.1\","},
+  {"t": "out", "s": "    \"lucene_version\" : \"8.4.0\" },"},
+  {"t": "out", "s": "  \"tagline\" : \"You Know, for Search\" }"},
+  {"t": "note", "s": "实测：集群健康 _cluster/health 返回 green"}
+]}

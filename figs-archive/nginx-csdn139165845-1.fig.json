@@ -1,0 +1,10 @@
+{"title": "反代透传与响应头实测（nginx/1.31.5 容器）", "lines": [
+  {"t": "config", "s": "server_tokens off;  gzip on;  gzip_types text/plain;"},
+  {"t": "cmd", "s": "curl -sI -H 'Accept-Encoding: gzip' 127.0.0.1/whoami"},
+  {"t": "out", "s": "Server: nginx"},
+  {"t": "out", "s": "Content-Encoding: gzip"},
+  {"t": "note", "s": "版本号已隐藏（默认 Server: nginx/1.31.5），压缩生效"},
+  {"t": "cmd", "s": "curl -s --compressed -H 'Host: myapp.example.com' 127.0.0.1/whoami"},
+  {"t": "out", "s": "host=myapp.example.com real=127.0.0.1 proto=http"},
+  {"t": "note", "s": "proxy_set_header 透传生效，后端拿到真实客户端信息"}
+]}

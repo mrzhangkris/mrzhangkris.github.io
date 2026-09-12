@@ -1,0 +1,8 @@
+{"title": "root 启动被拒绝：can not run elasticsearch as root", "lines": [
+  {"t": "cmd", "s": "./bin/elasticsearch    # 当前是 root"},
+  {"t": "out", "s": "[ERROR][o.e.b.ElasticsearchUncaughtException"},
+  {"t": "out", "s": "  Handler] uncaught exception in thread [main]"},
+  {"t": "out", "s": "StartupException: java.lang.RuntimeException:"},
+  {"t": "out", "s": "  can not run elasticsearch as root"},
+  {"t": "note", "s": "实测：ES 7.6.1 强制禁止 root 启动"}
+]}

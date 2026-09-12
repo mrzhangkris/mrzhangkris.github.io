@@ -1,0 +1,9 @@
+{
+  "title": "index.html 遮蔽 autoindex（实拍）",
+  "lines": [
+    {"t": "note", "s": "with-index/ 同时有 index.html 和 other.txt，且已 autoindex on"},
+    {"t": "cmd", "s": "curl -s localhost/with-index/"},
+    {"t": "out", "s": "<h1>I am index.html</h1>"},
+    {"t": "note", "s": "索引文件优先，看到的是页面不是列表"}
+  ]
+}

@@ -1,0 +1,10 @@
+{"title": "嵌套 location：子路径细分", "lines": [
+  {"t": "config", "s": "location /images {"},
+  {"t": "config", "s": "  return 200 \"outer\";"},
+  {"t": "config", "s": "  location ~ \\.jpg$ { return 200 \"nested\"; }"},
+  {"t": "config", "s": "}"},
+  {"t": "cmd", "s": "curl -s .../images/pic.jpg; curl -s .../images/pic.png"},
+  {"t": "out", "s": "/images/pic.jpg -> HIT nested-jpg"},
+  {"t": "out", "s": "/images/pic.png -> HIT outer-images"},
+  {"t": "note", "s": ".jpg 进内层正则，其余留在外层"}
+]}

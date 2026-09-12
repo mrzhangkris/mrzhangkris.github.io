@@ -1,0 +1,8 @@
+{"title": "mkfs.ext4 实测（Rocky 9, e2fsprogs 1.46.5）", "lines": [
+  {"t": "cmd", "s": "truncate -s 100M /tmp/f.img && mkfs.ext4 -F /tmp/f.img"},
+  {"t": "out", "s": "mke2fs 1.46.5 (30-Dec-2021)"},
+  {"t": "out", "s": "Creating filesystem with 102400 1k blocks and 25584 inodes"},
+  {"t": "out", "s": "Filesystem UUID: 8c7c2f21-6078-461b-aef0-1b511e845dc9"},
+  {"t": "note", "s": "对镜像文件执行仅为语法验证"},
+  {"t": "note", "s": "TRIM 支持由文件系统提供，建议挂载加 discard 或定期 fstrim"}
+]}

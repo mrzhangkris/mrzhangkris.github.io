@@ -1,0 +1,7 @@
+{"title": "sub_filter_once 实测", "lines": [
+  {"t": "config", "s": "sub_filter 'old.example.com' 'new.example.com';"},
+  {"t": "out", "s": "默认(once on): 第一处 new, 第二处 old"},
+  {"t": "config", "s": "sub_filter_once off;"},
+  {"t": "out", "s": "off: new.example.com ×2, 全部替换"},
+  {"t": "note", "s": "响应里有两处 old.example.com, nginx/1.31.5 实测"}
+]}

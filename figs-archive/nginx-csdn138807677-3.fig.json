@@ -1,0 +1,11 @@
+{
+  "title": "缓存键漏参数：id=2 命中 id=1 的缓存（实拍）",
+  "lines": [
+    {"t": "note", "s": "错误键：proxy_cache_key ...$host$uri (无 query)"},
+    {"t": "cmd", "s": "curl -s -D- \"localhost/bad/data?id=1\" | grep -E 'X-Cache|DATA'"},
+    {"t": "out", "s": "X-Cache-Status: MISS / BACKEND-DATA id=1 ..."},
+    {"t": "cmd", "s": "curl -s -D- \"localhost/bad/data?id=2\" | grep -E 'X-Cache|DATA'"},
+    {"t": "out", "s": "X-Cache-Status: HIT / BACKEND-DATA id=1 ..."},
+    {"t": "note", "s": "id=2 返回 id=1 的数据：请求被当成同一个"}
+  ]
+}

@@ -1,0 +1,11 @@
+{"title": "secure_link 三态实测", "lines": [
+  {"t": "config", "s": "secure_link $arg_md5,$arg_expires;"},
+  {"t": "config", "s": "secure_link_md5 \"$secure_link_expires$uri$remote_addr secret_key\";"},
+  {"t": "cmd", "s": "curl \"localhost/private.zip?md5=$SIG&expires=$EXP\""},
+  {"t": "out", "s": "200 SECRET"},
+  {"t": "cmd", "s": "curl \"...?md5=$SIG&expires=<已过期的exp>\""},
+  {"t": "out", "s": "410 Gone"},
+  {"t": "cmd", "s": "curl \"localhost/private.zip\"  # 无签名"},
+  {"t": "out", "s": "403"},
+  {"t": "note", "s": "签名不符=$secure_link为空→403，过期=\"0\"→410"}
+]}

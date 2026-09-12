@@ -1,0 +1,9 @@
+{"title": "分析 COMBINED 格式日志生成 HTML 报告", "lines": [
+  {"t": "cmd", "s": "goaccess /var/log/nginx/access.log \\"},
+  {"t": "cmd", "s": "  --log-format=COMBINED -o /tmp/report.html"},
+  {"t": "out", "s": "[SETTING UP STORAGE access.log] {5} @ {1/s}"},
+  {"t": "cmd", "s": "ls -lh /tmp/report.html"},
+  {"t": "out", "s": "-rw-r--r-- 1 root root 346K report.html"},
+  {"t": "note", "s": "5 条请求全部解析成功（{5} = valid requests）"},
+  {"t": "note", "s": "报告内嵌全部数据，单文件浏览器直接打开"}
+]}

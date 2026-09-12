@@ -61,7 +61,9 @@ driver : nvidia-driver-440 - distro non-free recommended
 sudo apt install nvidia-driver-440
 ```
 
-![配图](/images/csdn/figures/ubuntu-nvidia-csdn139053468.png)
+> 注：原文环境为 Ubuntu 18.04 + GTX 1050，推荐驱动 440 系列。2024 年后的卡（RTX 30/40 系列）推荐版本通常是 535 或 550，`ubuntu-drivers devices` 输出以你机器为准。
+
+验证点：`apt-cache policy nvidia-driver-440` 输出显示 `Installed: 440.*` 即安装成功，重启前已有结果。
 
 ## 禁止自动更新 NVIDIA 驱动
 

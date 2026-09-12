@@ -33,7 +33,7 @@ sudo apt-get install fcitx fcitx-pinyin fcitx-googlepinyin fcitx-table-all
 
 这条命令会安装 Fcitx 输入法框架，并添加拼音和谷歌拼音输入方法。
 
-![配图](/images/csdn/figures/ubuntu-csdn138717847.png)
+验证点：`fcitx --version` 输出版本号，`dpkg -l | grep fcitx-pinyin` 显示已安装。
 
 ## 第 2 步：设置 Fcitx 为默认输入法
 

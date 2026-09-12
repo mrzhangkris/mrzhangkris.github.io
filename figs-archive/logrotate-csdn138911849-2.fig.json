@@ -1,0 +1,8 @@
+{"title": "漏掉 postrotate 的后果（实测对比）", "lines": [
+  {"t": "note", "s": "配置里删掉 postrotate/endscript 后强制轮转"},
+  {"t": "cmd", "s": "curl -s localhost >/dev/null; ls -l /var/log/nginx/ | grep access"},
+  {"t": "out", "s": "access.log       0    # 新文件：没有日志进来"},
+  {"t": "out", "s": "access.log.1.gz  100  # 归档：也没有增长"},
+  {"t": "note", "s": "新请求写进了已被改名删除的旧 inode——静默丢失"},
+  {"t": "note", "s": "磁盘空间同样要等 nginx 重开句柄才释放"}
+]}

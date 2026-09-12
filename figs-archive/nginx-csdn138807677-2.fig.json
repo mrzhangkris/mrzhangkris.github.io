@@ -1,0 +1,13 @@
+{
+  "title": "后端宕机时 use_stale 返回 STALE（实拍）",
+  "lines": [
+    {"t": "cmd", "s": "curl -s -D- localhost/stale/item2 | grep -E 'X-Cache|DATA'"},
+    {"t": "out", "s": "X-Cache-Status: MISS"},
+    {"t": "out", "s": "BACKEND-DATA at Sat, 12 Sep 2026 03:52:53 GMT"},
+    {"t": "note", "s": "kill 后端进程，等 4 秒(TTL 3s 已过)："},
+    {"t": "cmd", "s": "curl -s -D- localhost/stale/item2 | grep -E 'X-Cache|DATA'"},
+    {"t": "out", "s": "X-Cache-Status: STALE"},
+    {"t": "out", "s": "BACKEND-DATA at Sat, 12 Sep 2026 03:52:53 GMT"},
+    {"t": "note", "s": "回源失败，返回过期旧缓存而非 502"}
+  ]
+}

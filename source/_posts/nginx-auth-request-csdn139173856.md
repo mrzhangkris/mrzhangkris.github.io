@@ -8,107 +8,118 @@ copyright_author: 司南
 cover: https://images.unsplash.com/photo-1462826303086-329426d1aef5?w=1600&q=80&fm=jpg
 ---
 
-给某个路径加访问控制，又不想把认证逻辑复制进每个后端服务，Nginx 的 auth_request 模块就是为这个场景准备的：Nginx 先把请求转给一个认证端点，拿到状态码再决定放行还是拒绝。这篇讲它的原理、配置和一个可跑的完整示例。
+给某个路径加访问控制，又不想把认证逻辑复制进每个后端服务，Nginx 的 auth_request 模块就是为这个场景准备的：Nginx 先把请求转给一个认证端点，拿到状态码再决定放行还是拒绝。这篇在 nginx:1.28 容器里把整条链路实跑一遍——放行、两种拒绝、端点保护，外加两个让 auth_request 悄悄失效的配置坑。
 
-## auth_request 模块简介
+## 实验环境
 
-auth_request 是 Nginx 的官方模块，处理客户端请求时先把请求交给外部认证服务，认证服务根据请求内容（如 HTTP 头或查询参数）返回状态码：认证通过，Nginx 继续处理请求；不通过，Nginx 返回错误码拒绝访问。
+- Docker 容器 `nginx:1.28-alpine`（nginx/1.28.3，2026-09 实测，下文全部输出来自这次实验）。
+- auth_request 是可选模块：自编译 Nginx 需加 `--with-http_auth_request_module`；官方 Docker 镜像已内置，`nginx -V` 可确认。
+- 结构：同一个 Nginx 里跑两个 server——8080 端口扮演"外部认证服务"（按请求头判断），80 端口是受保护的主站。生产环境里把 8080 换成真实认证服务即可。
 
-它的三个典型用途：
+## 核心机制一句话
 
-- **身份验证**：请求到达后端之前先验证用户身份。
-- **访问控制**：借助外部认证服务实现复杂的权限判断逻辑。
-- **单点登录**：与 SSO 系统集成，各服务共享一套登录状态。
+`auth_request /_auth;` 让 Nginx 在 access 阶段向 `/_auth` 发一个**内部子请求**，按子请求的状态码做裁决：2xx 放行，401/403 拒绝，其他状态码也拒绝并原样透传。认证逻辑全部在认证端点里，Nginx 只认状态码。
 
-## 常见使用场景
+## 实例一：放行与拒绝，三种状态码
 
-- **API 网关**：作为 API 网关的一部分，确保只有通过认证的请求才能访问 API。
-- **保护管理后台**：只有授权用户能进后台。
-- **Web 应用防火墙**：与 WAF 系统配合，做更细粒度的请求过滤和检测。
-
-## 配置示例
-
-### 示例环境
-
-假设有一个外部认证服务，通过 /auth 端点做用户认证并返回 HTTP 状态码：成功返回 200，失败返回 401 或 403。自编译 Nginx 时需要加 `--with-http_auth_request_module` 参数启用该模块；然后编辑 nginx.conf 或虚拟主机配置文件，写入下面的配置。
-
-### 完整配置
-
-![配图](/images/csdn/figures/nginx-auth-request-csdn139173856.png)
+完整配置，认证端点按 Authorization 头判断，并演示按原始 URI 做路径级控制：
 
 ```nginx
-http {
-  # 定义认证服务的逻辑
-  server {
-    listen 127.0.0.1:8080;
-    location /auth {
-      # 此处为简单示例，实际应用中应调用外部认证服务
-      if ($http_authorization = "Basic dXNlcm5hbWU6cGFzc3dvcmQ=") {  # 假设认证使用Basic Auth
-        return 200;
-      }
-      return 401;
-    }
+server {                          # 认证服务（生产换成真实认证系统）
+  listen 8080;
+  location /auth {
+    if ($http_authorization != "Basic dXNlcm5hbWU6cGFzc3dvcmQ=") { return 401; }
+    if ($http_x_original_uri ~ /admin) { return 403; }
+    return 200;
+  }
+}
+
+server {                          # 受保护的主站
+  listen 80;
+  root /usr/share/nginx/html;
+
+  location /protected/ {
+    auth_request /_auth;
+    error_page 401 = @error401;
+    error_page 403 = @error403;
   }
 
-  server {
-    listen 80;
-    server_name example.com;
-
-    location / {
-      # 使用 auth_request 调用认证服务
-      auth_request /auth;
-
-      # 处理认证服务的响应结果
-      error_page 401 = @error401;
-      error_page 403 = @error403;
-
-      # 正常处理请求
-      proxy_pass http://backend;
-    }
-
-    # 定义认证失败时的处理逻辑
-    location @error401 {
-      return 401 "Unauthorized";
-    }
-
-    location @error403 {
-      return 403 "Forbidden";
-    }
-
-    # 认证服务的代理设置
-    location /auth {
-      proxy_pass http://127.0.0.1:8080/auth;
-      proxy_pass_request_body off; # 不代理请求体到认证服务
-      proxy_set_header Content-Length "";
-      proxy_set_header X-Original-URI $request_uri;
-    }
+  location = /_auth {
+    internal;
+    proxy_pass http://127.0.0.1:8080/auth;
+    proxy_pass_request_body off;
+    proxy_set_header Content-Length "";
+    proxy_set_header X-Original-URI $request_uri;
   }
+
+  location @error401 { return 401 "Unauthorized\n"; }
+  location @error403 { return 403 "Forbidden\n"; }
 }
 ```
 
-### 配置说明
+三个请求对号入座：带正确凭证访问 `/protected/data.txt`、不带凭证访问同一路径、带正确凭证但访问 `/protected/admin/panel.txt`：
 
-**认证服务**：第一个 server 块监听 127.0.0.1:8080，模拟一个简单认证服务——检查请求头 Authorization 是否等于预设的 Basic Auth 值，等于返回 200，否则 401。实际项目中，这里应该换成调用真实认证服务的代理配置。
+![配图1](/images/csdn/figures/nginx-auth-request-csdn139173856-1.png)
 
-**主站点**：location / 里的核心指令：
+三行结果对应三条规则：凭证正确放行，拿到 `SECRET DATA`；无凭证被 401 拦下；`/admin` 路径即使凭证正确也被 403 拒绝——认证服务读到了 `X-Original-URI`，做了路径级判断。
 
-- `auth_request /auth;` 处理用户请求前，先向 /auth 发起子请求做认证；
-- `error_page 401 = @error401;` 与 `error_page 403 = @error403;` 把认证失败的状态码交给对应的内部处理块；
-- `proxy_pass http://backend;` 认证通过后，把请求代理到后端服务器。
+## 实例二：X-Original-URI，路径级授权的关键
 
-**认证失败处理**：@error401 和 @error403 两个命名 location 分别返回 401 "Unauthorized" 和 403 "Forbidden"。
+实例一里 403 的前提，是这条配置把用户访问的原始路径传给了认证服务：
 
-**认证端点的代理设置**：location /auth 把子请求转给 127.0.0.1:8080 的认证服务，三条配套指令各有用途——`proxy_pass_request_body off` 不把请求体发给认证服务；`proxy_set_header Content-Length ""` 清空内容长度头，与上一条配套；`proxy_set_header X-Original-URI $request_uri` 把用户访问的原始 URI 传给认证服务，认证逻辑可以据此做路径级判断。
+```nginx
+proxy_set_header X-Original-URI $request_uri;
+```
 
-### 测试与验证
+没有这一条，认证服务只知道"这个人是谁"，不知道"他要去哪"，只能做全局认证做不了路径级授权。需要更多上下文时按同样方式追加，比如 `X-Original-Method $request_method`。认证端点据此实现"这个用户能否访问这个路径"的判断，这正是 API 网关和单点登录集成的基本形态。
 
-启动 Nginx 后访问 http://example.com，用不同的 Authorization 头测试认证行为：带上正确的值（本例中为 "Basic dXNlcm5hbWU6cGFzc3dvcmQ="）应能正常访问后端资源；不带或带错则拿到 401，由 @error401 返回错误信息。
+## 实例三：internal，别把认证端点暴露出去
+
+`/_auth` 只该被内部子请求访问。配置里加了 `internal;`，实测外部直接访问它：
+
+![配图2](/images/csdn/figures/nginx-auth-request-csdn139173856-2.png)
+
+返回 404——外部用户探测不到认证端点的存在，子请求却照常工作。不加这条的隐患：`/auth` 公开可达，任何人都能直接请求它试探认证服务的响应行为，等于把门锁的内部结构展示给攻击者。原文示例把认证 location 暴露在公开路径下，这一条是实跑后必加的修正。
+
+## 错误写法对比：两种"看起来配好了"
+
+**错法一**：在配了 auth_request 的 location 里用 `return` 提供内容：
+
+```nginx
+# 错：return 在 rewrite 阶段执行，早于 access 阶段
+location /protected/ {
+  auth_request /_auth;
+  return 200 "OK\n";    # 认证被跳过，任何人都能拿到 OK
+}
+```
+
+实测现象就是"无凭证也返回 200"——auth_request 压根没被执行。`return`、`rewrite` 属于 rewrite 阶段，跑在 access 阶段的 auth_request 之前；受保护 location 的正常出口应该是静态文件或 `proxy_pass`。
+
+**错法二**：漏掉 `proxy_pass_request_body off;` 时，POST 请求会把请求体一并带进认证子请求：
+
+```nginx
+# 错：认证子请求带着请求体转发
+location = /_auth {
+  internal;
+  proxy_pass http://127.0.0.1:8080/auth;
+}
+```
+
+![配图3](/images/csdn/figures/nginx-auth-request-csdn139173856-3.png)
+
+带 body 的 POST 实测拿到 405 而不是 401——认证服务收到不认识的 POST，返回了 405，而 error_page 只映射了 401/403，非约定状态码原样漏给了客户端。两条配套指令 `proxy_pass_request_body off` 和 `proxy_set_header Content-Length ""` 就是为关掉子请求请求体而存在的，认证端点也应只声明处理 GET。
 
 ## 注意事项
 
-- auth_request 按子请求状态码判断结果：2xx 放行，401/403 拒绝，认证服务务必按这个约定返回。
-- 子请求默认不带请求体（配置里明确关掉了 proxy_pass_request_body），需要读请求体才能判断的认证场景不适合直接用它。
-- 示例里的认证服务只用于演示；生产环境要换成真实认证服务，并只监听本机或内网地址。
-- location /auth 是公开可达的，外部用户可以直接请求它探测认证服务；给该 location 加 internal 指令可限制为仅内部子请求访问。
+- **状态码约定必须严格执行**：认证服务 2xx 放行、401/403 拒绝，返回 302/500 等其他值都会被当拒绝处理且状态码透传给客户端，error_page 尽量把分支映射全。
+- **请求体进不了认证服务**：子请求默认应关掉 body，需要按请求体内容做认证的场景，auth_request 不适合直接上，让后端拿到请求后自行调用认证系统。
+- **认证端点加 internal**：只允许内部子请求访问，避免端点行为被外部探测。
+- **演示配置换真服务**：实例里用 if + return 模拟认证服务只为演示；生产环境换成真实认证系统（SSO、OAuth2 introspection 等），并只监听本机或内网地址。
+
+## 小结
+
+回到开头的场景：认证逻辑写一份、所有后端共享——auth_request 用一次子请求把这件事变成状态码约定。实跑下来的完整清单：`auth_request` 指向 internal 的子请求端点，端点透传 `X-Original-URI` 做路径级授权，`error_page` 接住 401/403，`proxy_pass_request_body off` 关掉请求体；同时记住两个失效形态——rewrite 阶段的 `return` 会抢在认证之前，漏关请求体会让 POST 客户端看到意外的 405。配好这几点，这套轻量网关认证就能稳定接住流量。
+
+---
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

@@ -1,0 +1,9 @@
+{"title": "重定向与 PATH 修改同样被禁", "lines": [
+  {"t": "cmd", "s": "echo test > /tmp/out.txt"},
+  {"t": "out", "s": "-rbash: /tmp/out.txt: restricted:"},
+  {"t": "out", "s": "  cannot redirect output"},
+  {"t": "cmd", "s": "PATH=/usr/bin:$PATH"},
+  {"t": "out", "s": "-rbash: PATH: readonly variable"},
+  {"t": "note", "s": "PATH 在 .bash_profile 里已 readonly，改不动"},
+  {"t": "note", "s": "重定向输出/追写、改 PATH 全部被拦"}
+]}

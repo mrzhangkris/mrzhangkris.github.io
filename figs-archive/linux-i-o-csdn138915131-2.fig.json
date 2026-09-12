@@ -1,0 +1,9 @@
+{"title": "iostat -dx 实测（Rocky 9, sysstat 12.5.4）", "lines": [
+  {"t": "cmd", "s": "iostat -dx 2 5"},
+  {"t": "out", "s": "Device  r/s   w/s  rkB/s  wkB/s await ...  %util"},
+  {"t": "out", "s": "vda     1.00  4.00  0.00   4.00  0.50 ...  0.05"},
+  {"t": "note", "s": "空载容器截图，关注三列："},
+  {"t": "note", "s": "await 单次 IO 平均等待(ms)，调整前后对比的主指标"},
+  {"t": "note", "s": "%util 盘忙碌占比，长期逼近 100% 说明盘是真瓶颈"},
+  {"t": "note", "s": "aqu-sz 队列平均深度，验证调大队列是否真被用上"}
+]}

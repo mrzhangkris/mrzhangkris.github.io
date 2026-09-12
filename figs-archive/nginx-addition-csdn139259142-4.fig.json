@@ -1,0 +1,11 @@
+{
+  "title": "过时指令 addition on 被拒（实拍）",
+  "lines": [
+    {"t": "note", "s": "老教程写法："},
+    {"t": "config", "s": "addition on;"},
+    {"t": "cmd", "s": "nginx -t"},
+    {"t": "out", "s": "nginx: [emerg] unknown directive \"addition\""},
+    {"t": "out", "s": "nginx: configuration file test failed"},
+    {"t": "note", "s": "现行指令只有 add_before_body / add_after_body / addition_types"}
+  ]
+}

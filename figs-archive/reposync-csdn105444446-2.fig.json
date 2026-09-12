@@ -1,0 +1,9 @@
+{"title": "版本差异：独立 reposync 在 RHEL9 已并入 dnf", "lines": [
+  {"t": "cmd", "s": "which reposync    # rockylinux:9"},
+  {"t": "out", "s": "(无输出——独立命令不存在)"},
+  {"t": "cmd", "s": "dnf reposync --help | head -1"},
+  {"t": "out", "s": "usage: dnf reposync [-c [config file]] ..."},
+  {"t": "note", "s": "CentOS 6/7：yum-utils 提供独立 reposync"},
+  {"t": "note", "s": "RHEL 8/9：dnf-utils，reposync 是 dnf 子命令"},
+  {"t": "note", "s": "参数也变：-n→--newest-only，-p→--download-path"}
+]}

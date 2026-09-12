@@ -1,0 +1,11 @@
+{
+  "title": "rpcinfo -p 确认 NFS 服务注册（RHEL9 容器实拍）",
+  "lines": [
+    {"t": "cmd", "s": "rpcinfo -p localhost | grep -E \"nfs|mount\""},
+    {"t": "out", "s": "100003 3  tcp 2049 nfs"},
+    {"t": "out", "s": "100003 4  tcp 2049 nfs"},
+    {"t": "out", "s": "100005 1  udp 20048 mountd"},
+    {"t": "out", "s": "100005 1  tcp 20048 mountd"},
+    {"t": "note", "s": "nfs(2049) 与 mountd 都已注册，rpcbind 正常"}
+  ]
+}

@@ -1,0 +1,10 @@
+{"title": "hostnames 通配：精确优先，通配兜底", "lines": [
+  {"t": "config", "s": "map $http_x_flag $out {"},
+  {"t": "config", "s": "  hostnames;"},
+  {"t": "config", "s": "  a.example.com \"hit-a\";"},
+  {"t": "config", "s": "  *.example.com \"hit-wildcard\";"},
+  {"t": "config", "s": "  default \"miss\"; }"},
+  {"t": "out", "s": "a.example.com -> hit-a"},
+  {"t": "out", "s": "b.example.com -> hit-wildcard"},
+  {"t": "out", "s": "other.net     -> miss"}
+]}

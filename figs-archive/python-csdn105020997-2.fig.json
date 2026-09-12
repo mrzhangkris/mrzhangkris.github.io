@@ -1,0 +1,9 @@
+{"title": "加 -u：每秒实时到达", "lines": [
+  {"t": "cmd", "s": "date +%H:%M:%S; python3 reader.py u   # python3 -u system_time.py"},
+  {"t": "out", "s": "07:23:13"},
+  {"t": "out", "s": "parent got at 07:23:13: 07:23:13"},
+  {"t": "out", "s": "parent got at 07:23:14: 07:23:14"},
+  {"t": "out", "s": "parent got at 07:23:15: 07:23:15"},
+  {"t": "note", "s": "-u 强制子进程 stdout/stderr 无缓冲"},
+  {"t": "note", "s": "每条输出立即写入管道，父进程逐秒读到"}
+]}

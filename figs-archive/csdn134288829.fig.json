@@ -1,11 +1,13 @@
 {
-  "title": "port to cwd lookup",
-  "type": "config",
+  "title": "端口查 PID 与工作目录实测（Rocky Linux 9 容器）",
   "lines": [
-    {"t": "config", "s": "#!/bin/bash"},
-    {"t": "config", "s": "PID=$(netstat -nlp|grep :$1|awk '{print $7}'|awk -F\"/\" '{ print $1 }')"},
-    {"t": "config", "s": "DIR=$(/usr/bin/pwdx $PID)"},
-    {"t": "config", "s": "FILTERDIR=$(echo $DIR |awk -F ' ' '{print $2}')"},
-    {"t": "note", "s": "传端口号，输出 PID 与进程工作目录"}
+    {"t": "cmd", "s": "./portpath.sh 8000"},
+    {"t": "out", "s": "The pid of port 8000 is 165 and the process path is /tmp/webdemo"},
+    {"t": "note", "s": "8000 由 python3 http.server 监听，工作目录 /tmp/webdemo"},
+    {"t": "cmd", "s": "netstat -nlp | grep :80 | awk '{print $4}'"},
+    {"t": "out", "s": "0.0.0.0:80"},
+    {"t": "out", "s": "0.0.0.0:8000      # 子串误匹配"},
+    {"t": "cmd", "s": "netstat -nlp | awk '$4 ~ /:80$/' | awk '{print $4}'"},
+    {"t": "out", "s": "0.0.0.0:80        # 行尾锚定，精确命中"}
   ]
 }

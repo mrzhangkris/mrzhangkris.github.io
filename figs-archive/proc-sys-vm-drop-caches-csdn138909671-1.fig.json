@@ -1,0 +1,10 @@
+{"title": "echo 1 释放页面缓存：buff/cache 647MB → 244MB", "lines": [
+  {"t": "cmd", "s": "dd if=/dev/zero of=/tmp/big bs=1M count=200"},
+  {"t": "cmd", "s": "cat /tmp/big > /dev/null    # 填充页面缓存"},
+  {"t": "cmd", "s": "free -m | grep Mem"},
+  {"t": "out", "s": "buff/cache=647MB  available=6865MB"},
+  {"t": "cmd", "s": "sync && echo 1 > /proc/sys/vm/drop_caches"},
+  {"t": "cmd", "s": "free -m | grep Mem"},
+  {"t": "out", "s": "buff/cache=244MB  available=6876MB"},
+  {"t": "note", "s": "约 400MB 页面缓存被释放（实测：rockylinux:9 容器）"}
+]}

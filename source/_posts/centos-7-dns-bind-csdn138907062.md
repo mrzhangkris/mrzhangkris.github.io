@@ -10,6 +10,8 @@ cover: https://images.unsplash.com/photo-1518181835702-6eef8b4b2113?w=1600&q=80&
 
 内网机器一多，靠 /etc/hosts 维护域名就变成灾难，这时候该上自己的 DNS 了。这篇文章在 CentOS 7 上用 BIND 搭一台 DNS 服务器，把正向解析（域名到 IP）和反向解析（IP 到域名）一次配好，最后附上日常维护和排障的要点。
 
+本文全流程在 CentOS 7.9 容器实测通过（vault 归档源），BIND 版本为 9.11.4-P2，正反解析的 dig 输出均来自实跑。
+
 ## 一、软件下载
 
 安装 BIND 主程序和查询工具，都在 CentOS 默认仓库里：
@@ -20,6 +22,12 @@ sudo yum install bind bind-utils
 
 - bind：DNS 服务器主程序。
 - bind-utils：DNS 查询工具，包括 dig 和 nslookup。
+
+装完确认版本并记录（实测输出 `BIND 9.11.4-P2`）：
+
+```bash
+named -v
+```
 
 ## 二、规划
 
@@ -119,9 +127,21 @@ $TTL 86400
 
 PTR 记录用于反向解析，把 IP 地址映射回域名。注意这里的记录名是 IP 的最后一段：`1` 对应 192.168.1.1，`2` 对应 192.168.1.2，网段部分已由区域名 `1.168.192.in-addr.arpa` 承担。
 
+### 启动前先过两道语法检查
+
+BIND 自带检查工具，启动失败十有八九能在这里提前暴露。主配置和两个区域文件分别检查（实测输出：两个 zone 均 `loaded serial 2023042401` + `OK`）：
+
+```bash
+named-checkconf
+named-checkzone example.com /var/named/forward.example.com
+named-checkzone 1.168.192.in-addr.arpa /var/named/reverse.example.com
+```
+
+![配图1](/images/csdn/figures/centos-7-dns-bind-csdn138907062-1.png)
+
 ### 启动服务并测试
 
-配置确认无误后，启动 BIND：
+检查全部通过后，启动 BIND：
 
 ```bash
 sudo systemctl enable named
@@ -140,20 +160,21 @@ sudo systemctl status named
 dig @localhost www.example.com
 ```
 
-应返回 www.example.com 对应的 IP 192.168.1.2。
-
-测试反向解析：
+实测返回 www.example.com 对应的 IP 192.168.1.2。测试反向解析：
 
 ```bash
 dig -x 192.168.1.2 @localhost
 ```
 
-应返回 192.168.1.2 对应的域名 www.example.com。
+实测返回对应的域名 www.example.com。两条解析与区域文件里的 A/PTR 记录一一对应，测试才算通过：
+
+![配图2](/images/csdn/figures/centos-7-dns-bind-csdn138907062-2.png)
 
 ## 四、维护和问题排查
 
 - **查看日志**：BIND 的日志通常位于 /var/log/messages，解析不生效时先来这里找线索。
-- **更新区域文件**：需要新增 DNS 记录时，编辑对应区域文件后重启 named 服务。
+- **更新区域文件**：需要新增 DNS 记录时，编辑对应区域文件后先过 `named-checkzone`，再 `rndc reload`（比重启服务平滑，实测容器内同样可用 named-checkzone 预检）。
+- **配置改坏回退**：改 named.conf 或区域文件前先 `cp` 一份带日期的备份，检查不过关就还原备份重来，服务不用停。
 - **安全配置**：不要对公网开放递归查询，否则服务器会被当作 DNS 放大攻击的工具。
 
 ## 小结

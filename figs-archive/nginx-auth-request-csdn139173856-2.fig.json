@@ -1,0 +1,9 @@
+{
+  "title": "internal 保护认证端点（实拍）",
+  "lines": [
+    {"t": "config", "s": "location = /_auth { internal; proxy_pass http://127.0.0.1:8080/auth; }"},
+    {"t": "cmd", "s": "curl -o /dev/null -w %{http_code} localhost/_auth"},
+    {"t": "out", "s": "404"},
+    {"t": "note", "s": "外部探测 404，内部子请求照常工作"}
+  ]
+}

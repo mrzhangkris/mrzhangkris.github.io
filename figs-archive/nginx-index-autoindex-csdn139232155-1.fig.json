@@ -1,0 +1,10 @@
+{"title": "index 顺序命中实测（nginx/1.31.5 容器）", "lines": [
+  {"t": "config", "s": "index index.html index.htm;"},
+  {"t": "cmd", "s": "echo first-html > index.html; echo second-htm > index.htm"},
+  {"t": "cmd", "s": "curl -s localhost/"},
+  {"t": "out", "s": "first-html"},
+  {"t": "note", "s": "两个都在，命中排前的 index.html"},
+  {"t": "cmd", "s": "rm index.html && curl -s localhost/"},
+  {"t": "out", "s": "second-htm"},
+  {"t": "note", "s": "按书写顺序向后查找，命中 index.htm"}
+]}

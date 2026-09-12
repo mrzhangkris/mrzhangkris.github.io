@@ -1,0 +1,7 @@
+{"title": "轮询序列实测", "lines": [
+  {"t": "config", "s": "upstream backend { server 127.0.0.1:8081;"},
+  {"t": "config", "s": "  server 127.0.0.1:8082; server 127.0.0.1:8083; }"},
+  {"t": "cmd", "s": "for i in $(seq 9); do curl -s localhost; done"},
+  {"t": "out", "s": "8081 8082 8083 8081 8082 8083 8081 8082 8083"},
+  {"t": "note", "s": "nginx/1.31.5 单 worker 实测，严格按序轮换"}
+]}

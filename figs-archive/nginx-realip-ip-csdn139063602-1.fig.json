@@ -1,0 +1,10 @@
+{
+  "title": "确认 realip 模块已编译（nginx:alpine 容器实拍）",
+  "lines": [
+    {"t": "cmd", "s": "nginx -V 2>&1 | grep -o with-http_realip_module"},
+    {"t": "out", "s": "with-http_realip_module"},
+    {"t": "cmd", "s": "nginx -v"},
+    {"t": "out", "s": "nginx version: nginx/1.31.5"},
+    {"t": "note", "s": "标准模块，预编译包一般自带"}
+  ]
+}

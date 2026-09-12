@@ -1,0 +1,7 @@
+{"title": "篡改与换源实测", "lines": [
+  {"t": "cmd", "s": "curl \"...?md5=AAAA&expires=$EXP\"  # 篡改签名"},
+  {"t": "out", "s": "403"},
+  {"t": "cmd", "s": "wget 'http://<另一台机器>/private.zip?md5=$SIG&...'"},
+  {"t": "out", "s": "HTTP/1.1 403 Forbidden"},
+  {"t": "note", "s": "签名绑定了 $remote_addr，换台机器立即失效"}
+]}

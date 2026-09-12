@@ -1,0 +1,10 @@
+{"title": "正则映射：~* 开头不区分大小写", "lines": [
+  {"t": "config", "s": "map $http_user_agent $is_mobile {"},
+  {"t": "config", "s": "  ~*(android|iphone|mobile) 1;"},
+  {"t": "config", "s": "  default 0; }"},
+  {"t": "cmd", "s": "curl -A \"Mozilla/5.0 (iPhone; CPU)\" /ua"},
+  {"t": "out", "s": "is_mobile=1"},
+  {"t": "cmd", "s": "curl -A \"Mozilla/5.0 (Windows NT)\" /ua"},
+  {"t": "out", "s": "is_mobile=0"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5"}
+]}

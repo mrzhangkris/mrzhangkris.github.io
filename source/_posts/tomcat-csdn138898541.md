@@ -61,7 +61,6 @@ then
 fi
 ```
 
-![配图](/images/csdn/figures/tomcat-csdn138898541.png)
 
 > 注：脚本中两处 `grep "${process_keyword}"` 用到的 `process_keyword` 变量在脚本里没有定义，应是模板残留。`${process_keyword}` 为空时 `grep ""` 会匹配所有行，等效于去掉这层过滤，脚本仍能工作；如果你确实需要按关键词过滤进程，记得先定义该变量。
 

@@ -1,0 +1,9 @@
+{"title": "对齐检查与 resizepart 扩容", "lines": [
+  {"t": "cmd", "s": "parted /dev/loop0 align-check optimal 1"},
+  {"t": "out", "s": "1 aligned"},
+  {"t": "cmd", "s": "parted -s ---pretend-input-tty /dev/loop0 \\"},
+  {"t": "cmd", "s": "  resizepart 1 900MiB <<< \"Yes\""},
+  {"t": "cmd", "s": "parted /dev/loop0 print | tail -2"},
+  {"t": "out", "s": " 1      1049kB  944MB  943MB               primary"},
+  {"t": "note", "s": "500MiB → 900MiB 扩容成功，分区边界即时更新"}
+]}

@@ -1,0 +1,9 @@
+{"title": "internal 拦截外部直接访问", "lines": [
+  {"t": "config", "s": "location = /mirror { internal;"},
+  {"t": "config", "s": "  proxy_pass http://127.0.0.1:8082; }"},
+  {"t": "cmd", "s": "curl -o /dev/null -w \"%{http_code}\" \\"},
+  {"t": "cmd", "s": "  http://127.0.0.1/mirror"},
+  {"t": "out", "s": "404"},
+  {"t": "note", "s": "实测：外部访问 internal 路径一律 404"},
+  {"t": "note", "s": "镜像入口只能被 Nginx 内部子请求调用"}
+]}

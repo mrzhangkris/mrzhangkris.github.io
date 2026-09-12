@@ -1,0 +1,7 @@
+{"title": "读超时 2s 触发 504 实测（nginx/1.31.5 容器）", "lines": [
+  {"t": "config", "s": "proxy_pass http://127.0.0.1:9001;  proxy_read_timeout 2s;"},
+  {"t": "note", "s": "后端为静默服务：sleep 60 | nc -l -p 9001，收请求不回包"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code} %{time_total}s' 127.0.0.1/"},
+  {"t": "out", "s": "504 2.007596s"},
+  {"t": "note", "s": "整 2 秒被掐断；日志 while reading response header"}
+]}

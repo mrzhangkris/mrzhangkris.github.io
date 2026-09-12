@@ -1,0 +1,11 @@
+{"title": "ipmitool 实测（Rocky 9, ipmitool 1.8.18）", "lines": [
+  {"t": "cmd", "s": "dnf install -y OpenIPMI ipmitool"},
+  {"t": "out", "s": "ipmitool-1.8.18-27.el9 / OpenIPMI-2.0.36-1.el9"},
+  {"t": "cmd", "s": "ipmitool sensor list"},
+  {"t": "out", "s": "Could not open device at /dev/ipmi0 or"},
+  {"t": "out", "s": "/dev/ipmi/0 or /dev/ipmidev/0: No such file or directory"},
+  {"t": "cmd", "s": "ipmitool -I lanplus -H 127.0.0.1 -U admin -P pass power status"},
+  {"t": "out", "s": "Error: Unable to establish IPMI v2 / RMCP+ session"},
+  {"t": "note", "s": "上一报错 = 本机无 BMC 设备节点"},
+  {"t": "note", "s": "下一报错 = 远程会话建不起来（地址不通/未开 IPMI over LAN）"}
+]}

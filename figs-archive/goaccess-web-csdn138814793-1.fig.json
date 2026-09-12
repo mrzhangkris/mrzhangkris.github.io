@@ -1,0 +1,7 @@
+{"title": "安装与版本确认", "lines": [
+  {"t": "cmd", "s": "apt-get install -y goaccess curl"},
+  {"t": "cmd", "s": "goaccess --version | head -1"},
+  {"t": "out", "s": "GoAccess - 1.7."},
+  {"t": "note", "s": "实测环境：debian:bookworm-slim 容器"},
+  {"t": "note", "s": "CentOS 用 yum install epel-release 后再装"}
+]}

@@ -356,7 +356,9 @@ tomcat 是我创建的用户，`/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x
 
 到此所有配置都完成了。若 tomcat 中的项目需要读取其他文件夹，需要确认该文件夹的权限是否满足 tomcat 用户的需求。
 
-![配图](/images/csdn/figures/tomcat-daemon-csdn105083974.png)
+验证点：`daemon.sh run` 启动后日志中出现 `Server startup in [N] milliseconds` 和 `Starting ProtocolHandler ["http-nio-8080"]` 即成功。
+
+> 注：编译 jsvc 的完整过程（configure 报错 → 缺 gcc/JDK-devel/make → make 通过 → cp jsvc）为 2020 年 CentOS 8 实测记录，此处保留排错过程供参考；Tomcat 9.0.50+ 和 10.1+ 版本的 bin 目录已内置预编译的 jsvc，不再需要手动编译——如果用的是新版 Tomcat，直接跳到"配置 daemon.sh"一节即可。
 
 ## 验证
 

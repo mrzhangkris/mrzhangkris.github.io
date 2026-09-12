@@ -1,0 +1,10 @@
+{"title": "各匹配模式命中实测（nginx/1.31.5）", "lines": [
+  {"t": "cmd", "s": "curl -s http://127.0.0.1<URI>"},
+  {"t": "out", "s": "/exact       -> HIT exact=      (= 精确)"},
+  {"t": "out", "s": "/static/a.php-> HIT ^~static    (^~ 跳过正则)"},
+  {"t": "out", "s": "/a.php       -> HIT regex-php   (~ 区分大小写)"},
+  {"t": "out", "s": "/b.JPG       -> HIT regex-ci    (~* 不分大小写)"},
+  {"t": "out", "s": "/prefix/sub  -> HIT prefix      (前缀)"},
+  {"t": "out", "s": "/other       -> HIT default     (/ 兜底)"},
+  {"t": "note", "s": "/static/a.php 命中 ^~ 而非 .php 正则 → ^~ 跳过正则"}
+]}

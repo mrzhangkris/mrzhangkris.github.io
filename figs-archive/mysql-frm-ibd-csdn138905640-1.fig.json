@@ -1,0 +1,12 @@
+{
+  "title": "DISCARD 后 .ibd 被删除（mysql:8.0.46 实拍）",
+  "lines": [
+    {"t": "note", "s": "锁定并拷出一致性的 .ibd 作备份"},
+    {"t": "config", "s": "FLUSH TABLES mytable FOR EXPORT;"},
+    {"t": "cmd", "s": "cp /var/lib/mysql/mydb/mytable.ibd /tmp/mytable.ibd.bak"},
+    {"t": "note", "s": "重建同结构空表后执行 DISCARD"},
+    {"t": "cmd", "s": "ALTER TABLE mytable DISCARD TABLESPACE;"},
+    {"t": "cmd", "s": "ls /var/lib/mysql/mydb/"},
+    {"t": "note", "s": "目录为空：mytable.ibd 已被 DISCARD 删除"}
+  ]
+}

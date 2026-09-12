@@ -1,0 +1,7 @@
+{"title": "server 级 return 短路实测", "lines": [
+  {"t": "config", "s": "server { return 301 https://new.example.com; ... }"},
+  {"t": "cmd", "s": "curl -sI localhost/ok"},
+  {"t": "out", "s": "HTTP/1.1 301 Moved Permanently"},
+  {"t": "out", "s": "Location: https://new.example.com"},
+  {"t": "note", "s": "location /ok 里的 return 200 完全没机会执行"}
+]}

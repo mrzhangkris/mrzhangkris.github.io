@@ -1,0 +1,10 @@
+{"title": "GPT 分区表初始化与分区创建（实测）", "lines": [
+  {"t": "cmd", "s": "parted -s /dev/loop0 mklabel gpt"},
+  {"t": "cmd", "s": "parted -s /dev/loop0 mkpart primary ext4 1MiB 500MiB"},
+  {"t": "cmd", "s": "parted /dev/loop0 print"},
+  {"t": "out", "s": "Disk /dev/loop0: 2147MB"},
+  {"t": "out", "s": "Partition Table: gpt"},
+  {"t": "out", "s": "Number  Start   End    Size   File system  Name"},
+  {"t": "out", "s": " 1      1049kB  524MB  523MB               primary"},
+  {"t": "note", "s": "实测环境：GNU parted 3.5，rockylinux:9 容器"}
+]}

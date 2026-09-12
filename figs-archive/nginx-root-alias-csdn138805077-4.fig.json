@@ -1,0 +1,7 @@
+{"title": "alias 丢尾斜杠实测", "lines": [
+  {"t": "config", "s": "location /images/ { alias /data/uploads; }"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost/images/logo.png"},
+  {"t": "out", "s": "404"},
+  {"t": "out", "s": "open() \"/data/uploadslogo.png\" failed"},
+  {"t": "note", "s": "剩余部分直接粘在 alias 值后，error_log 一眼定位"}
+]}

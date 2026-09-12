@@ -1,0 +1,9 @@
+{"title": "print(flush=True)：同样实时到达", "lines": [
+  {"t": "cmd", "s": "date +%H:%M:%S; python3 reader2.py"},
+  {"t": "out", "s": "07:23:30"},
+  {"t": "out", "s": "parent got at 07:23:30: 07:23:30"},
+  {"t": "out", "s": "parent got at 07:23:31: 07:23:31"},
+  {"t": "out", "s": "parent got at 07:23:32: 07:23:32"},
+  {"t": "note", "s": "子进程 print(..., flush=True)，父进程命令不变"},
+  {"t": "note", "s": "flush 精确到单条打印，效果与 -u 相当"}
+]}

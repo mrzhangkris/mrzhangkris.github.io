@@ -1,0 +1,10 @@
+{
+  "title": "错误写法：密码文件不可读",
+  "lines": [
+    {"t": "note", "s": "错误写法：worker 进程读不了密码文件（实测）"},
+    {"t": "config", "s": "chmod 640 /etc/nginx/.htpasswd  # root:root 640"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" -u user1:password1 localhost"},
+    {"t": "out", "s": "500"},
+    {"t": "note", "s": "正确做法：确保 nginx worker 用户可读该文件"}
+  ]
+}

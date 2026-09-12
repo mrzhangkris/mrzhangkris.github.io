@@ -1,0 +1,9 @@
+{"title": "安装 DHCP 服务端并确认版本", "lines": [
+  {"t": "cmd", "s": "yum install -y dhcp"},
+  {"t": "out", "s": "Complete!"},
+  {"t": "cmd", "s": "rpm -q dhcp"},
+  {"t": "out", "s": "dhcp-4.2.5-83.el7.centos.2"},
+  {"t": "cmd", "s": "dhcpd --version 2>&1 | head -1"},
+  {"t": "out", "s": "isc-dhcpd-4.2.5"},
+  {"t": "note", "s": "实测环境：centos:7 容器（vault 源，aarch64）"}
+]}

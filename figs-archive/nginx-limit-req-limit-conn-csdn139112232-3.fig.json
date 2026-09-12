@@ -1,0 +1,10 @@
+{"title": "limit_conn=2：4 个并发慢请求，2 过 2 拒", "lines": [
+  {"t": "config", "s": "location /slow/ { limit_conn addr 2; limit_rate 20k; }"},
+  {"t": "cmd", "s": "for i in 1 2 3 4; do curl ... /slow/big.bin & done"},
+  {"t": "out", "s": "c3=200"},
+  {"t": "out", "s": "c4=200"},
+  {"t": "out", "s": "c1=503"},
+  {"t": "out", "s": "c2=503"},
+  {"t": "note", "s": "同时只保留 2 个连接，超出的立即 503"},
+  {"t": "note", "s": "limit_rate 拖慢响应，让 4 个连接真实并存"}
+]}

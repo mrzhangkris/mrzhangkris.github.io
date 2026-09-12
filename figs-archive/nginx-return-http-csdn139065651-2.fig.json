@@ -1,0 +1,7 @@
+{"title": "301 重定向实测", "lines": [
+  {"t": "config", "s": "location /redirect { return 301 https://www.example.com; }"},
+  {"t": "cmd", "s": "curl -sI localhost/redirect"},
+  {"t": "out", "s": "HTTP/1.1 301 Moved Permanently"},
+  {"t": "out", "s": "Location: https://www.example.com"},
+  {"t": "note", "s": "浏览器凭 Location 头跳新地址，全程不出 Nginx"}
+]}

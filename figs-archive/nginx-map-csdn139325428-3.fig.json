@@ -1,0 +1,10 @@
+{"title": "灰度分流：按 cookie 选后端", "lines": [
+  {"t": "config", "s": "map $cookie_version $backend {"},
+  {"t": "config", "s": "  v2 http://127.0.0.1:8081;"},
+  {"t": "config", "s": "  default http://127.0.0.1:8080; }"},
+  {"t": "cmd", "s": "curl -b \"version=v2\" /gray"},
+  {"t": "out", "s": "backend=http://127.0.0.1:8081"},
+  {"t": "cmd", "s": "curl /gray   # 无 cookie"},
+  {"t": "out", "s": "backend=http://127.0.0.1:8080"},
+  {"t": "note", "s": "$cookie_XXX 直接取任意 cookie 做映射源"}
+]}

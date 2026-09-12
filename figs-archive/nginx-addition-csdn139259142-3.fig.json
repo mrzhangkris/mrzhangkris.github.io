@@ -1,0 +1,10 @@
+{
+  "title": "text/plain 不追加，MIME 边界实测（实拍）",
+  "lines": [
+    {"t": "config", "s": "location = /note.txt { add_after_body /footer.html; }"},
+    {"t": "cmd", "s": "curl -s localhost/note.txt"},
+    {"t": "out", "s": "plain text note"},
+    {"t": "note", "s": "默认只处理 text/html，text/plain 原样返回"},
+    {"t": "config", "s": "addition_types text/html text/css;"}
+  ]
+}

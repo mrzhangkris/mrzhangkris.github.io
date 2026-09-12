@@ -1,0 +1,10 @@
+{"title": "return 200 文本实测", "lines": [
+  {"t": "config", "s": "location /ok { return 200 \"ok\\n\"; }"},
+  {"t": "cmd", "s": "curl -sI localhost/ok | grep Content-Type"},
+  {"t": "out", "s": "Content-Type: application/octet-stream"},
+  {"t": "config", "s": "location /text { default_type text/plain;"},
+  {"t": "config", "s": "  return 200 \"hello $request_uri\\n\"; }"},
+  {"t": "cmd", "s": "curl -s localhost/text"},
+  {"t": "out", "s": "hello /text"},
+  {"t": "note", "s": "不指定类型默认 octet-stream，浏览器会当文件下载"}
+]}

@@ -233,7 +233,6 @@ local:
 
 两边的指纹对得上，说明连接的确实是预期的那台机器。
 
-![配图](/images/csdn/figures/saltstack-csdn105885645.png)
 
 ### 开始认证
 

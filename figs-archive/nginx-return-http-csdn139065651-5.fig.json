@@ -1,0 +1,8 @@
+{"title": "重复 return 实测", "lines": [
+  {"t": "config", "s": "location /dup {"},
+  {"t": "config", "s": "  return 200 \"first\\n\";"},
+  {"t": "config", "s": "  return 200 \"second\\n\"; }"},
+  {"t": "cmd", "s": "curl -s localhost/dup"},
+  {"t": "out", "s": "first"},
+  {"t": "note", "s": "reload 不报错，第二个 return 被静默忽略"}
+]}

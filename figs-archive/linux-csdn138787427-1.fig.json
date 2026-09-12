@@ -1,0 +1,10 @@
+{"title": "alias 拦截 rm 实测（Rocky 9, 交互 shell）", "lines": [
+  {"t": "config", "s": "# /root/.bashrc"},
+  {"t": "config", "s": "alias rm='echo can not use rm command'"},
+  {"t": "cmd", "s": "touch /tmp/important.txt && rm /tmp/important.txt"},
+  {"t": "out", "s": "can not use rm command /tmp/important.txt"},
+  {"t": "cmd", "s": "ls /tmp/important.txt"},
+  {"t": "out", "s": "/tmp/important.txt"},
+  {"t": "note", "s": "rm 只打印提示，文件还在——拦截生效"},
+  {"t": "note", "s": "alias 仅交互 shell 生效，脚本内无效"}
+]}

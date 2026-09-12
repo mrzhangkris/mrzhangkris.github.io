@@ -1,0 +1,9 @@
+{"title": "实时 HTML 报告：WebSocket 服务就绪", "lines": [
+  {"t": "cmd", "s": "goaccess /var/log/nginx/access.log \\"},
+  {"t": "cmd", "s": "  --log-format=COMBINED -o report.html \\"},
+  {"t": "cmd", "s": "  --real-time-html"},
+  {"t": "out", "s": "WebSocket server ready to accept new"},
+  {"t": "out", "s": "  client connections"},
+  {"t": "note", "s": "进程常驻：日志增长 → 推送 → 浏览器自动刷新"},
+  {"t": "note", "s": "默认监听 7890 端口（--ws-url 可改）"}
+]}

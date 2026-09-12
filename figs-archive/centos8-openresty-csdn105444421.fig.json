@@ -1,9 +1,14 @@
 {
-  "title": "openresty configure openssl",
-  "type": "config",
+  "title": "OpenResty 1.19.3.1 编译安装实测（Rocky Linux 9 容器）",
   "lines": [
-    {"t": "config", "s": "./configure --with-http_ssl_module --with-http_v2_module \\"},
-    {"t": "config", "s": "  --with-openssl=/usr/local/openssl"},
-    {"t": "note", "s": "openssl 指向手动编译的路径，不用系统默认"}
+    {"t": "cmd", "s": "./configure --with-http_ssl_module --with-http_v2_module \\"},
+    {"t": "cmd", "s": "    --with-openssl=/tmp/openssl-3.1.4"},
+    {"t": "out", "s": "configure ok"},
+    {"t": "cmd", "s": "make -j$(nproc) && make install"},
+    {"t": "cmd", "s": "/usr/local/openresty/nginx/sbin/nginx -v"},
+    {"t": "out", "s": "nginx version: openresty/1.19.3.1"},
+    {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/"},
+    {"t": "out", "s": "200"},
+    {"t": "note", "s": "--with-openssl 指向 OpenSSL 源码树，构建时静态编入 nginx"}
   ]
 }

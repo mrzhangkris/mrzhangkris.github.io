@@ -1,8 +1,10 @@
-{
-  "title": "install nginx vim syntax",
-  "type": "cmd",
-  "lines": [
-    {"t": "cmd", "s": "cp -r contrib/vim/* /usr/share/vim/vimfiles/"},
-    {"t": "note", "s": "拷贝 Nginx 源码自带的 Vim 语法文件到运行时目录"}
-  ]
-}
+{"title": "Vim nginx 高亮安装实测（Alpine vim 9.2 容器）", "lines": [
+  {"t": "cmd", "s": "mkdir -p /usr/share/vim/vimfiles"},
+  {"t": "cmd", "s": "cp -r nginx-1.28.0/contrib/vim/* /usr/share/vim/vimfiles/"},
+  {"t": "cmd", "s": "ls /usr/share/vim/vimfiles/"},
+  {"t": "out", "s": "ftdetect  ftplugin  indent  syntax"},
+  {"t": "note", "s": "不先 mkdir 时报：can't create directory ... No such file or directory"},
+  {"t": "cmd", "s": "vim -c 'redir!>/tmp/o|set ft?|redir END' -c q /etc/nginx.conf"},
+  {"t": "out", "s": "filetype=nginx"},
+  {"t": "note", "s": "对照组：app.nginx → nginx，app.conf → conf（不识别）"}
+]}

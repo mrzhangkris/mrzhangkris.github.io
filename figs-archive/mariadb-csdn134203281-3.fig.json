@@ -1,0 +1,10 @@
+{"title": "Access denied 排错闭环（实测）", "lines": [
+  {"t": "cmd", "s": "mysql -uroot -proot -h 172.17.0.2 -e \"show databases;\""},
+  {"t": "out", "s": "ERROR 1045 (28000): Access denied for user 'root'@'f52cee1c0d34'"},
+  {"t": "cmd", "s": "select host,user from mysql.user;"},
+  {"t": "out", "s": "localhost   root / mariadb.sys / mysql"},
+  {"t": "out", "s": "localhost   (空)    # ← 匿名用户在抢匹配"},
+  {"t": "cmd", "s": "DROP USER ''@'localhost';"},
+  {"t": "cmd", "s": "mysql -uroot -proot -h 172.17.0.2 -e \"show databases;\""},
+  {"t": "out", "s": "information_schema  mysql  performance_schema"}
+]}

@@ -1,0 +1,12 @@
+{
+  "title": "首次 MISS，第二次 HIT（nginx/1.31.5 实测）",
+  "lines": [
+    {"t": "cmd", "s": "curl -si http://localhost/ | grep -E '^HTTP|X-Proxy-Cache'"},
+    {"t": "out", "s": "HTTP/1.1 200 OK"},
+    {"t": "out", "s": "X-Proxy-Cache: MISS"},
+    {"t": "note", "s": "缓存没有这个键：回源，并把响应写入磁盘"},
+    {"t": "cmd", "s": "curl -si http://localhost/ | grep X-Proxy-Cache"},
+    {"t": "out", "s": "X-Proxy-Cache: HIT"},
+    {"t": "note", "s": "同一请求第二次：不再碰后端，直接吃本地缓存"}
+  ]
+}

@@ -1,0 +1,12 @@
+{"title": "多进程模型实测（10 核容器，nginx/1.31.5）", "lines": [
+  {"t": "cmd", "s": "ps -e -o pid,args | grep 'nginx:'"},
+  {"t": "out", "s": "11 root  nginx: master process nginx"},
+  {"t": "out", "s": "12..22 nginx  nginx: worker process（共 10 条）"},
+  {"t": "note", "s": "worker 数 = CPU 核数（nproc=10）"},
+  {"t": "cmd", "s": "kill -9 12; sleep 2"},
+  {"t": "out", "s": "worker process 12 exited on signal 9"},
+  {"t": "out", "s": "start worker process 31  ← master 立即补位"},
+  {"t": "cmd", "s": "nginx -s reload; sleep 2"},
+  {"t": "out", "s": "master pid=11 不变；worker 换代为 37..46"},
+  {"t": "note", "s": "老 worker 处理完存量请求后退出，服务不中断"}
+]}

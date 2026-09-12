@@ -1,0 +1,13 @@
+{
+  "title": "dpkg 查询已安装包（Debian 13.6 实测）",
+  "lines": [
+    {"t": "cmd", "s": "dpkg -l curl"},
+    {"t": "out", "s": "||/ Name  Version           Architecture Description"},
+    {"t": "out", "s": "+++-=======-=================-============-==========="},
+    {"t": "out", "s": "ii  curl    8.14.1-2+deb13u4  arm64  command line tool..."},
+    {"t": "cmd", "s": "dpkg -s curl | head -2"},
+    {"t": "out", "s": "Package: curl"},
+    {"t": "out", "s": "Status: install ok installed"},
+    {"t": "note", "s": "状态码 ii=正常安装，rc=已移除残留配置"}
+  ]
+}

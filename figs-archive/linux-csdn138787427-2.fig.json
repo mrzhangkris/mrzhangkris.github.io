@@ -1,0 +1,9 @@
+{"title": "rmf 别名实测：嵌套拦截坑与修正", "lines": [
+  {"t": "note", "s": "写法一（原文）：alias rmf='rm -i'"},
+  {"t": "out", "s": "can not use rm command -i /tmp/a.txt"},
+  {"t": "note", "s": "rmf 展开成 rm -i，rm 又被 alias 拦截——连保险删除也被拦"},
+  {"t": "note", "s": "写法二（修正）：alias rmf='/bin/rm -i'"},
+  {"t": "out", "s": "rm: remove regular empty file '/tmp/a.txt'? y"},
+  {"t": "out", "s": "ls: cannot access '/tmp/a.txt': No such file or directory"},
+  {"t": "note", "s": "绝对路径绕过 alias，交互确认后正常删除"}
+]}

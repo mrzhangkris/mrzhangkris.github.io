@@ -1,0 +1,11 @@
+{
+  "title": "同一个请求，recursive on/off 两种答案（容器实拍）",
+  "lines": [
+    {"t": "cmd", "s": "curl -H 'X-Forwarded-For: 203.0.113.7, 10.0.0.5' localhost"},
+    {"t": "note", "s": "recursive off 时："},
+    {"t": "out", "s": "remote_addr=10.0.0.5"},
+    {"t": "note", "s": "recursive on + 10.0.0.5 可信时："},
+    {"t": "out", "s": "remote_addr=203.0.113.7"},
+    {"t": "note", "s": "off 会把链上不在名单的代理当成客户端"}
+  ]
+}

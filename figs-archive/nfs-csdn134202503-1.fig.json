@@ -1,0 +1,14 @@
+{
+  "title": "exportfs -v 确认导出规则已生效（RHEL9 容器实拍）",
+  "lines": [
+    {"t": "config", "s": "/export/nfs 192.168.0.0/24(rw,no_root_squash,no_all_squash,sync)"},
+    {"t": "note", "s": "写入 /etc/exports 后重新应用并查看："},
+    {"t": "cmd", "s": "exportfs -r"},
+    {"t": "cmd", "s": "exportfs -v"},
+    {"t": "out", "s": "/export/nfs  172.17.0.0/24(sync,wdelay,hide,"},
+    {"t": "out", "s": "  no_subtree_check,fsid=1,sec=sys,rw,secure,"},
+    {"t": "out", "s": "  no_root_squash,no_all_squash)"},
+    {"t": "note", "s": "容器网段 172.17.0.0/24 等价于原文的 192.168.0.0/24"},
+    {"t": "note", "s": "长行按参数拆行展示，规则与参数均已生效"}
+  ]
+}

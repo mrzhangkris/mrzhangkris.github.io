@@ -1,0 +1,7 @@
+{"title": "return 短路 access/auth 实测", "lines": [
+  {"t": "config", "s": "location /secret { return 404; }"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost:81/secret"},
+  {"t": "out", "s": "404"},
+  {"t": "note", "s": "无凭证、非白名单也一样：rewrite 阶段即终结，"},
+  {"t": "note", "s": "IP 检查和密码验证压根没执行"}
+]}

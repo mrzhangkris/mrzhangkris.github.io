@@ -1,0 +1,10 @@
+{"title": "静态映射：按 URI 查表", "lines": [
+  {"t": "config", "s": "map $uri $redirect_url {"},
+  {"t": "config", "s": "  /old-page /new-page;  /about /about-us;"},
+  {"t": "config", "s": "  default /not-found; }"},
+  {"t": "cmd", "s": "curl -s localhost/old-page"},
+  {"t": "out", "s": "uri=/old-page -> redirect_url=/new-page"},
+  {"t": "cmd", "s": "curl -s localhost/other-page"},
+  {"t": "out", "s": "uri=/other-page -> redirect_url=/not-found"},
+  {"t": "note", "s": "命中表项走表项，没命中走 default"}
+]}

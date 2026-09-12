@@ -1,0 +1,12 @@
+{
+  "title": "CentOS 五条基础命令速查",
+  "lines": [
+    {"t": "note", "s": "日常文件操作速查卡"},
+    {"t": "config", "s": "ls -lah         # 详细列表含隐藏文件，大小可读"},
+    {"t": "config", "s": "cd /var/log     # 切换目录，pwd 确认位置"},
+    {"t": "config", "s": "mkdir -p a/b/c  # 整条路径一次建齐"},
+    {"t": "config", "s": "rm -rf a        # 递归强删，执行前看两遍路径"},
+    {"t": "config", "s": "cp -ri a d      # 复制目录，覆盖前提示"},
+    {"t": "note", "s": "目录操作必带 -r；删除没有回收站"}
+  ]
+}

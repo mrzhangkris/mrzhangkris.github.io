@@ -1,0 +1,7 @@
+{"title": "autoindex_exact_size off 显示规律", "lines": [
+  {"t": "config", "s": "autoindex_exact_size off;  autoindex_localtime on;"},
+  {"t": "out", "s": "report.pdf   12-Sep-2026 03:36   1500"},
+  {"t": "out", "s": "big.bin      12-Sep-2026 03:38      2M"},
+  {"t": "out", "s": "m.bin        12-Sep-2026 03:38    488K"},
+  {"t": "note", "s": "≤9999 字节仍显示精确值，超过后圆整 K/M/G"}
+]}

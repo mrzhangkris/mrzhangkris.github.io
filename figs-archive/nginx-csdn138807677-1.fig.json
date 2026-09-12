@@ -1,0 +1,11 @@
+{
+  "title": "MISS -> HIT -> EXPIRED 三态实测（nginx/1.28.3 实拍）",
+  "lines": [
+    {"t": "cmd", "s": "curl -s -D- \"localhost/dynamic-content/?id=7\" | grep X-Cache"},
+    {"t": "out", "s": "X-Cache-Status: MISS   (回源并写缓存)"},
+    {"t": "cmd", "s": "curl -s -D- \"localhost/dynamic-content/?id=7\" | grep X-Cache"},
+    {"t": "out", "s": "X-Cache-Status: HIT    (命中，未碰后端)"},
+    {"t": "note", "s": "TTL 3s 过后再请求："},
+    {"t": "out", "s": "X-Cache-Status: EXPIRED (过期，重新回源)"}
+  ]
+}

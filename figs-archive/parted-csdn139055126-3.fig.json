@@ -1,0 +1,10 @@
+{"title": "-s 脚本模式下缩小分区被安全拦截", "lines": [
+  {"t": "cmd", "s": "parted -s /dev/loop0 resizepart 1 600MiB"},
+  {"t": "out", "s": "Warning: Shrinking a partition can cause"},
+  {"t": "out", "s": "  data loss, are you sure you want to"},
+  {"t": "out", "s": "  continue?"},
+  {"t": "note", "s": "实测：分区当前 839MB，缩到 600MiB 被拦"},
+  {"t": "note", "s": "-s 脚本模式不自动应答 → 操作中止，分区未变"},
+  {"t": "note", "s": "扩容不问，缩小必问——脚本里要用"},
+  {"t": "note", "s": "---pretend-input-tty + 管道喂 \"Yes\""}
+]}

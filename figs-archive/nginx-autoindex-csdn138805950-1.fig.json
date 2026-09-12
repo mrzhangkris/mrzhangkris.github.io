@@ -1,0 +1,13 @@
+{
+  "title": "autoindex on 生成目录列表（nginx/1.28.3 实拍）",
+  "lines": [
+    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost/plain/"},
+    {"t": "out", "s": "403"},
+    {"t": "note", "s": "files/ 配了 autoindex on："},
+    {"t": "cmd", "s": "curl -s localhost/files/ | grep href"},
+    {"t": "out", "s": "<a href=\"../\">../</a>"},
+    {"t": "out", "s": "<a href=\"big-archive.tar\">big-archive.tar</a>  12-Sep-2026  1M"},
+    {"t": "out", "s": "<a href=\"app.log\">app.log</a>  12-Sep-2026 03:27  4"},
+    {"t": "note", "s": "不开是 403，开了才有列表；1M 为友好大小"}
+  ]
+}

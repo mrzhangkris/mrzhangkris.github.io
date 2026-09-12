@@ -1,0 +1,11 @@
+{
+  "title": "依赖安装冲突报错",
+  "lines": [
+    {"t": "note", "s": "最小安装环境实测：依赖清单含 curl 会整条失败"},
+    {"t": "cmd", "s": "yum install -y perl pcre-devel zlib-devel openssl-devel gcc curl"},
+    {"t": "out", "s": "Error:"},
+    {"t": "out", "s": " Problem: problem with installed package curl-minimal-..."},
+    {"t": "out", "s": "  - cannot install the best candidate for the job"},
+    {"t": "note", "s": "处理：清单去掉 curl，再补 yum install make -y"}
+  ]
+}

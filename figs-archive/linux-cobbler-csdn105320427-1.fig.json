@@ -1,0 +1,8 @@
+{"title": "openssl passwd 实测（Rocky 9, OpenSSL 3.0.7）", "lines": [
+  {"t": "cmd", "s": "openssl passwd -1 -salt 'cobbler' 'cobbler'"},
+  {"t": "out", "s": "$1$cobbler$M6SE55xZodWc9.vAKLJs6."},
+  {"t": "note", "s": "输出与本文 2020 年 CentOS 7 环境的记录完全一致"},
+  {"t": "note", "s": "salt+密码相同则哈希相同，可放心用新系统生成"},
+  {"t": "cmd", "s": "openssl version"},
+  {"t": "out", "s": "OpenSSL 3.0.7 1 Nov 2022"}
+]}

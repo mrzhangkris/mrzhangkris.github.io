@@ -1,0 +1,10 @@
+{"title": "echo 3 全清：页面缓存与 Slab 同步下降", "lines": [
+  {"t": "cmd", "s": "cat /tmp/big > /dev/null"},
+  {"t": "cmd", "s": "find /usr -type f > /dev/null  # 填充 dentry/inode"},
+  {"t": "cmd", "s": "free -m | grep Mem"},
+  {"t": "out", "s": "buff/cache=451MB   Slab=156272 kB"},
+  {"t": "cmd", "s": "sync && echo 3 > /proc/sys/vm/drop_caches"},
+  {"t": "cmd", "s": "free -m | grep Mem; grep Slab /proc/meminfo"},
+  {"t": "out", "s": "buff/cache=242MB   Slab=153376 kB"},
+  {"t": "note", "s": "页面缓存与可回收 Slab（dentry/inode）同时被清"}
+]}

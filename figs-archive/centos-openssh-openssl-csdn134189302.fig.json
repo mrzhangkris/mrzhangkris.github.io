@@ -1,9 +1,10 @@
 {
-  "title": "ssh -V after upgrade",
-  "type": "cmd",
+  "title": "升级后版本验证（Rocky Linux 9 容器实测）",
   "lines": [
+    {"t": "cmd", "s": "openssl version"},
+    {"t": "out", "s": "OpenSSL 3.1.4 24 Oct 2023 (Library: OpenSSL 3.1.4 24 Oct 2023)"},
     {"t": "cmd", "s": "ssh -V"},
     {"t": "out", "s": "OpenSSH_9.5p1, OpenSSL 3.1.4 24 Oct 2023"},
-    {"t": "note", "s": "两个版本都对上，升级完成"}
+    {"t": "note", "s": "两段都要核对；若 OpenSSL 仍是旧版，检查 --with-ssl-dir 后重编"}
   ]
 }

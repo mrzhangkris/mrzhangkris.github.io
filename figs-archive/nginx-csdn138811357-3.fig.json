@@ -1,0 +1,8 @@
+{"title": "keepalive 第二参数写入响应头", "lines": [
+  {"t": "config", "s": "keepalive_timeout 60s 15s;"},
+  {"t": "cmd", "s": "curl -si http://127.0.0.1/ka"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "out", "s": "Connection: keep-alive"},
+  {"t": "out", "s": "Keep-Alive: timeout=15"},
+  {"t": "note", "s": "第二参数 15s 告知客户端复用窗口"}
+]}

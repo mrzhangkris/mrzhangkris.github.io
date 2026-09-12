@@ -1,0 +1,8 @@
+{"title": "satisfy any 实测", "lines": [
+  {"t": "config", "s": "satisfy any; allow 127.0.0.1; deny all; auth_basic ..."},
+  {"t": "cmd", "s": "curl -s localhost            # 白名单IP,无凭证"},
+  {"t": "out", "s": "200 SECRET AREA"},
+  {"t": "cmd", "s": "curl -s -u user1:wrong localhost"},
+  {"t": "out", "s": "200 (IP 关卡已放行，密码不再查)"},
+  {"t": "note", "s": "或的关系：任意一道关卡放行即可"}
+]}

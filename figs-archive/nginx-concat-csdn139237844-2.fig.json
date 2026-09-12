@@ -1,0 +1,12 @@
+{
+  "title": "concat_unique 两种行为对比（实拍）",
+  "lines": [
+    {"t": "note", "s": "默认 unique=on，css+js 混合被拒："},
+    {"t": "cmd", "s": "curl -s \"localhost/css/??style1.css,app.js\""},
+    {"t": "out", "s": "400 Bad Request"},
+    {"t": "note", "s": "配 concat_unique off 后："},
+    {"t": "config", "s": "concat_unique off;"},
+    {"t": "cmd", "s": "curl -s \"localhost/css/??style1.css,app.js\""},
+    {"t": "out", "s": "body { color: red; } / console.log(1)"}
+  ]
+}

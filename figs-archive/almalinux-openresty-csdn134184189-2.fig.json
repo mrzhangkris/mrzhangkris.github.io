@@ -1,0 +1,11 @@
+{
+  "title": "启动与版本验证",
+  "lines": [
+    {"t": "note", "s": "启动后验证（RockyLinux 9 容器实测）"},
+    {"t": "cmd", "s": "/apps/openresty/nginx/sbin/nginx -v"},
+    {"t": "out", "s": "nginx version: openresty/1.21.4.2"},
+    {"t": "cmd", "s": "curl -I -s -m 10 http://localhost | grep HTTP | awk '{print $2}'"},
+    {"t": "out", "s": "200"},
+    {"t": "note", "s": "reload / quit 实测均正常返回"}
+  ]
+}

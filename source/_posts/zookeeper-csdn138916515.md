@@ -50,7 +50,6 @@ cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg
 vi /opt/zookeeper/conf/zoo.cfg
 ```
 
-![配图](/images/csdn/figures/zookeeper-csdn138916515.png)
 
 在 zoo.cfg 里写入集群配置：
 

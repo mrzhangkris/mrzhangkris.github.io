@@ -1,0 +1,9 @@
+{"title": "deny all 顺序陷阱实测", "lines": [
+  {"t": "config", "s": "deny all;          # 写在前面"},
+  {"t": "config", "s": "allow 127.0.0.1;   # 永远轮不到"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost"},
+  {"t": "out", "s": "401 (IP 关卡对所有人拒绝)"},
+  {"t": "cmd", "s": "curl -s -u user:password1 localhost"},
+  {"t": "out", "s": "200"},
+  {"t": "note", "s": "白名单形同虚设，satisfy any 只剩密码门"}
+]}

@@ -1,0 +1,10 @@
+{"title": "logrotate 轮转实测（nginx:alpine, logrotate）", "lines": [
+  {"t": "cmd", "s": "logrotate -d /etc/logrotate.d/nginx   # 干跑"},
+  {"t": "out", "s": "rotating pattern: /var/log/nginx/*.log weekly ..."},
+  {"t": "cmd", "s": "logrotate -f /etc/logrotate.d/nginx   # 强制轮转"},
+  {"t": "cmd", "s": "ls -l /var/log/nginx/"},
+  {"t": "out", "s": "access.log      0    # create 新建，nginx 属主"},
+  {"t": "out", "s": "access.log.1.gz  122  # compress 压缩生效"},
+  {"t": "cmd", "s": "curl -s localhost >/dev/null; ls -l access.log"},
+  {"t": "out", "s": "access.log  90  # reopen 后新日志写进新文件"}
+]}

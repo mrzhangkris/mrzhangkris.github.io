@@ -1,0 +1,12 @@
+{
+  "title": "logrotate 轮转实测",
+  "lines": [
+    {"t": "note", "s": "logrotate 3.22.0 容器实测，-f 强制轮转"},
+    {"t": "cmd", "s": "logrotate -f /etc/logrotate.d/nginx-test"},
+    {"t": "note", "s": "退出码 0，轮转无报错"},
+    {"t": "cmd", "s": "ls /var/log/nginx/ | grep access"},
+    {"t": "out", "s": "access.log"},
+    {"t": "out", "s": "access.log.1"},
+    {"t": "note", "s": "delaycompress：最近一份 access.log.1 暂不压缩"}
+  ]
+}

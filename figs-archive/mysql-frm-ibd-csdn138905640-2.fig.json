@@ -1,0 +1,15 @@
+{
+  "title": "IMPORT 挂回表空间，数据完整恢复（8.0.46 实拍）",
+  "lines": [
+    {"t": "cmd", "s": "cp /tmp/mytable.ibd.bak /var/lib/mysql/mydb/mytable.ibd"},
+    {"t": "cmd", "s": "chown mysql:mysql /var/lib/mysql/mydb/mytable.ibd"},
+    {"t": "cmd", "s": "ALTER TABLE mytable IMPORT TABLESPACE;"},
+    {"t": "note", "s": "无报错即挂载成功，验证数据："},
+    {"t": "cmd", "s": "SELECT * FROM mytable;"},
+    {"t": "out", "s": "id\tname"},
+    {"t": "out", "s": "1\talice"},
+    {"t": "out", "s": "2\tbob"},
+    {"t": "out", "s": "3\tcarol"},
+    {"t": "note", "s": "3 行数据完整回来，恢复闭环"}
+  ]
+}

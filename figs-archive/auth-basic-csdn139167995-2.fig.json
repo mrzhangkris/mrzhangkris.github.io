@@ -1,0 +1,9 @@
+{
+  "title": "limit_req 限速实测",
+  "lines": [
+    {"t": "note", "s": "rate=1r/s burst=3 nodelay，连发 5 个请求（实测）"},
+    {"t": "cmd", "s": "seq 5 | xargs curl -so /dev/null -w \"%{http_code} \" localhost/rate/"},
+    {"t": "out", "s": "200 200 200 200 503"},
+    {"t": "note", "s": "burst 配额耗尽，第 5 发直接 503"}
+  ]
+}

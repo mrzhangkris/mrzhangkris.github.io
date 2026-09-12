@@ -1,0 +1,9 @@
+{"title": "MariaDB 安装与启动实测（Rocky 9, MariaDB 10.5.29）", "lines": [
+  {"t": "cmd", "s": "dnf install -y mariadb mariadb-server"},
+  {"t": "out", "s": "mariadb-server-10.5.29-3.el9"},
+  {"t": "cmd", "s": "mysql -uroot -e \"select version();\""},
+  {"t": "out", "s": "10.5.29-MariaDB"},
+  {"t": "note", "s": "CentOS 7.6 用 yum install mariadb-server，装到 5.5.x"},
+  {"t": "note", "s": "systemctl enable mariadb --now：开机自启+立即启动"},
+  {"t": "note", "s": "验证点：systemctl is-active mariadb → active"}
+]}

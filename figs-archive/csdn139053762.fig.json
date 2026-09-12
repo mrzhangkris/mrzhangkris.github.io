@@ -1,10 +1,15 @@
 {
-  "title": "growpart resize fs",
-  "type": "cmd",
+  "title": "热扩容全流程实测（loop 设备 50M→100M，Rocky Linux 9 容器）",
   "lines": [
-    {"t": "cmd", "s": "sudo growpart /dev/sda 2"},
-    {"t": "note", "s": "把 sda 第 2 个分区扩到整盘可用空间"},
-    {"t": "cmd", "s": "sudo resize2fs /dev/sda2"},
-    {"t": "note", "s": "ext4 在线扩展；xfs 用 xfs_growfs /"}
+    {"t": "cmd", "s": "df -h /mnt/demo | tail -1    # 扩容前"},
+    {"t": "out", "s": "/dev/loop0p1     41M   14K   38M   1% /mnt/demo"},
+    {"t": "cmd", "s": "truncate -s 100M /tmp/disk.img && losetup -c /dev/loop0"},
+    {"t": "out", "s": "loop0  104857600    # lsblk -b 确认盘已变大"},
+    {"t": "cmd", "s": "growpart /dev/loop0 1"},
+    {"t": "out", "s": "CHANGED: partition=1 start=2048 old: size=100352"},
+    {"t": "out", "s": "  new: size=202719 end=204766"},
+    {"t": "cmd", "s": "resize2fs /dev/loop0p1 && df -h /mnt/demo | tail -1"},
+    {"t": "out", "s": "/dev/loop0p1     88M   14K   83M   1% /mnt/demo"},
+    {"t": "note", "s": "环回设备模拟云盘，命令与真实云盘热扩容一致"}
   ]
 }

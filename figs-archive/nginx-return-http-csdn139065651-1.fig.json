@@ -1,0 +1,7 @@
+{"title": "维护页 503 实测", "lines": [
+  {"t": "config", "s": "location /maint { return 503; }"},
+  {"t": "cmd", "s": "curl -sI localhost/maint"},
+  {"t": "out", "s": "HTTP/1.1 503 Service Temporarily Unavailable"},
+  {"t": "out", "s": "Server: nginx/1.31.5"},
+  {"t": "note", "s": "请求在 Nginx 就地终结，不会到任何上游"}
+]}

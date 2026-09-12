@@ -1,0 +1,12 @@
+{
+  "title": "cp / mv / ls 文件操作（容器实测）",
+  "lines": [
+    {"t": "cmd", "s": "echo hello > source.txt"},
+    {"t": "cmd", "s": "cp source.txt destination.txt"},
+    {"t": "cmd", "s": "mv source.txt moved.txt"},
+    {"t": "cmd", "s": "ls -l"},
+    {"t": "out", "s": "-rw-r--r-- 1 root root 6 destination.txt"},
+    {"t": "out", "s": "-rw-r--r-- 1 root root 6 moved.txt"},
+    {"t": "note", "s": "cp 复制留原件，mv 移动改名不留"}
+  ]
+}

@@ -1,0 +1,11 @@
+{"title": "正向与反向解析实测", "lines": [
+  {"t": "cmd", "s": "dig @127.0.0.1 www.example.com A +short"},
+  {"t": "out", "s": "192.168.254.150"},
+  {"t": "cmd", "s": "dig @127.0.0.1 -x 192.168.254.150 +short"},
+  {"t": "out", "s": "www.example.com."},
+  {"t": "out", "s": "ns1.example.com."},
+  {"t": "cmd", "s": "nslookup www.example.com 127.0.0.1"},
+  {"t": "out", "s": "Name:\twww.example.com"},
+  {"t": "out", "s": "Address:\t192.168.254.150"},
+  {"t": "note", "s": "实测环境：BIND 9.11.4-P2，centos:7 容器"}
+]}

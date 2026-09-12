@@ -1,0 +1,12 @@
+{
+  "title": "错误写法：缓存键不含 Cookie 导致串缓存",
+  "lines": [
+    {"t": "config", "s": "proxy_cache_key \"$request_method$request_uri\";"},
+    {"t": "note", "s": "键里没有用户要素"},
+    {"t": "cmd", "s": "curl -si -H 'Cookie: user=alice' localhost/ | grep X-Proxy-Cache"},
+    {"t": "out", "s": "X-Proxy-Cache: MISS"},
+    {"t": "cmd", "s": "curl -si -H 'Cookie: user=bob' localhost/ | grep X-Proxy-Cache"},
+    {"t": "out", "s": "X-Proxy-Cache: HIT"},
+    {"t": "note", "s": "bob 首次请求直接命中 alice 的缓存（实测）"}
+  ]
+}

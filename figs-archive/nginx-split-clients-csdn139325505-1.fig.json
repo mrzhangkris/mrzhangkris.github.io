@@ -1,0 +1,9 @@
+{"title": "split_clients 分组实测", "lines": [
+  {"t": "config", "s": "split_clients \"${remote_addr}${http_user_agent}\" $variant {"},
+  {"t": "config", "s": "  50% \"A\"; * \"B\"; }"},
+  {"t": "cmd", "s": "curl -A \"Mozilla/5.0 testUA\" localhost  # 连发3次"},
+  {"t": "out", "s": "VERSION A  VERSION A  VERSION A"},
+  {"t": "cmd", "s": "curl -A \"another-user\" localhost"},
+  {"t": "out", "s": "VERSION B"},
+  {"t": "note", "s": "确定性哈希：同一特征恒定同组，nginx/1.31.5 实测"}
+]}

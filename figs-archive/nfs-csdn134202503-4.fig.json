@@ -1,0 +1,13 @@
+{
+  "title": "挂载成功 + 跨机读写落盘（RHEL9 容器实拍）",
+  "lines": [
+    {"t": "note", "s": "容器自测挂载点为 /mnt/nfstest，对应原文的 /data"},
+    {"t": "cmd", "s": "mount -t nfs 172.17.0.6:/export/nfs /mnt/nfstest"},
+    {"t": "cmd", "s": "df -hT /mnt/nfstest | tail -1"},
+    {"t": "out", "s": "172.17.0.6:/export/nfs nfs 3.9G 0 3.9G 0% /mnt/nfstest"},
+    {"t": "cmd", "s": "echo \"hello from client\" > /mnt/nfstest/write-test.txt"},
+    {"t": "note", "s": "回到服务端读同一个文件："},
+    {"t": "cmd", "s": "cat /export/nfs/write-test.txt"},
+    {"t": "out", "s": "hello from client"}
+  ]
+}

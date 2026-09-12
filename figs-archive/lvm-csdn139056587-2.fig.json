@@ -1,0 +1,10 @@
+{"title": "在线扩容实测：lvextend + resize2fs", "lines": [
+  {"t": "cmd", "s": "df -BM /mnt/my_storage | tail -1"},
+  {"t": "out", "s": "size-before: 26M    # 已写入 10M 数据"},
+  {"t": "cmd", "s": "lvextend -L 50M /dev/my_volume_group/my_logical_volume"},
+  {"t": "out", "s": "Logical volume ... successfully resized."},
+  {"t": "cmd", "s": "resize2fs /dev/my_volume_group/my_logical_volume"},
+  {"t": "cmd", "s": "df -BM /mnt/my_storage | tail -1"},
+  {"t": "out", "s": "size-after: 44M"},
+  {"t": "out", "s": "file-survived       # 挂载未中断，原数据完好"}
+]}

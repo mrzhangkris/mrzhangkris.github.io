@@ -84,7 +84,6 @@ minion-node2:
     True
 ```
 
-![配图](/images/csdn/figures/saltstack-csdn105945846.png)
 
 ### 与 Minion ID 无关的 Target
 

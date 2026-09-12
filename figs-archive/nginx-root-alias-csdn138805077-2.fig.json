@@ -1,0 +1,7 @@
+{"title": "alias 替换实测", "lines": [
+  {"t": "config", "s": "location /images/ { alias /data/uploads/; }"},
+  {"t": "cmd", "s": "curl -s localhost:81/images/logo.png"},
+  {"t": "out", "s": "UPLOAD"},
+  {"t": "note", "s": "前缀 /images/ 被替换为 /data/uploads/，实际读 /data/uploads/logo.png"},
+  {"t": "note", "s": "html/images 下同名的 LOGO 被遮蔽，取不到"}
+]}

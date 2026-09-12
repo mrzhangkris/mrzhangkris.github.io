@@ -1,0 +1,12 @@
+{
+  "title": "auth_request 三态实测（nginx/1.28.3 容器实拍）",
+  "lines": [
+    {"t": "cmd", "s": "curl -H \"Authorization: Basic dXNl...\" localhost/protected/data.txt"},
+    {"t": "out", "s": "SECRET DATA [200]"},
+    {"t": "cmd", "s": "curl localhost/protected/data.txt"},
+    {"t": "out", "s": "Unauthorized [401]"},
+    {"t": "cmd", "s": "curl -H \"Authorization: ...\" localhost/protected/admin/panel.txt"},
+    {"t": "out", "s": "Forbidden [403]"},
+    {"t": "note", "s": "凭证放行；无凭证 401；/admin 路径按 X-Original-URI 判 403"}
+  ]
+}

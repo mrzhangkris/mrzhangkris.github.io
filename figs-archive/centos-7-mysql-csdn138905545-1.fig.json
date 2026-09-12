@@ -1,0 +1,13 @@
+{
+  "title": "EOL 后安装 5.7 的真实报错",
+  "lines": [
+    {"t": "note", "s": "CentOS 7.9 容器实测（2026-09，vault 源）"},
+    {"t": "cmd", "s": "yum install -y mysql-server"},
+    {"t": "out", "s": "No package mysql-server available."},
+    {"t": "out", "s": "Error: Nothing to do"},
+    {"t": "note", "s": "默认仓库只有 MariaDB，MySQL 走官方源"},
+    {"t": "cmd", "s": "yum install -y mysql-community-server"},
+    {"t": "out", "s": "Failing package is: mysql-community-server-5.7.44-1.el7.x86_64"},
+    {"t": "note", "s": "GPG key 已失效，修复见常见报错"}
+  ]
+}

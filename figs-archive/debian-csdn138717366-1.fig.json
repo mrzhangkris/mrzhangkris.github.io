@@ -1,0 +1,12 @@
+{
+  "title": "apt-get 模拟安装与依赖清理（Debian 13.6 实测）",
+  "lines": [
+    {"t": "cmd", "s": "sudo apt-get install -s wget"},
+    {"t": "out", "s": "The following NEW packages will be installed:"},
+    {"t": "out", "s": "  wget"},
+    {"t": "note", "s": "-s 只模拟，不动系统"},
+    {"t": "cmd", "s": "sudo apt-get autoremove --dry-run"},
+    {"t": "out", "s": "0 upgraded, 0 newly installed, 0 to remove and 2 not upgraded."},
+    {"t": "note", "s": "update 刷索引，upgrade 才真升级"}
+  ]
+}
