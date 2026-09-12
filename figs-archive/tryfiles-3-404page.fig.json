@@ -1,0 +1,8 @@
+{
+  "title": "=404 + error_page 实测",
+  "lines": [
+    {"t": "cmd", "s": "curl -s -w '\\nHTTP %{http_code}' localhost/nope.html"},
+    {"t": "out", "s": "<h1>CUSTOM 404</h1>"},
+    {"t": "out", "s": "HTTP 404"}
+  ]
+}

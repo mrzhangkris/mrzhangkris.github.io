@@ -1,0 +1,9 @@
+{
+  "title": "兜底目标指向自己,500",
+  "lines": [
+    {"t": "config", "s": "try_files $uri /loop.html;"},
+    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost/nope.html"},
+    {"t": "out", "s": "500"},
+    {"t": "note", "s": "internal redirection cycle to /loop.html"}
+  ]
+}

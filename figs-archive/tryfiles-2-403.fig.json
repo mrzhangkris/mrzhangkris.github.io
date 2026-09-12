@@ -1,0 +1,7 @@
+{
+  "title": "$uri/ 命中目录,403 坑",
+  "lines": [
+    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost/report/"},
+    {"t": "out", "s": "403"}
+  ]
+}

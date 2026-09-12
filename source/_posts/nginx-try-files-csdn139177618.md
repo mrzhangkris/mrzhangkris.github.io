@@ -59,33 +59,15 @@ server {
 }
 ```
 
-三种请求的真实结果：
+四种请求的实跑结果（含一个意料之外的状态码）：
 
-**文件存在，`$uri` 命中：**
+![SPA 回退实测](/images/csdn/figures/tryfiles-1-spa.png)
 
-```bash
-$ curl -s localhost/about.html
-<h1>ABOUT</h1>
-```
-
-**文件不存在，落空后兜底到 `/index.html`：**
-
-```bash
-$ curl -s localhost/nope.html
-<h1>INDEX</h1>
-
-$ curl -s -o /dev/null -w '%{http_code}\n' localhost/nope.html
-200
-```
-
-用户请求 `/nope.html`，拿到的却是首页内容和 200——前端拿到入口页后由 JS 读取 URL 渲染路由，用户无感。这就是 F5 404 问题的解法。
+读图：`about.html` 存在，`$uri` 直接命中；`nope.html` 不存在，两个检查参数落空，兜底到 `/index.html`——用户拿到的是首页内容和 200。前端拿到入口页后由 JS 读取 URL 渲染路由，用户无感，这就是 F5 404 问题的解法。
 
 **但这套配置里藏着一个 403 坑。** 请求 `/report/`（目录存在，里面没有 index.html）：
 
-```bash
-$ curl -s -o /dev/null -w '%{http_code}\n' localhost/report/
-403
-```
+![403 坑实测](/images/csdn/figures/tryfiles-2-403.png)
 
 原因：`$uri/` 检查的是"目录是否存在"，`report/` 存在即命中；随后 `index` 指令找目录下的 `index.html`，找不到，autoindex 默认关闭，于是 403。**命中目录不等于能给出内容**——不想要这个行为，把 `$uri/` 从参数里去掉即可。
 
@@ -104,14 +86,9 @@ server {
 }
 ```
 
-实测结果：
+实测结果——状态码保持 404，响应体被 `error_page` 替换成自定义页，两件事各干各的：
 
-```bash
-$ curl -s -w '\nHTTP %{http_code}\n' localhost/nope.html
-<h1>CUSTOM 404</h1>
-
-HTTP 404
-```
+![自定义 404 实测](/images/csdn/figures/tryfiles-3-404page.png)
 
 状态码保持 404，响应体被 `error_page` 替换成自定义页——两件事各干各的，互不冲突。`=404` 与 URI 兜底的语义差别：`=404` 直接终结请求，省一次内部重定向；URI 兜底要重走 location 匹配。前者更省，后者更灵活。
 
@@ -129,12 +106,9 @@ location = /index.php {
 }
 ```
 
-带参数请求的实测结果：
+带参数请求的实跑结果：
 
-```bash
-$ curl -s 'localhost/missing?id=42&type=report'
-qs=id=42&type=report uri=/fallback.php
-```
+![query_string 透传实测](/images/csdn/figures/tryfiles-4-query.png)
 
 `$query_string` 把 `id=42&type=report` 完整带到兜底目标。漏写它，后端拿不到业务参数，这是 try_files 最高频的事故。输出里还有个细节：兜底后 `uri=/fallback.php`——**内部重定向发生时，`$uri` 已变成兜底目标本身**；要拿用户原始路径，用 `$request_uri`。
 
@@ -148,18 +122,9 @@ location / {
 }
 ```
 
-请求任意不存在的路径，实测直接 500：
+请求任意不存在的路径，实测直接 500，错误日志精确指出了死循环位置：
 
-```bash
-$ curl -s -o /dev/null -w '%{http_code}\n' localhost/nope.html
-500
-```
-
-错误日志给出了精确原因：
-
-```
-rewrite or internal redirection cycle while internally redirecting to "/loop.html"
-```
+![死循环 500 实测](/images/csdn/figures/tryfiles-5-loop.png)
 
 链路是：`/nope.html` 不存在 → 兜底到 `/loop.html` → 内部重定向重新匹配 location → `/loop.html` 还是不存在 → 再兜底到自己 → 循环到 10 次上限，Nginx 强制 500。**兜底目标必须最终能被命中**，写完配置拿一个必然不存在的路径 curl 一遍，是基本自测动作。
 

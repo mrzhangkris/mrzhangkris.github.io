@@ -1,0 +1,13 @@
+{
+  "title": "SPA 回退实测",
+  "lines": [
+    {"t": "cmd", "s": "curl -s localhost/about.html"},
+    {"t": "out", "s": "<h1>ABOUT</h1>"},
+    {"t": "cmd", "s": "curl -s localhost/report/2024.html"},
+    {"t": "out", "s": "<h1>REPORT 2024</h1>"},
+    {"t": "cmd", "s": "curl -s localhost/nope.html"},
+    {"t": "out", "s": "<h1>INDEX</h1>"},
+    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost/nope.html"},
+    {"t": "out", "s": "200"}
+  ]
+}

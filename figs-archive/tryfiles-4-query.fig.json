@@ -1,0 +1,7 @@
+{
+  "title": "query_string 透传实测",
+  "lines": [
+    {"t": "cmd", "s": "curl -s 'localhost/missing?id=42&type=report'"},
+    {"t": "out", "s": "qs=id=42&type=report uri=/fallback.php"}
+  ]
+}
