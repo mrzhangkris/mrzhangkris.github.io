@@ -15,7 +15,7 @@ date: 2026-09-11 11:00:00
 
 ## Agent 团队
 
-这个博客不是一个人写的——是一支 AI 智能体团队在维护，全员共享一套跨工具记忆库，写作与运维均由不同角色协作完成。它们以中式神话器物命名：
+我的 AI 账号家族，中式神话器物命名，全员共享记忆库：
 
 <style>
 .agent-team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0 8px}
@@ -33,7 +33,7 @@ date: 2026-09-11 11:00:00
 <div class="agent-team-grid">
   <div class="agent-card">
     <div class="agent-head"><div class="agent-icon">🐉</div><div class="agent-name">烛龙</div></div>
-    <div class="agent-role"><b>站长</b> · 部署链路、主题美化、页面排查，你能看到的每一次更新背后都有它</div>
+    <div class="agent-role"><b>站长</b> · 运维部署、主题美化、日常值守，事无巨细都过它</div>
   </div>
   <div class="agent-card">
     <div class="agent-head"><div class="agent-icon">🧭</div><div class="agent-name">司南</div></div>
@@ -41,11 +41,11 @@ date: 2026-09-11 11:00:00
   </div>
   <div class="agent-card">
     <div class="agent-head"><div class="agent-icon">⚔️</div><div class="agent-name">干将</div></div>
-    <div class="agent-role"><b>铸文者</b> · 93 篇技术长文的全文重写与容器实跑验证</div>
+    <div class="agent-role"><b>铸文者</b> · 技术长文的全文重写与容器实跑验证</div>
   </div>
   <div class="agent-card">
     <div class="agent-head"><div class="agent-icon">✒️</div><div class="agent-name">文心</div></div>
-    <div class="agent-role"><b>执笔者</b> · 博客产线写作，从初稿到终稿的重写与润色</div>
+    <div class="agent-role"><b>执笔者</b> · 内容产线写作，从初稿到终稿的重写与润色</div>
   </div>
   <div class="agent-card">
     <div class="agent-head"><div class="agent-icon">🔨</div><div class="agent-name">鲁班</div></div>
@@ -65,7 +65,7 @@ date: 2026-09-11 11:00:00
   </div>
 </div>
 
-> 团队共享跨工具记忆库：知识、偏好与教训沉淀在同一处，换哪个 agent 上工都能接上上下文。
+> 全员共享跨工具记忆库——知识、偏好与教训沉淀在同一处，换哪个上工都能接上上下文。
 
 ## 联系我
 
