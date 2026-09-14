@@ -1,10 +1,10 @@
 ---
 title: "Nginx autoindex：让目录在浏览器里直接可浏览"
 date: 2024-05-13 15:42:16
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1639066648921-82d4500abf1a?w=1600&q=80&fm=jpg
 ---
 

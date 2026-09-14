@@ -1,14 +1,13 @@
 {
-  "title": "reposync mirror to local",
+  "title": "消费闭环：从同步副本安装成功",
   "type": "cmd",
   "lines": [
-    {"t": "cmd", "s": "yum install -y yum-utils"},
-    {"t": "cmd", "s": "yum repolist"},
-    {"t": "out", "s": "repo id   repo name                  status"},
-    {"t": "out", "s": "base      CentOS-6 - Base            6,713"},
-    {"t": "out", "s": "epel      Extra Packages for ...     12,587"},
-    {"t": "cmd", "s": "reposync -n --repoid=base --repoid=epel \\"},
-    {"t": "cmd", "s": "  --repoid=extras --repoid=updates \\"},
-    {"t": "cmd", "s": "  -p /data1/centos/$releasever"}
+    {"t": "cmd", "s": "dnf --disablerepo=\"*\" --enablerepo=sync \\"},
+    {"t": "cmd", "s": "  --repofrompath=sync,file:///tmp/mirror2/myrepo install -y tree"},
+    {"t": "out", "s": "  tree-1.8.0-10.el9.aarch64"},
+    {"t": "cmd", "s": "rpm -q tree"},
+    {"t": "out", "s": "tree-1.8.0-10.el9.aarch64"},
+    {"t": "note", "s": "# 包来自同步副本,repodata 已随行,客户端直接可用"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (dnf 4.14)"}
   ]
 }

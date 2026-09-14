@@ -1,10 +1,10 @@
-{
-  "title": "text/plain 不追加，MIME 边界实测（实拍）",
-  "lines": [
-    {"t": "config", "s": "location = /note.txt { add_after_body /footer.html; }"},
-    {"t": "cmd", "s": "curl -s localhost/note.txt"},
-    {"t": "out", "s": "plain text note"},
-    {"t": "note", "s": "默认只处理 text/html，text/plain 原样返回"},
-    {"t": "config", "s": "addition_types text/html text/css;"}
-  ]
-}
+{"title": "MIME 边界：默认只拼 text/html", "lines": [
+  {"t": "cmd", "s": "curl -s localhost/note.txt"},
+  {"t": "out", "s": "plain note line"},
+  {"t": "note", "s": "text/plain 默认不处理，页脚没拼上"},
+  {"t": "note", "s": "location 里加 addition_types text/plain; 后："},
+  {"t": "cmd", "s": "curl -s localhost/note-css.txt"},
+  {"t": "out", "s": "plain note with types"},
+  {"t": "out", "s": "<div>FOOTER</div>"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

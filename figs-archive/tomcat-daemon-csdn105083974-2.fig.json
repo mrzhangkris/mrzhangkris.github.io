@@ -1,0 +1,11 @@
+{"title": "configure 通过后 make 出 jsvc", "lines": [
+  {"t": "cmd", "s": "./configure --with-java=\\"},
+  {"t": "cmd", "s": "  /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-7.el9.aarch64"},
+  {"t": "out", "s": "*** All done ***"},
+  {"t": "out", "s": "Now you can issue \"make\""},
+  {"t": "cmd", "s": "make && cp jsvc ../../"},
+  {"t": "cmd", "s": "ls -l bin/jsvc"},
+  {"t": "out", "s": "-rwxr-xr-x 1 tomcat tomcat 185936 Sep 14 02:23 bin/jsvc"},
+  {"t": "note", "s": "configure 一次通过，产物归属在 chown 后已是 tomcat"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器，commons-daemon 1.6.1"}
+]}

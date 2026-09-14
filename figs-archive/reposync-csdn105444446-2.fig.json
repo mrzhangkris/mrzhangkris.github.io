@@ -1,9 +1,14 @@
-{"title": "版本差异：独立 reposync 在 RHEL9 已并入 dnf", "lines": [
-  {"t": "cmd", "s": "which reposync    # rockylinux:9"},
-  {"t": "out", "s": "(无输出——独立命令不存在)"},
-  {"t": "cmd", "s": "dnf reposync --help | head -1"},
-  {"t": "out", "s": "usage: dnf reposync [-c [config file]] ..."},
-  {"t": "note", "s": "CentOS 6/7：yum-utils 提供独立 reposync"},
-  {"t": "note", "s": "RHEL 8/9：dnf-utils，reposync 是 dnf 子命令"},
-  {"t": "note", "s": "参数也变：-n→--newest-only，-p→--download-path"}
-]}
+{
+  "title": "参数陷阱：--metadata 踩前缀匹配坑",
+  "type": "cmd",
+  "lines": [
+    {"t": "config", "s": "dnf reposync --repoid=myrepo --metadata   # 常见错误写法"},
+    {"t": "out", "s": "Command line error: argument --metadata-path:"},
+    {"t": "out", "s": "  expected one argument"},
+    {"t": "note", "s": "# --metadata 被前缀匹配解析成 --metadata-path"},
+    {"t": "config", "s": "dnf reposync --repoid=myrepo --download-metadata   # 正确"},
+    {"t": "note", "s": "# repodata/ 随包同步,省掉 createrepo_c 一步"},
+    {"t": "note", "s": "# 独立 reposync(dnf-utils 兼容脚本)与 dnf reposync 均可用"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (dnf 4.14)"}
+  ]
+}

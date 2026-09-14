@@ -1,0 +1,12 @@
+{"title": "cobbler sync 渲染 DHCP 配置", "lines": [
+  {"t": "cmd", "s": "cobbler sync"},
+  {"t": "out", "s": "rendering DHCP files"},
+  {"t": "out", "s": "running: ['dhcpd', '-t', '-q']"},
+  {"t": "out", "s": "running: ['systemctl', 'restart', 'dhcpd']"},
+  {"t": "out", "s": "*** TASK COMPLETE ***"},
+  {"t": "cmd", "s": "grep -nE 'next-server|subnet 172' /etc/dhcp/dhcpd.conf"},
+  {"t": "out", "s": "19:subnet 172.17.0.0 netmask 255.255.0.0 {"},
+  {"t": "out", "s": "26:     next-server                172.17.0.6;"},
+  {"t": "note", "s": "渲染-语法自检-重启三连通过，dhcpd 变 active"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (dhcp-server 4.4.2)"}
+]}

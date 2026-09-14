@@ -1,0 +1,11 @@
+{"title": "误报现场：报成功，实际什么都没起来", "lines": [
+  {"t": "cmd", "s": "mv /usr/bin/java /usr/bin/java.bak"},
+  {"t": "cmd", "s": "./restart_v1.sh"},
+  {"t": "out", "s": "Killing Tomcat process ID 225"},
+  {"t": "out", "s": "Tomcat restarted successfully"},
+  {"t": "cmd", "s": "ps -ef | grep catalina.home | grep -v grep | wc -l"},
+  {"t": "out", "s": "0"},
+  {"t": "note", "s": "触发：旧进程被 kill -9、startup 静默失败（java 被挪走）"},
+  {"t": "note", "s": "NEWPID 为空不等于旧 PID → 误报成功，实际 java 进程为 0"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+]}

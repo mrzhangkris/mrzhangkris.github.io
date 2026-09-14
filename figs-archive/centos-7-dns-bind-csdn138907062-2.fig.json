@@ -1,11 +1,14 @@
 {
   "title": "dig 正反解析实测",
   "lines": [
-    {"t": "note", "s": "named 启动后正反解析实测"},
+    {"t": "note", "s": "named 启动后实测"},
     {"t": "cmd", "s": "dig @localhost www.example.com +short"},
     {"t": "out", "s": "192.168.1.2"},
     {"t": "cmd", "s": "dig @localhost -x 192.168.1.2 +short"},
     {"t": "out", "s": "www.example.com."},
-    {"t": "note", "s": "A 记录与 PTR 记录互相对应"}
+    {"t": "cmd", "s": "rndc reload example.com"},
+    {"t": "out", "s": "zone reload up-to-date"},
+    {"t": "note", "s": "A/PTR 记录互相对应；reload 生效无需重启"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
   ]
 }

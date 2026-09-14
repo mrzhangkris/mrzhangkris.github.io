@@ -1,8 +1,9 @@
-{"title": "漏掉 postrotate 的后果（实测对比）", "lines": [
-  {"t": "note", "s": "配置里删掉 postrotate/endscript 后强制轮转"},
-  {"t": "cmd", "s": "curl -s localhost >/dev/null; ls -l /var/log/nginx/ | grep access"},
-  {"t": "out", "s": "access.log       0    # 新文件：没有日志进来"},
-  {"t": "out", "s": "access.log.1.gz  100  # 归档：也没有增长"},
-  {"t": "note", "s": "新请求写进了已被改名删除的旧 inode——静默丢失"},
-  {"t": "note", "s": "磁盘空间同样要等 nginx 重开句柄才释放"}
+{"title": "漏掉 postrotate：新请求消失", "lines": [
+  {"t": "config", "s": "# 删除 postrotate/endscript 段后再强制轮转"},
+  {"t": "cmd", "s": "logrotate -f -s /tmp/lr.state2 /etc/logrotate.d/nginx-nop"},
+  {"t": "cmd", "s": "curl -s localhost >/dev/null && wc -c /var/log/nginx/access.log"},
+  {"t": "out", "s": "0 /var/log/nginx/access.log"},
+  {"t": "note", "s": "请求明明发出，新日志却是 0 字节——凭空消失"},
+  {"t": "note", "s": "nginx 还握着旧句柄，日志写进幽灵 inode，空间也不释放"},
+  {"t": "note", "s": "实测环境：nginx:alpine (nginx/1.31.5)"}
 ]}

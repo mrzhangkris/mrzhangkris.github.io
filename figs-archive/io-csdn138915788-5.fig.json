@@ -1,0 +1,10 @@
+{"title": "缓存绑定在容器内核受阻", "lines": [
+  {"t": "cmd", "s": "lvconvert --type cache --cachevol cache vg0/data"},
+  {"t": "out", "s": "Erase all existing data on vg0/cache? [y/n]: n"},
+  {"t": "out", "s": "Conversion aborted."},
+  {"t": "cmd", "s": "modprobe dm_cache"},
+  {"t": "out", "s": "modprobe: FATAL: Module dm_cache not found in directory"},
+  {"t": "out", "s": "/lib/modules/7.0.12-linuxkit"},
+  {"t": "note", "s": "Docker Desktop 虚拟机内核无 dm_cache，缓存绑定未实测"},
+  {"t": "note", "s": "真实服务器（Rocky 9）内核自带 dm-cache；命令来源 lvmcache(7)"}
+]}

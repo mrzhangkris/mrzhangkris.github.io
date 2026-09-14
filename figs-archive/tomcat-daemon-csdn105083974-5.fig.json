@@ -1,0 +1,9 @@
+{"title": "run 前台模式：进程身份不再切换", "lines": [
+  {"t": "cmd", "s": "bin/daemon.sh --java-home $JH run &"},
+  {"t": "cmd", "s": "ps -eo user,pid,ppid,comm | grep jsvc"},
+  {"t": "out", "s": "root          86       7 jsvc"},
+  {"t": "out", "s": "root          93      86 jsvc"},
+  {"t": "note", "s": "run 模式两个进程都是 root——不做身份切换"},
+  {"t": "note", "s": "身份隔离只在 start 模式生效；前台仅供调错用"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+]}

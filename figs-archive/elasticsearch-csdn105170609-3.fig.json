@@ -6,5 +6,6 @@
   {"t": "out", "s": "    \"number\" : \"7.6.1\","},
   {"t": "out", "s": "    \"lucene_version\" : \"8.4.0\" },"},
   {"t": "out", "s": "  \"tagline\" : \"You Know, for Search\" }"},
-  {"t": "note", "s": "实测：集群健康 _cluster/health 返回 green"}
+  {"t": "note", "s": "实测：_cluster/health 返回 \"status\" : \"green\""},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（linux/amd64）"}
 ]}

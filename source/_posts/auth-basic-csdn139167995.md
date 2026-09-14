@@ -1,10 +1,10 @@
 ---
 title: "Nginx auth_basic 基础认证：配置示例与加固"
 date: 2024-05-24 10:24:22
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [运维]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?w=1600&q=80&fm=jpg
 ---
 
@@ -22,22 +22,15 @@ nginx/1.31.5 容器（`nginx:alpine`），htpasswd 来自 `apk add apache2-utils
 
 ### 第一步：创建用户密码文件
 
-用 htpasswd 生成，Nginx 完全兼容它生成的密码文件格式：
+用 htpasswd 生成，Nginx 完全兼容它生成的密码文件格式。htpasswd 不在系统默认安装里，按发行版补装后生成：
 
 ```bash
-sudo yum install httpd-tools  # 安装 htpasswd 工具
-htpasswd -c /etc/nginx/.htpasswd user1  # 创建包含 user1 的用户密码文件
+apk add apache2-utils        # Alpine（本文容器实测）
+dnf install httpd-tools -y   # RHEL 9 系（CentOS 7 时代包名相同，用 yum）
+htpasswd -c /etc/nginx/.htpasswd user1  # 回车后交互输入密码；脚本里用 -bc 免交互
 ```
 
 ### 第二步：修改 Nginx 配置
-
-![配图1](/images/csdn/figures/auth-basic-csdn139167995-1.png)
-
-![配图2](/images/csdn/figures/auth-basic-csdn139167995-2.png)
-
-![配图3](/images/csdn/figures/auth-basic-csdn139167995-3.png)
-
-![配图4](/images/csdn/figures/auth-basic-csdn139167995-4.png)
 
 在 server 或 location 里用 `auth_basic` 启用认证，用 `auth_basic_user_file` 指定密码文件：
 
@@ -138,7 +131,7 @@ server {
 
   location / {
     # 允许特定IP地址段访问
-    allow 192.168.1.0/24;
+    allow 10.99.0.0/16;
     deny all;
 
     auth_basic "Restricted Area";
@@ -149,7 +142,7 @@ server {
 }
 ```
 
-`allow 192.168.1.0/24;` 放行 192.168.1.0 到 192.168.1.255 这段地址，`deny all;` 拒绝其余所有来源。白名单外的来源实测直接 403，连认证对话框都不会出现：
+`allow 10.99.0.0/16;` 放行 10.99.0.0 到 10.99.255.255 这段地址，`deny all;` 拒绝其余所有来源。白名单外的来源实测直接 403（error.log 记 `access forbidden by rule`），连认证对话框都不会出现：
 
 ![配图3](/images/csdn/figures/auth-basic-csdn139167995-3.png)
 
@@ -167,7 +160,7 @@ auth_basic_user_file /etc/nginx/.htpasswd;
 auth_basic_user_file /etc/nginx/.htpasswd;
 ```
 
-配置语法完全正确，但实测所有带凭证的请求一律 500——错误不在语法在权限。排查时先看 error.log，`crypt_r() failed` 一类报错就指向密码文件本身。
+配置语法完全正确，但实测所有带凭证的请求一律 500——错误不在语法在权限。排查时先看 error.log，实测记的是 `[crit] open() "/etc/nginx/.htpasswd" failed (13: Permission denied)`，直接指向密码文件本身；把权限放回 644 或把文件归属改成 worker 用户后，同一凭证立刻恢复 200。
 
 ![配图4](/images/csdn/figures/auth-basic-csdn139167995-4.png)
 

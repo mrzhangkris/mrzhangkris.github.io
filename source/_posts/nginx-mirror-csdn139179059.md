@@ -3,9 +3,9 @@ title: "Nginx mirror 模块：流量镜像使用指南"
 date: 2024-05-26 09:15:00
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1515630278258-407f66498911?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 想让线上流量在真实环境下回放，又不能影响用户？Nginx 的 mirror 模块干的就是这件事：每个传入的请求除了发往主后端，还会被复制一份发到一个或多个镜像后端，镜像请求的响应直接丢弃，客户端完全无感。本文整理 mirror 模块的用途、配置写法和常见的坑。
@@ -41,10 +41,6 @@ mirror 模块把客户请求镜像到一组后端服务器：请求不仅传递�
 ## 基本示例
 
 默认构建的 Nginx 已启用 mirror 模块；如果是自定义编译，先确认模块已带上。
-
-![配图1](/images/csdn/figures/nginx-mirror-csdn139179059-1.png)
-
-![配图2](/images/csdn/figures/nginx-mirror-csdn139179059-2.png)
 
 ```nginx
 http {
@@ -92,7 +88,7 @@ http {
 
 配置行为实测验证——客户端对主入口发一次请求，两个后端的日志各自记录了什么：
 
-![配图1](/images/csdn/figures/nginx-mirror-csdn139179059-1.png)
+![mirror 基本行为实测：一次请求，两份日志](/images/csdn/figures/nginx-mirror-csdn139179059-1.png)
 
 两个细节值得注意：客户端拿到的响应来自主后端（MAIN-BACKEND），镜像侧的响应被丢弃；镜像子请求的 URI 是 **mirror 指令指向的路径**（/mirror）而不是原始 URI（/api/test），但 **query 参数原样保留**（?q=1）——镜像后端想知道原始路径，要从请求头或日志里取，不能靠 $uri。
 
@@ -100,7 +96,7 @@ http {
 
 internal 在 mirror 配置里是关键一环：指定某个 location 为 internal 后，它只能被 Nginx 内部调用，外部客户端无法直接访问。这保证了镜像请求只由 Nginx 内部产生，既提升安全性，也避免 /mirror 路径被恶意直接访问。实测验证：
 
-![配图2](/images/csdn/figures/nginx-mirror-csdn139179059-2.png)
+![internal 生效实测：外部直访 /mirror 被拒](/images/csdn/figures/nginx-mirror-csdn139179059-2.png)
 
 ### 扩展：按路径和参数镜像
 

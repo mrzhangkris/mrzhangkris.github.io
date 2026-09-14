@@ -3,12 +3,12 @@ title: "用 GoAccess 做实时 Web 日志分析：安装、报告与中文环境
 date: 2024-05-15 09:30:00
 categories: [技术]
 tags: [Linux]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1640552435388-a54879e72b28?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
-想知道网站当前谁在访问、流量什么模式、有没有异常请求，GoAccess 可以直接在日志上给出答案。它是开源的 Web 日志分析工具：不依赖数据库、不往服务器上装 agent，一条命令读 Nginx/Apache 的访问日志就能出统计——终端界面、HTML 报告、JSON 都支持，`--real-time-html` 模式还能让报告跟着日志实时刷新。这篇按使用场景整理它的用法，实测环境为 debian:bookworm 容器内的 GoAccess 1.7。
+想知道网站当前谁在访问、流量什么模式、有没有异常请求，GoAccess 可以直接在日志上给出答案。它是开源的 Web 日志分析工具：不依赖数据库、不往服务器上装 agent，一条命令读 Nginx/Apache 的访问日志就能出统计——终端界面、HTML 报告、JSON 都支持，`--real-time-html` 模式还能让报告跟着日志实时刷新。这篇按使用场景整理它的用法，实测环境为 debian:12 容器内的 GoAccess 1.7（Rocky 9 EPEL 上的 1.11 顺带验证了安装），日志示例为自造的 5 条 combined 格式测试日志。
 
 ## 安装
 
@@ -18,14 +18,14 @@ updated: 2026-09-11
 sudo apt-get install -y goaccess
 ```
 
-CentOS/RHEL 要先启用 EPEL 仓库：
+CentOS/RHEL/Rocky 要先启用 EPEL 仓库（Rocky 9 实测 `dnf` 版命令，装到 GoAccess 1.11）：
 
 ```bash
-sudo yum install -y epel-release
-sudo yum install -y goaccess
+sudo dnf install -y epel-release
+sudo dnf install -y goaccess
 ```
 
-验证点：`goaccess --version` 输出版本号。实测装到的是 GoAccess 1.7：
+验证点：`goaccess --version` 输出版本号。debian:12 实测装到的是 GoAccess 1.7：
 
 ![配图1](/images/csdn/figures/goaccess-web-csdn138814793-1.png)
 
@@ -49,7 +49,7 @@ goaccess /var/log/nginx/access.log --log-format=COMBINED
 goaccess /var/log/nginx/access.log --log-format=COMBINED -o /var/www/html/report.html
 ```
 
-实测 5 条日志生成 346K 的报告文件——所有数据内嵌在单文件里，不依赖外部资源，浏览器直接打开：
+实测 5 条测试日志生成 346K 的报告文件，JSON 里 `valid_requests: 5` 确认全部解析成功——所有数据内嵌在单文件里，不依赖外部资源，浏览器直接打开：
 
 ![配图2](/images/csdn/figures/goaccess-web-csdn138814793-2.png)
 

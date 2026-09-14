@@ -1,10 +1,15 @@
-{"title": "GPT 分区表初始化与分区创建（实测）", "lines": [
-  {"t": "cmd", "s": "parted -s /dev/loop0 mklabel gpt"},
-  {"t": "cmd", "s": "parted -s /dev/loop0 mkpart primary ext4 1MiB 500MiB"},
-  {"t": "cmd", "s": "parted /dev/loop0 print"},
-  {"t": "out", "s": "Disk /dev/loop0: 2147MB"},
-  {"t": "out", "s": "Partition Table: gpt"},
-  {"t": "out", "s": "Number  Start   End    Size   File system  Name"},
-  {"t": "out", "s": " 1      1049kB  524MB  523MB               primary"},
-  {"t": "note", "s": "实测环境：GNU parted 3.5，rockylinux:9 容器"}
-]}
+{
+  "title": "print 先看盘：空白 loop 盘",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "truncate -s 1G /tmp/disk2.img"},
+    {"t": "cmd", "s": "losetup -f --show -P /tmp/disk2.img"},
+    {"t": "out", "s": "/dev/loop8"},
+    {"t": "cmd", "s": "parted /dev/loop8 print"},
+    {"t": "out", "s": "Error: /dev/loop8: unrecognised disk label"},
+    {"t": "out", "s": "Disk /dev/loop8: 1074MB"},
+    {"t": "out", "s": "Partition Table: unknown"},
+    {"t": "note", "s": "# 空盘连分区表都没有;物理盘此处显示 gpt/msdos 与分区列表"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (GNU parted 3.5)"}
+  ]
+}

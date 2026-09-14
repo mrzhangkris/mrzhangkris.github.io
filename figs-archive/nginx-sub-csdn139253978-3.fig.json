@@ -1,9 +1,10 @@
-{"title": "gzip 冲突实测", "lines": [
-  {"t": "cmd", "s": "curl -H \"Accept-Encoding: gzip\" localhost/page.html"},
-  {"t": "out", "s": "\\x8b\\x00... (gzip 二进制, 替换未发生)"},
-  {"t": "note", "s": "上游已压缩, sub_filter 无法处理"},
+{"title": "上游一压缩，替换就失灵", "lines": [
+  {"t": "cmd", "s": "curl -si -H 'Accept-Encoding: gzip' localhost/page.html | grep -i encoding"},
+  {"t": "out", "s": "Content-Encoding: gzip"},
+  {"t": "note", "s": "压缩字节流被原样透传：字面匹配无从谈起"},
   {"t": "config", "s": "proxy_set_header Accept-Encoding \"\";"},
-  {"t": "cmd", "s": "curl -H \"Accept-Encoding: gzip\" localhost/page.html"},
-  {"t": "out", "s": "visit http://new.example.com and http://new... again"},
-  {"t": "note", "s": "拿到未压缩内容, 替换恢复生效"}
+  {"t": "cmd", "s": "curl -s -H 'Accept-Encoding: gzip' localhost/page.html"},
+  {"t": "out", "s": "<p><a href=\"http://new.example.com/b\">b</a></p>"},
+  {"t": "note", "s": "告诉上游要明文：替换恢复工作，三处全换"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

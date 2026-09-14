@@ -1,0 +1,7 @@
+{"title": "端口查 PID 与工作目录：脚本实测", "lines": [
+  {"t": "cmd", "s": "./portpath.sh 8000"},
+  {"t": "out", "s": " The pid of port 8000 is 170 and the process path is  /tmp/webdemo"},
+  {"t": "note", "s": "输出已剥离 ANSI 颜色码；终端里端口号与路径高亮"},
+  {"t": "note", "s": "8000 由 python3 -m http.server 监听，工作目录 /tmp/webdemo"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（net-tools 2.0 / procps-ng 3.3.17）"}
+]}

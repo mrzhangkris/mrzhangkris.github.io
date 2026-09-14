@@ -1,0 +1,11 @@
+{"title": "修正版脚本：失败要报错，成功要探活", "lines": [
+  {"t": "cmd", "s": "./restart_v2.sh"},
+  {"t": "out", "s": "[3/4] checking process..."},
+  {"t": "out", "s": "      FAIL: no new process, check catalina.out"},
+  {"t": "cmd", "s": "echo $?"},
+  {"t": "out", "s": "1"},
+  {"t": "cmd", "s": "./restart_v2.sh"},
+  {"t": "out", "s": "OK: restarted successfully (pid 393, http 200)"},
+  {"t": "note", "s": "判空、PID 对比、HTTP 探活三道闸，失败即非零退出"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+]}

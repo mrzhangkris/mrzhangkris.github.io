@@ -1,0 +1,11 @@
+{"title": "空字符串取消继承的 location", "lines": [
+  {"t": "config", "s": "location = /bare.html { add_after_body \"\"; }"},
+  {"t": "cmd", "s": "curl -s localhost/inner.html"},
+  {"t": "out", "s": "<p>INNER</p>"},
+  {"t": "out", "s": "<div>FOOTER</div>"},
+  {"t": "note", "s": "未取消的 location 照常继承页脚"},
+  {"t": "cmd", "s": "curl -s localhost/bare.html"},
+  {"t": "out", "s": "<p>BARE</p>"},
+  {"t": "note", "s": "取消后不再拼接"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

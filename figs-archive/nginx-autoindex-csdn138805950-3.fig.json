@@ -1,9 +1,10 @@
-{
-  "title": "index.html 遮蔽 autoindex（实拍）",
-  "lines": [
-    {"t": "note", "s": "with-index/ 同时有 index.html 和 other.txt，且已 autoindex on"},
-    {"t": "cmd", "s": "curl -s localhost/with-index/"},
-    {"t": "out", "s": "<h1>I am index.html</h1>"},
-    {"t": "note", "s": "索引文件优先，看到的是页面不是列表"}
-  ]
-}
+{"title": "列表不出现的两种原因实拍", "lines": [
+  {"t": "config", "s": "location /with-index/ { autoindex on; }  # 目录里有 index.html"},
+  {"t": "cmd", "s": "curl -s localhost/with-index/"},
+  {"t": "out", "s": "<h1>I am index.html</h1>"},
+  {"t": "note", "s": "索引文件优先级高，autoindex 被遮蔽"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost/plain/"},
+  {"t": "out", "s": "403"},
+  {"t": "note", "s": "无索引文件又没开 autoindex 的目录是 403"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

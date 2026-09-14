@@ -1,0 +1,10 @@
+{"title": "pcre-devel 缺失时的 configure 报错", "lines": [
+  {"t": "config", "s": "./configure --with-http_ssl_module \\"},
+  {"t": "config", "s": "    --with-http_v2_module --with-openssl=/usr/local/src/openssl-3.1.4"},
+  {"t": "out", "s": "checking for PCRE library ... not found"},
+  {"t": "out", "s": "checking for PCRE library in /usr/local/ ... not found"},
+  {"t": "out", "s": "checking for PCRE library in /usr/include/pcre/ ... not found"},
+  {"t": "note", "s": "退出码 1；外层随后报 the HTTP rewrite module requires the PCRE library"},
+  {"t": "note", "s": "dnf install pcre-devel 后重跑 configure 即通过"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（OpenResty 1.19.3.1）"}
+]}

@@ -1,0 +1,14 @@
+{
+  "title": "本地投递闭环实测",
+  "lines": [
+    {"t": "note", "s": "发一封给本机用户 mailtest（命令见正文）"},
+    {"t": "cmd", "s": "ls /home/mailtest/Maildir/new/"},
+    {"t": "out", "s": "1789348109.V3dI2ad00M691706.736c62734168"},
+    {"t": "cmd", "s": "cat /home/mailtest/Maildir/new/* | grep -E \"^Subject|^hello\""},
+    {"t": "out", "s": "Subject: v4-test-subject"},
+    {"t": "out", "s": "hello from rocky9 container body"},
+    {"t": "cmd", "s": "tail -1 /var/log/maillog"},
+    {"t": "out", "s": "... dsn=2.0.0, status=sent (delivered to maildir)"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器 (postfix 3.5.25)"}
+  ]
+}

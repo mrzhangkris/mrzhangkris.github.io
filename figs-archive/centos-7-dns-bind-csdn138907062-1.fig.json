@@ -1,13 +1,15 @@
 {
   "title": "安装与语法检查实测",
   "lines": [
-    {"t": "note", "s": "CentOS 7.9 容器实测"},
+    {"t": "note", "s": "Rocky Linux 9 容器实测"},
     {"t": "cmd", "s": "named -v"},
-    {"t": "out", "s": "BIND 9.11.4-P2-RedHat-9.11.4-26.P2.el7_9.16"},
+    {"t": "out", "s": "BIND 9.16.23-RH (Extended Support Version)"},
     {"t": "cmd", "s": "named-checkconf"},
     {"t": "note", "s": "无输出即主配置合法"},
     {"t": "cmd", "s": "named-checkzone example.com /var/named/forward.example.com"},
     {"t": "out", "s": "zone example.com/IN: loaded serial 2023042401"},
-    {"t": "out", "s": "OK"}
+    {"t": "out", "s": "OK"},
+    {"t": "note", "s": "反向区域同样检查，输出 OK"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
   ]
 }

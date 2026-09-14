@@ -1,9 +1,10 @@
-{"title": "try_files + alias 实测（1.31.5）", "lines": [
-  {"t": "config", "s": "location /images/ { alias /data/uploads/;"},
-  {"t": "config", "s": "  try_files $uri =404; }"},
-  {"t": "cmd", "s": "curl -s localhost/images/logo.png"},
-  {"t": "out", "s": "UPLOAD"},
-  {"t": "cmd", "s": "curl -s localhost/images/nope.png"},
-  {"t": "out", "s": "404 (open() \"/data/uploads//nope.png\" failed)"},
-  {"t": "note", "s": "按前缀替换检查，双斜杠无害，旧版拼错路径的行为已修复"}
+{"title": "try_files 配 alias：debug 日志实证", "lines": [
+  {"t": "config", "s": "location /images/ { alias /data/uploads/; try_files $uri =404; }"},
+  {"t": "cmd", "s": "curl -si localhost/images/logo.png | head -1"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "cmd", "s": "curl -si localhost/images/nope.png | head -1"},
+  {"t": "out", "s": "HTTP/1.1 404 Not Found"},
+  {"t": "note", "s": "debug 日志：trying to use file: \"nope.png\""},
+  {"t": "note", "s": "  检查路径 \"/data/uploads/nope.png\"，单斜杠正确拼装"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)，debug 级日志"}
 ]}

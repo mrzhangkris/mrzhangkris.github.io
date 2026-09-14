@@ -1,0 +1,10 @@
+{"title": "相对路径启动时 USR2 静默失败", "lines": [
+  {"t": "cmd", "s": "cd /srv/nginx2 && nginx -p /srv/nginx2 -c nginx.conf"},
+  {"t": "note", "s": "argv[0] 是裸命令名 nginx，而非绝对路径"},
+  {"t": "cmd", "s": "kill -USR2 2813"},
+  {"t": "out", "s": "[alert] 2818#2818: execve() failed while executing new"},
+  {"t": "out", "s": "binary process \"nginx\" (2: No such file or directory)"},
+  {"t": "out", "s": "[notice] 2813#2813: new binary process 2818 exited with code 1"},
+  {"t": "note", "s": "无 .oldbin、服务照常：不翻 error.log 看不出失败"},
+  {"t": "note", "s": "实测：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

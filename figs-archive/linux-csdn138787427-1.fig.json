@@ -1,10 +1,12 @@
-{"title": "alias 拦截 rm 实测（Rocky 9, 交互 shell）", "lines": [
-  {"t": "config", "s": "# /root/.bashrc"},
+{"title": "alias 拦截 rm 实测（登录 shell）", "lines": [
+  {"t": "config", "s": "# /etc/profile 末尾追加"},
   {"t": "config", "s": "alias rm='echo can not use rm command'"},
-  {"t": "cmd", "s": "touch /tmp/important.txt && rm /tmp/important.txt"},
-  {"t": "out", "s": "can not use rm command /tmp/important.txt"},
-  {"t": "cmd", "s": "ls /tmp/important.txt"},
-  {"t": "out", "s": "/tmp/important.txt"},
-  {"t": "note", "s": "rm 只打印提示，文件还在——拦截生效"},
-  {"t": "note", "s": "alias 仅交互 shell 生效，脚本内无效"}
+  {"t": "cmd", "s": "echo data > f1.txt"},
+  {"t": "cmd", "s": "rm f1.txt"},
+  {"t": "out", "s": "can not use rm command f1.txt"},
+  {"t": "cmd", "s": "ls f1.txt"},
+  {"t": "out", "s": "f1.txt"},
+  {"t": "note", "s": "rm 被换成 echo：只提示一句，文件原封不动"},
+  {"t": "note", "s": "非登录交互 shell 不加载 /etc/profile，别名不生效"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (bash 5.1.8，普通用户)"}
 ]}

@@ -1,0 +1,9 @@
+{"title": "resize2fs 扩文件系统并验收", "lines": [
+  {"t": "cmd", "s": "resize2fs /dev/loop4p1"},
+  {"t": "out", "s": "resize2fs 1.46.5 (30-Dec-2021)"},
+  {"t": "out", "s": "The filesystem on /dev/loop4p1 is now 101356 (1k) blocks long."},
+  {"t": "cmd", "s": "df -h /mnt/demo | tail -1"},
+  {"t": "out", "s": "/dev/loop4p1     88M   14K   83M   1% /mnt/demo"},
+  {"t": "note", "s": "Avail 38M → 83M，文件系统真的变大，验收完成"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（环回盘模拟 50M→100M）"}
+]}

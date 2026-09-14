@@ -1,0 +1,9 @@
+{"title": "编译安装 OpenSSL 3.1.4", "lines": [
+  {"t": "config", "s": "./config shared zlib --prefix=/usr/local/openssl \\"},
+  {"t": "config", "s": "    --openssldir=/usr/local/openssl/ssl"},
+  {"t": "cmd", "s": "make -j\"$(nproc)\" && make install"},
+  {"t": "out", "s": "OpenSSL 3.1.4 24 Oct 2023 (Library: OpenSSL 3.1.4 24 Oct 2023)"},
+  {"t": "out", "s": "OPENSSLDIR: \"/usr/local/openssl/ssl\""},
+  {"t": "note", "s": "RHEL 9 上动态库目录就是 lib，别惯性写成 lib64"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器"}
+]}

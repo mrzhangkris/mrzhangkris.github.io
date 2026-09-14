@@ -1,0 +1,12 @@
+{"title": "自定义模块：sync 后即可远程执行", "lines": [
+  {"t": "config", "s": "def list():"},
+  {"t": "config", "s": "    ret = __salt__[\"cmd.run\"](\"df -h /\")"},
+  {"t": "config", "s": "    return ret"},
+  {"t": "cmd", "s": "salt \"*\" saltutil.sync_modules"},
+  {"t": "out", "s": "    - modules.disk"},
+  {"t": "cmd", "s": "salt \"*\" disk.list"},
+  {"t": "out", "s": "minion-node2:"},
+  {"t": "out", "s": "    Filesystem      Size  Used Avail Use% Mounted on"},
+  {"t": "out", "s": "    overlay         224G   11G  203G   5% /"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 双容器（/srv/salt/_modules/disk.py）"}
+]}

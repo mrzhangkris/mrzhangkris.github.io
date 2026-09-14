@@ -1,11 +1,12 @@
-{"title": "一次客户端请求，两个后端日志（实测）", "lines": [
-  {"t": "config", "s": "location / { proxy_pass http://127.0.0.1:8081;"},
-  {"t": "config", "s": "  mirror /mirror; }"},
-  {"t": "cmd", "s": "curl \"http://127.0.0.1/api/test?q=1\""},
-  {"t": "out", "s": "MAIN-BACKEND    <- 客户端拿到的是主后端响应"},
-  {"t": "cmd", "s": "cat /var/log/nginx/main.log"},
-  {"t": "out", "s": "127.0.0.1 GET /api/test?q=1 HTTP/1.1 200"},
-  {"t": "cmd", "s": "cat /var/log/nginx/mirror.log"},
-  {"t": "out", "s": "127.0.0.1 GET /mirror?q=1 HTTP/1.1 200"},
-  {"t": "note", "s": "镜像副本确实到达：URI 变为 mirror 路径，query 保留"}
+{"title": "mirror 基本行为实测：一次请求，两份日志", "lines": [
+  {"t": "note", "s": "实测环境：nginx/1.31.5 容器；主 8081 / 镜像 8082 各记日志"},
+  {"t": "cmd", "s": "curl -s \"localhost/api/test?q=1\""},
+  {"t": "out", "s": "MAIN-BACKEND"},
+  {"t": "note", "s": "响应只来自主后端；镜像侧的响应被直接丢弃"},
+  {"t": "cmd", "s": "tail -1 /var/log/main.log"},
+  {"t": "out", "s": "GET /api/test?q=1 HTTP/1.1"},
+  {"t": "cmd", "s": "tail -1 /var/log/mirror.log"},
+  {"t": "out", "s": "GET /mirror?q=1 HTTP/1.1"},
+  {"t": "note", "s": "镜像子请求 URI 变成 /mirror，query 原样保留"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

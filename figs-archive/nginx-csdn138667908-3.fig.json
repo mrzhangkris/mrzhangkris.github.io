@@ -1,11 +1,12 @@
-{
-  "title": "回退完成：旧版本接管（实拍）",
-  "lines": [
-    {"t": "cmd", "s": "mv nginx.old nginx && kill -USR2 30 && kill -WINCH 30 && kill -QUIT 30"},
-    {"t": "out", "s": "89  1 nginx: master process /usr/sbin/nginx"},
-    {"t": "cmd", "s": "/usr/sbin/nginx -v"},
-    {"t": "out", "s": "nginx version: nginx/1.28.3"},
-    {"t": "cmd", "s": "wget -qO- http://127.0.0.1/ | head -1"},
-    {"t": "out", "s": "<!DOCTYPE html>"}
-  ]
-}
+{"title": "回退：换回旧二进制，反向走信号流", "lines": [
+  {"t": "cmd", "s": "cp /srv/nginx1/nginx.old /usr/sbin/nginx"},
+  {"t": "cmd", "s": "/usr/sbin/nginx -v"},
+  {"t": "out", "s": "nginx version: nginx/1.28.3"},
+  {"t": "config", "s": "# 对新 master(2752) 反向 USR2/WINCH/QUIT"},
+  {"t": "cmd", "s": "kill -USR2 2752; kill -WINCH 2752; kill -QUIT 2752"},
+  {"t": "cmd", "s": "cat /srv/nginx1/logs/nginx.pid"},
+  {"t": "out", "s": "2786"},
+  {"t": "cmd", "s": "curl -s localhost:8090/ | head -1"},
+  {"t": "out", "s": "<h1>hot upgrade demo</h1>"},
+  {"t": "note", "s": "实测：回退后服务照常，pid 文件恢复正常命名"}
+]}

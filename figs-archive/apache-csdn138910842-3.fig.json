@@ -1,0 +1,11 @@
+{
+  "title": "切换后：80 端口由 2.4.46 接管",
+  "lines": [
+    {"t": "cmd", "s": "/usr/local/apache2.4.41/bin/apachectl -k stop"},
+    {"t": "cmd", "s": "/usr/local/apache2.4.46/bin/apachectl -k start"},
+    {"t": "cmd", "s": "curl -s http://127.0.0.1/"},
+    {"t": "out", "s": "v2.4.46-new-serving"},
+    {"t": "note", "s": "停旧后等 2 秒再起新，避免 80 端口未释放导致绑定失败"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+  ]
+}

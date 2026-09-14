@@ -1,0 +1,10 @@
+{"title": "两个发行版不同的容器，跑出同一个内核", "lines": [
+  {"t": "cmd", "s": "docker run --rm rockylinux:9 sh -c 'uname -r'"},
+  {"t": "out", "s": "7.0.12-linuxkit"},
+  {"t": "cmd", "s": "docker run --rm debian:12 sh -c 'uname -r'"},
+  {"t": "out", "s": "7.0.12-linuxkit"},
+  {"t": "cmd", "s": "docker run --rm rockylinux:9 ls /boot"},
+  {"t": "out", "s": "ls: cannot access '/boot': No such file or directory"},
+  {"t": "note", "s": "镜像换了发行版，内核没换——它来自宿主机；容器里连 /boot 都没有"},
+  {"t": "note", "s": "实测环境：Docker 容器（rockylinux:9 / debian:12 镜像）"}
+]}

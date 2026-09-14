@@ -1,0 +1,12 @@
+{"title": "实测 SSH 连接建立：密钥交换与会话加密", "lines": [
+  {"t": "cmd", "s": "ssh -V"},
+  {"t": "out", "s": "OpenSSH_9.9p1, OpenSSL 3.5.5"},
+  {"t": "cmd", "s": "ssh -v root@localhost exit 2>&1 | grep 'kex: algorithm'"},
+  {"t": "out", "s": "debug1: kex: algorithm: curve25519-sha256"},
+  {"t": "cmd", "s": "ssh -v root@localhost exit 2>&1 | grep 'server->client'"},
+  {"t": "out", "s": "debug1: kex: server->client cipher: aes256-gcm@openssh.com"},
+  {"t": "cmd", "s": "ssh root@localhost hostname"},
+  {"t": "out", "s": "9e1880d5c08a"},
+  {"t": "note", "s": "Diffie-Hellman 协商会话密钥，AES-GCM 对称加密传数据"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（OpenSSH 9.9p1）"}
+]}

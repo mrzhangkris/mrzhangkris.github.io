@@ -3,9 +3,9 @@ title: "Nginx location 匹配规则实测：优先级、正则顺序与嵌套"
 date: 2024-05-22 09:37:37
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 一个请求进来该由哪个 location 处理，取决于 Nginx 的 location 匹配规则。这套规则网上说法很多——"最长匹配""正则优先"各种版本都有流传，有的还是错的。本文用 nginx/1.31.5 容器把四类匹配模式逐一实测，给出经过验证的优先级结论：精确匹配怎么命中、`^~` 到底"跳过"了什么、正则是按顺序还是按最长、嵌套 location 如何生效。
@@ -13,7 +13,7 @@ updated: 2026-09-11
 ## 实验环境
 
 - nginx/1.31.5（nginx:alpine 容器）
-- 验证方法：每个 location 里放 `return 200 "HIT <标记>"`，curl 不同 URI 看返回的标记——命中哪个块一目了然，这也是排查 location 问题时最实用的技巧
+- 验证方法：每个 location 里放 `return 200 "标记"`，curl 不同 URI 看返回的标记——命中哪个块一目了然，这也是排查 location 问题时最实用的技巧
 
 ## 四类匹配模式
 
@@ -47,18 +47,18 @@ Nginx 处理一个请求的完整流程：
 ```nginx
 server {
   listen 80;
-  location = /exact    { return 200 "HIT exact=\n"; }
-  location ^~ /static  { return 200 "HIT ^~static\n"; }
-  location ~ \.php$    { return 200 "HIT regex-php\n"; }
-  location ~* \.(gif|jpg)$ { return 200 "HIT regex-ci-image\n"; }
-  location /prefix     { return 200 "HIT prefix\n"; }
-  location /           { return 200 "HIT default\n"; }
+  location = /exact        { return 200 "A"; }  # 精确匹配
+  location ^~ /static      { return 200 "B"; }  # ^~ 前缀
+  location ~ \.php$        { return 200 "D"; }  # 正则（区分大小写）
+  location ~* \.(gif|jpg)$ { return 200 "C"; }  # 正则（不分大小写）
+  location /prefix         { return 200 "E"; }  # 普通前缀
+  location /               { return 200 "F"; }  # 兜底
 }
 ```
 
 逐个 URI 实测命中结果：
 
-![配图1](/images/csdn/figures/nginx-location-csdn139108958-1.png)
+![四类 location 同场竞技实测](/images/csdn/figures/nginx-location-csdn139108958-1.png)
 
 三个值得注意的命中：
 
@@ -77,7 +77,7 @@ location ~ /a/b/c { return 200 "ABC"; }  # 长的写在后面
 
 请求 `/a/b/c` 同时匹配两个正则，命中哪个？
 
-![配图2](/images/csdn/figures/nginx-location-csdn139108958-2.png)
+![正则顺序优先实测](/images/csdn/figures/nginx-location-csdn139108958-2.png)
 
 结果是先写的短模式 `~ /a` 命中。**正则按配置文件里的书写顺序取第一个命中，与长短无关**——正则块的先后顺序就是优先级。想把更具体的规则优先生效，就把它写在前面。
 
@@ -96,7 +96,7 @@ location /images {
 
 实测：父块 /images 里放兜底 return，内层嵌一个 `~ \.jpg$`：
 
-![配图3](/images/csdn/figures/nginx-location-csdn139108958-3.png)
+![嵌套 location 实测](/images/csdn/figures/nginx-location-csdn139108958-3.png)
 
 `/images/pic.jpg` 命中内层正则，`/images/pic.png` 留在外层——嵌套 location 只在父块路径范围内进一步细分，继承父块的上下文（root、proxy 设置等），是"目录级配置 + 文件类型级例外"的标准写法。
 

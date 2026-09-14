@@ -1,11 +1,12 @@
-{"title": "rbash 实测：哪些操作被拦、哪些放行", "lines": [
-  {"t": "cmd", "s": "ls; cat /etc/hostname; echo ok   # 白名单"},
-  {"t": "out", "s": "cat echo ls / 29cfadb55da5 / ok"},
-  {"t": "cmd", "s": "cd /tmp"},
-  {"t": "out", "s": "-rbash: cd: restricted"},
-  {"t": "cmd", "s": "rm x; python3"},
-  {"t": "out", "s": "-rbash: rm: command not found"},
-  {"t": "out", "s": "-rbash: python3: command not found"},
-  {"t": "cmd", "s": "/bin/ls /        # 想用绝对路径绕 PATH"},
-  {"t": "out", "s": "-rbash: /bin/ls: restricted: cannot specify `/`"}
+{"title": "建受限用户：白名单目录 + 收窄 PATH", "lines": [
+  {"t": "config", "s": "useradd -m -s /bin/rbash restricted_user"},
+  {"t": "config", "s": "mkdir /home/restricted_user/bin"},
+  {"t": "config", "s": "ln -s /usr/bin/ls /home/restricted_user/bin/ls"},
+  {"t": "config", "s": ".bash_profile: PATH=$HOME/bin / export PATH"},
+  {"t": "cmd", "s": "su - restricted_user -c 'echo $PATH'"},
+  {"t": "out", "s": "/home/restricted_user/bin"},
+  {"t": "cmd", "s": "su - restricted_user -c 'echo hello-rbash'"},
+  {"t": "out", "s": "hello-rbash"},
+  {"t": "note", "s": "启动文件里设 PATH 合法；登录后 PATH 只剩 ~/bin"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器"}
 ]}

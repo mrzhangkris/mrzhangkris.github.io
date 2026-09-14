@@ -1,14 +1,14 @@
 {
-  "title": "nginx 1.31.5 try_files 实测",
+  "title": "try_files 一条指令：依次找 + 兜底",
   "type": "cmd",
   "lines": [
     {"t": "config", "s": "try_files $uri $uri/ /index.html;"},
-    {"t": "cmd", "s": "curl -s localhost/nope.html"},
-    {"t": "out", "s": "<h1>INDEX</h1>  # 200,SPA 回退"},
-    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost/report/"},
-    {"t": "out", "s": "403  # $uri/ 命中目录,无 index"},
-    {"t": "cmd", "s": "curl -s 'localhost/missing?id=42'"},
-    {"t": "out", "s": "qs=id=42  # ?$query_string 带参数"},
-    {"t": "note", "s": "兜底目标指向自己 → 500 死循环"}
+    {"t": "cmd", "s": "curl -s -w ' [%{http_code}]' localhost:8080/orders/42"},
+    {"t": "out", "s": "<h1>INDEX</h1> [200]"},
+    {"t": "note", "s": "# 前两个参数落空,兜底 /index.html,SPA 回退"},
+    {"t": "cmd", "s": "curl -s -w ' [%{http_code}]' localhost:8080/report/"},
+    {"t": "out", "s": "[403]"},
+    {"t": "note", "s": "# $uri/ 命中目录但目录里没有 index 文件"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 (nginx:alpine 容器,宿主 8080→80)"}
   ]
 }

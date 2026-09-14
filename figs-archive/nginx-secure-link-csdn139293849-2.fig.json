@@ -1,7 +1,11 @@
-{"title": "篡改与换源实测", "lines": [
-  {"t": "cmd", "s": "curl \"...?md5=AAAA&expires=$EXP\"  # 篡改签名"},
-  {"t": "out", "s": "403"},
-  {"t": "cmd", "s": "wget 'http://<另一台机器>/private.zip?md5=$SIG&...'"},
+{"title": "篡改与换源：全是 403", "lines": [
+  {"t": "note", "s": "有效 URL 的 expires 末位改成 A（签名随之失配）"},
+  {"t": "cmd", "s": "curl -si \"localhost$u4\" | head -1"},
   {"t": "out", "s": "HTTP/1.1 403 Forbidden"},
-  {"t": "note", "s": "签名绑定了 $remote_addr，换台机器立即失效"}
+  {"t": "note", "s": "expires 是签名输入：改它不叫过期叫篡改；md5 改一位同理"},
+  {"t": "config", "s": "u=/private.zip?md5=4P4AcEo9LDvTROR_XZ2Erw&expires=1789349498"},
+  {"t": "cmd", "s": "curl -si \"localhost$u\" | head -1"},
+  {"t": "out", "s": "HTTP/1.1 403 Forbidden"},
+  {"t": "note", "s": "签名绑定了 $remote_addr：为别的 IP 生成的签名换源即失效"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

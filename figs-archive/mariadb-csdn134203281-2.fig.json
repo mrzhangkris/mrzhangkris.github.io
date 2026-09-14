@@ -1,9 +1,12 @@
-{"title": "原文 SQL 在 MariaDB 10.5 的实测结果", "lines": [
-  {"t": "cmd", "s": "UPDATE user SET PASSWORD=PASSWORD('root') where USER='root';"},
-  {"t": "out", "s": "select host,user,password from mysql.user:"},
-  {"t": "out", "s": "localhost  root  invalid   # 直接改表失效！"},
-  {"t": "note", "s": "10.4+ 权限表重构，直接 UPDATE 设出的密码不可用"},
-  {"t": "cmd", "s": "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root';"},
-  {"t": "out", "s": "Query OK   # MariaDB 10.5 仍支持 IDENTIFIED BY"},
-  {"t": "note", "s": "改密码请用 ALTER USER user@host IDENTIFIED BY 'pw';"}
+{"title": "老授权 SQL 在 10.5 上的实测表现", "lines": [
+  {"t": "config", "s": "UPDATE user SET PASSWORD=PASSWORD('root') where USER='root';"},
+  {"t": "out", "s": "ERROR 1356 (HY000): View 'mysql.user' references invalid"},
+  {"t": "out", "s": "table(s) or column(s) or function(s) or definer ..."},
+  {"t": "cmd", "s": "select User,Host,Password from mysql.user where User='root';"},
+  {"t": "out", "s": "root   localhost   invalid"},
+  {"t": "note", "s": "10.4+ 的 mysql.user 已是视图：老 UPDATE 把密码写成 invalid"},
+  {"t": "config", "s": "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"},
+  {"t": "out", "s": "root   localhost   *81F5E21E35407D884A6CD4A731AEBFB6AF209E1B"},
+  {"t": "note", "s": "正确姿势 ALTER USER，哈希落库生效。GRANT..IDENTIFIED BY 仍可用"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (mariadb 10.5.29)"}
 ]}

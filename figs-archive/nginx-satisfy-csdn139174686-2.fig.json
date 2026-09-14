@@ -1,10 +1,10 @@
-{"title": "satisfy all 实测", "lines": [
-  {"t": "config", "s": "satisfy all; allow 127.0.0.1; deny all; auth_basic ..."},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost"},
-  {"t": "out", "s": "401 (无凭证)"},
-  {"t": "cmd", "s": "curl -s -u user1:wrong ... -w \"%{http_code}\""},
-  {"t": "out", "s": "401 (密码错误)"},
-  {"t": "cmd", "s": "curl -s -u user:password1 localhost"},
-  {"t": "out", "s": "200 SECRET AREA"},
-  {"t": "note", "s": "且的关系：IP 与密码缺一不可"}
+{"title": "satisfy all：双重验证缺一不可", "lines": [
+  {"t": "cmd", "s": "curl -si localhost:8002/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 401 Unauthorized"},
+  {"t": "cmd", "s": "curl -si -u user:WRONG localhost:8002/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 401 Unauthorized"},
+  {"t": "cmd", "s": "curl -si -u user:password1 localhost:8002/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "note", "s": "同一来源：IP 过了，密码错了照样 401"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

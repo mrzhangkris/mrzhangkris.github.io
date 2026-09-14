@@ -1,7 +1,12 @@
-{"title": "autoindex_exact_size off 显示规律", "lines": [
-  {"t": "config", "s": "autoindex_exact_size off;  autoindex_localtime on;"},
-  {"t": "out", "s": "report.pdf   12-Sep-2026 03:36   1500"},
-  {"t": "out", "s": "big.bin      12-Sep-2026 03:38      2M"},
-  {"t": "out", "s": "m.bin        12-Sep-2026 03:38    488K"},
-  {"t": "note", "s": "≤9999 字节仍显示精确值，超过后圆整 K/M/G"}
+{"title": "autoindex_exact_size off 的显示规律", "lines": [
+  {"t": "note", "s": "实测环境：nginx/1.31.5 容器；autoindex on + autoindex_exact_size off"},
+  {"t": "cmd", "s": "dd if=/dev/zero of=/usr/share/nginx/html/small.bin bs=1500 count=1"},
+  {"t": "cmd", "s": "dd if=/dev/zero of=/usr/share/nginx/html/mid.bin bs=1024 count=488"},
+  {"t": "cmd", "s": "dd if=/dev/zero of=/usr/share/nginx/html/big.bin bs=2621440 count=1"},
+  {"t": "cmd", "s": "curl -s localhost/ | grep bin"},
+  {"t": "out", "s": "<a href=\"small.bin\">small.bin</a> 14-Sep-2026 00:58 1500"},
+  {"t": "out", "s": "<a href=\"mid.bin\">mid.bin</a> 14-Sep-2026 00:58 488K"},
+  {"t": "out", "s": "<a href=\"big.bin\">big.bin</a> 14-Sep-2026 00:58 3M"},
+  {"t": "note", "s": "不足 10KB 保持精确；K/M 圆整且四舍五入：2.5MB → 3M"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

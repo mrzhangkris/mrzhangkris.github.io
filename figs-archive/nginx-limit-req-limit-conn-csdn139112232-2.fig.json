@@ -1,9 +1,1 @@
-{"title": "无 burst 严格 1r/s：连续请求被拒，隔 1 秒放行", "lines": [
-  {"t": "config", "s": "location /strict/ { limit_req zone=one; }  # 无 burst"},
-  {"t": "cmd", "s": "for i in $(seq 1 10); do curl ... /strict/; done"},
-  {"t": "out", "s": "503 503 503 503 503 503 503 503 503 503"},
-  {"t": "note", "s": "令牌桶已被上一轮耗尽，无 burst 不容忍突发"},
-  {"t": "cmd", "s": "for i in 1 2 3; do curl ...; sleep 1; done"},
-  {"t": "out", "s": "200 200 200"},
-  {"t": "note", "s": "每隔 1 秒补 1 个令牌 → 匀速请求逐个放行"}
-]}
+{"title": "无 burst 严格 1r/s 实测", "lines": [{"t": "config", "s": "limit_req zone=one;   # 去掉 burst"}, {"t": "cmd", "s": "for i in $(seq 10); do curl -sw \"%{http_code} \" localhost/; done"}, {"t": "out", "s": "200 503 503 503 503 503 503 503 503 503"}, {"t": "note", "s": "无 burst 只认当前速率：同秒连发只放第一个"}, {"t": "cmd", "s": "for n in 1 2 3 4; do curl -sw \"%{http_code} \" localhost/;sleep 1; done"}, {"t": "out", "s": "200 200 200 200"}, {"t": "note", "s": "每秒 1 个贴着 rate 走：全部放行"}, {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}]}

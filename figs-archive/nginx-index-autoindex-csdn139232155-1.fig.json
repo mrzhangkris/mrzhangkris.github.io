@@ -1,10 +1,12 @@
-{"title": "index 顺序命中实测（nginx/1.31.5 容器）", "lines": [
+{"title": "index 指令按顺序命中实测", "lines": [
+  {"t": "note", "s": "实测环境：nginx/1.31.5 容器，root /usr/share/nginx/html"},
   {"t": "config", "s": "index index.html index.htm;"},
-  {"t": "cmd", "s": "echo first-html > index.html; echo second-htm > index.htm"},
+  {"t": "cmd", "s": "printf A > /usr/share/nginx/html/index.html"},
+  {"t": "cmd", "s": "printf B > /usr/share/nginx/html/index.htm"},
   {"t": "cmd", "s": "curl -s localhost/"},
-  {"t": "out", "s": "first-html"},
-  {"t": "note", "s": "两个都在，命中排前的 index.html"},
-  {"t": "cmd", "s": "rm index.html && curl -s localhost/"},
-  {"t": "out", "s": "second-htm"},
-  {"t": "note", "s": "按书写顺序向后查找，命中 index.htm"}
+  {"t": "out", "s": "A"},
+  {"t": "cmd", "s": "rm /usr/share/nginx/html/index.html"},
+  {"t": "cmd", "s": "curl -s localhost/"},
+  {"t": "out", "s": "B"},
+  {"t": "note", "s": "排前的 index.html 优先命中；删掉后轮到 index.htm"}
 ]}

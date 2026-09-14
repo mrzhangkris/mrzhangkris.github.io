@@ -1,0 +1,11 @@
+{"title": "实测：按 Accept-Language 重写到语言目录", "lines": [
+  {"t": "config", "s": "set $lang en;"},
+  {"t": "config", "s": "if ($http_accept_language ~* \"^zh\") { set $lang zh; }"},
+  {"t": "config", "s": "rewrite ^/docs/(.*)$ /$lang/docs/$1 break;"},
+  {"t": "cmd", "s": "curl -sH 'Accept-Language: zh-CN' localhost/docs/intro"},
+  {"t": "out", "s": "zh-docs-intro-content"},
+  {"t": "cmd", "s": "curl -s localhost/docs/intro"},
+  {"t": "out", "s": "en-docs-intro-content"},
+  {"t": "note", "s": "默认 en，请求头 zh 开头才切目录；$1 保留原路径"},
+  {"t": "note", "s": "实测环境：nginx:alpine（nginx/1.31.5）"}
+]}

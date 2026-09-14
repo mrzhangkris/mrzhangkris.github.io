@@ -1,8 +1,10 @@
-{"title": "dhcpd 启动后确认监听网口与网段", "lines": [
-  {"t": "cmd", "s": "ip link set eth0 address 00:11:22:33:44:55"},
+{"title": "dhcpd 只监听有 subnet 声明的网口", "lines": [
+  {"t": "cmd", "s": "dhcpd -d -f -cf /etc/dhcp/dhcpd.conf"},
+  {"t": "out", "s": "No subnet declaration for eth0 (172.17.0.2)."},
+  {"t": "out", "s": "Not configured to listen on any interfaces!"},
+  {"t": "note", "s": "网口地址不在任何已声明的网段内，dhcpd 直接拒绝"},
   {"t": "cmd", "s": "ip addr add 192.168.254.2/24 dev eth0"},
-  {"t": "cmd", "s": "dhcpd -d -cf /etc/dhcp/dhcpd.conf eth0 &"},
-  {"t": "out", "s": "Listening on LPF/eth0/00:11:22:33:44:55/"},
-  {"t": "out", "s": "  192.168.254.0/24"},
-  {"t": "note", "s": "服务端已绑定本网段，开始等待客户端 DISCOVER"}
+  {"t": "cmd", "s": "dhcpd -d -f -cf /etc/dhcp/dhcpd.conf"},
+  {"t": "out", "s": "Listening on LPF/eth0/e6:90:87:1b:13:c5/192.168.254.0/24"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（前台调试模式）"}
 ]}

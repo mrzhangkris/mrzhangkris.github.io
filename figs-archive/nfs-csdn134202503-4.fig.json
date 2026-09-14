@@ -1,13 +1,11 @@
-{
-  "title": "挂载成功 + 跨机读写落盘（RHEL9 容器实拍）",
-  "lines": [
-    {"t": "note", "s": "容器自测挂载点为 /mnt/nfstest，对应原文的 /data"},
-    {"t": "cmd", "s": "mount -t nfs 172.17.0.6:/export/nfs /mnt/nfstest"},
-    {"t": "cmd", "s": "df -hT /mnt/nfstest | tail -1"},
-    {"t": "out", "s": "172.17.0.6:/export/nfs nfs 3.9G 0 3.9G 0% /mnt/nfstest"},
-    {"t": "cmd", "s": "echo \"hello from client\" > /mnt/nfstest/write-test.txt"},
-    {"t": "note", "s": "回到服务端读同一个文件："},
-    {"t": "cmd", "s": "cat /export/nfs/write-test.txt"},
-    {"t": "out", "s": "hello from client"}
-  ]
-}
+{"title": "挂载成功与跨机读写验证", "lines": [
+  {"t": "cmd", "s": "mount -t nfs 192.168.254.2:/export/nfs /data/"},
+  {"t": "note", "s": "挂载成功无任何输出"},
+  {"t": "cmd", "s": "df -hT /data/ | tail -1"},
+  {"t": "out", "s": "192.168.254.2:/export/nfs nfs  3.9G  0  3.9G  0% /data"},
+  {"t": "cmd", "s": "echo \"hello from client\" > /data/write-test.txt"},
+  {"t": "note", "s": "回服务端读同一个文件："},
+  {"t": "cmd", "s": "cat /export/nfs/write-test.txt"},
+  {"t": "out", "s": "hello from client"},
+  {"t": "note", "s": "实测环境：双 Rocky Linux 9 容器（2026-09）"}
+]}

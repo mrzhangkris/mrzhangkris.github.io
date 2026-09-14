@@ -1,146 +1,113 @@
 ---
-title: "CentOS 7 安装 MySQL：默认仓库与官方 5.7 源两种方式"
+title: "Rocky Linux 9 安装 MySQL 8.0（附 CentOS 7 / MySQL 5.7 差异）"
 date: 2024-05-17 09:22:53
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [MySQL]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1529078155058-5d716f45d604?w=1600&q=80&fm=jpg
 ---
 
-这篇文章记录在 CentOS 7 上装 MySQL 的两条路：直接用系统仓库装，或者添加 MySQL 官方 YUM 仓库装指定版本（以 5.7 为例）。装完顺手把安全初始化和登录验证做完。走完任一条路，你都应得到 `mysqld` 正常运行、root 密码可控、`SHOW DATABASES` 能出结果的 MySQL 实例。
+在 Linux 上装 Oracle 的 MySQL，两条路：走发行版默认仓库，或添加 MySQL 官方仓库装指定版本。这条岔路在两个时代给出的答案完全相反——CentOS 7 的默认仓库里只有 MariaDB、没有 MySQL；而 Rocky Linux 9 的默认仓库直接提供 MySQL 8.0，一条 `dnf install` 就能装上。
 
-先把丑话说在前面：CentOS 7 已于 2024-06-30 EOL，MySQL 5.7 也于 2023-10 停止官方支持。本文在 CentOS 7.9 容器实测了两条路的入口（报错均来自实跑）：默认仓库确实没有 MySQL，官方源的 GPG 密钥也已轮换——相应的修复见各步骤与"常见报错"。新部署请优先考虑受支持的发行版与 MySQL 8.x。
+本文主环境为 Rocky Linux 9，从安装、初始化到建库建号的全流程在容器里实测通过（MySQL 8.0.46）；CentOS 7 / MySQL 5.7 时代的入口报错与绕行办法保留在「历史版本差异」和「常见报错」，供仍在维护老机器的读者对照。
 
-## 方式一：从默认仓库安装
+## 方式一：从默认仓库安装（Rocky Linux 9）
 
 ### 1. 安装 MySQL
 
 ```bash
-sudo yum install mysql-server
+dnf install mysql-server
 ```
 
-实测结果：这条命令在 CentOS 7 上拿不到包——默认仓库只提供 MariaDB，不提供 Oracle 的 MySQL：
+el9 的 AppStream 仓库直接提供 MySQL 8.0 系列，实测装上的是 8.0.46。注意包名是 `mysql-server`——这与 CentOS 7 正好相反（那边同名命令会报无包，见历史版本差异）。
 
-![配图1](/images/csdn/figures/centos-7-mysql-csdn138905545-1.png)
+### 2. 初始化与启动
 
-> 注：原文称 MySQL 在 CentOS 7 默认仓库中可用。实测确认默认仓库无 mysql-server 包，要装 Oracle 官方 MySQL 请直接走方式二；如果 MariaDB 能满足需求，`yum install mariadb-server` 即可。
-
-### 2. 启动服务
-
-启动 MySQL 并设为开机自启：
+真实机器上，systemd 会在首次启动时自动初始化数据目录并拉起服务：
 
 ```bash
-sudo systemctl start mysqld
-sudo systemctl enable mysqld
+systemctl start mysqld
+systemctl enable mysqld
 ```
 
-### 3. 安全设置
-
-运行安全初始化脚本，设置 root 密码并做基础加固：
+容器内实测时没有 systemd，用等价的两步手工完成——先初始化数据目录，再直接拉起守护进程：
 
 ```bash
-sudo mysql_secure_installation
+mysqld --initialize-insecure --user=mysql
+/usr/libexec/mysqld --user=mysql &
 ```
 
-按提示逐项确认：设置 root 密码、删除匿名用户、禁止 root 远程登录等。
+`--initialize-insecure` 生成的 root@localhost 初始为空密码，仅限首次登录用；真实机器走 systemd 初始化的，root 默认走 auth_socket 免密（本机 socket 登录），同样是为了把"第一次进去"的门槛降到最低。
 
-### 4. 验证安装
+### 3. 验证安装并设置 root 密码
 
-确认服务在正常运行：
+用空密码登录，确认版本和系统库：
 
 ```bash
-sudo systemctl status mysqld
+mysql -u root --skip-password -e "SELECT VERSION(); SHOW DATABASES;"
 ```
 
-输出里出现 "active (running)" 就说明服务正常。再用 `mysqld --version` 把版本号记进部署记录。
+实测输出里 `VERSION()` 返回 8.0.46，`SHOW DATABASES` 列出 information_schema、mysql、performance_schema、sys 四个系统库：
 
-### 5. 登录
+![配图2](/images/csdn/figures/centos-7-mysql-csdn138905545-2.png)
+
+随后立刻给 root 设密码。交互式的安全初始化脚本会一次做完设密码、删匿名用户、禁远程 root：
 
 ```bash
-mysql -u root -p
+mysql_secure_installation
 ```
 
-输入刚设置的 root 密码，进入 MySQL 命令行界面。
+### 4. 建库建用户（最小权限）
 
-### 6. 测试连接
+应用别直接用 root。建一个业务库和一个专用账号，只把权限授到这个库上：
 
-在命令行里执行一条基本 SQL 验证：
-
-```sql
-SHOW DATABASES;
-```
-
-能列出当前服务器上的所有数据库，安装就算通了。
-
-### 7. 创建新用户（可选）
-
-为了不让应用直接用 root，可以建一个专用用户并授权。例如创建 newuser 并允许其从远程主机登录：
-
-```sql
-CREATE USER 'newuser'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON *.* TO 'newuser'@'%' WITH GRANT OPTION;
+```bash
+mysql -u root -p <<'SQL'
+CREATE DATABASE appdb;
+CREATE USER 'newuser'@'%' IDENTIFIED BY 'Str0ng_pass-1';
+GRANT ALL PRIVILEGES ON appdb.* TO 'newuser'@'%';
 FLUSH PRIVILEGES;
+SQL
 ```
 
-## 方式二：安装指定版本（MySQL 5.7）
+实测这个账号从远程（-h 127.0.0.1 模拟）登录后，`SHOW DATABASES` 只能看到 `appdb` 和两个自带 schema——授权边界即所见边界，最小权限是能被直接验证的：
 
-需要锁定版本时，添加 MySQL 官方 YUM 仓库再装。
+![配图2](/images/csdn/figures/centos-7-mysql-csdn138905545-2.png)
 
-先下载并安装官方仓库配置包：
+## 方式二：官方仓库锁定小版本
 
-```bash
-sudo yum install wget
-wget https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
-sudo rpm -Uvh mysql57-community-release-el7-11.noarch.rpm
-```
+默认仓库的 8.0.x 随发行版滚动，想锁定或跟进 Oracle 的最新小版本，用官方仓库：从 [dev.mysql.com/downloads/repo/yum](https://dev.mysql.com/downloads/repo/yum/) 取 el9 的 `mysql80-community-release` RPM，`dnf install` 该 RPM 后，`dnf install mysql-community-server` 即走官方源。此路线本文未实测，步骤以官方文档为准；密钥、GPG 校验环节的坑在 CentOS 7 / 5.7 时代实测过一批，见下文常见报错，思路相通。
 
-仓库就位后安装 5.7。实测这个仓库的 GPG 密钥已经轮换，直接安装会报 `Failing package is: mysql-community-server-5.7.44-1.el7.x86_64` 的签名错误，先导入 2023 年的新密钥：
+## 历史版本差异（CentOS 7 / MySQL 5.7）
 
-```bash
-sudo rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023
-sudo yum install mysql-community-server
-```
+CentOS 7 已于 2024-06-30 EOL，MySQL 5.7 也于 2023-10 停止官方支持，以下内容只在维护存量机器时有用：
 
-> 注：实测环境中导入新密钥后安装仍因签名校验失败中止，可用 `yum install --nogpgcheck mysql-community-server` 变通（该参数只在评估安全风险后使用，且仅限 EOL 环境的临时安装）。完整安装流程未实跑（模拟环境资源限制），以官方文档为准。
-
-启动并设为开机自启：
-
-```bash
-sudo systemctl start mysqld
-sudo systemctl enable mysqld
-```
+- **默认仓库没有 MySQL**：`yum install mysql-server` 报 `No package mysql-server available.`——默认仓库只提供 MariaDB（CentOS 7.9 容器实测，输出见下图）。要 Oracle MySQL 必须走官方源；若 MariaDB 够用，`yum install mariadb-server` 即可。
 
 ![配图1](/images/csdn/figures/centos-7-mysql-csdn138905545-1.png)
 
-MySQL 5.7 安装完成后会自动生成一个临时 root 密码，先从日志里找出来，再做安全初始化：
-
-```bash
-sudo grep 'temporary password' /var/log/mysqld.log
-sudo mysql_secure_installation
-```
-
-mysql_secure_installation 会先要求输入这个临时密码，然后引导你设置新的 root 密码并逐项确认其它安全选项。
-
-后续的验证、登录、测试和建用户，与方式一的步骤 4 到步骤 7 相同。
+- **5.7 的临时密码**：官方源安装 5.7 后，初始化会生成临时 root 密码，只出现在 `/var/log/mysqld.log` 里一次，装完就查：`grep 'temporary password' /var/log/mysqld.log`，再用 `mysql_secure_installation` 完成设置。8.0 的 el9 包不这么做（root 走 auth_socket / 空密码首登）。
+- **系统源**：CentOS 7 EOL 后 yum 源需切 vault.centos.org 归档才能用（实测修复后可装）。
 
 ## 装坏了怎么办
 
-方式二装到一半卡住想清场：`yum remove mysql-community-server` 卸载软件包，`rm -rf /var/lib/mysql` 删掉已初始化的数据目录，重新安装时才会再次走初始化流程生成新的临时密码。方式一同理，数据目录同在 `/var/lib/mysql`。
+清场重来很简单：`dnf remove mysql-server` 卸包，`rm -rf /var/lib/mysql` 删掉已初始化的数据目录，重新安装/启动时会再走一次初始化。CentOS 7 上对应的包名是 `mysql-community-server`（官方源）或 `mariadb-server`（MariaDB），数据目录同在 `/var/lib/mysql`。
 
 ## 常见报错
 
-- **`No package mysql-server available.`**：默认仓库没有 MySQL（实测复现），走方式二或改用 MariaDB。
-- **`Failing package is: mysql-community-server-5.7.44-1.el7.x86_64`（GPG 校验失败）**：官方密钥 2023 年已轮换，`rpm --import` 新密钥后重试（实测复现与修复；导入后仍失败时见方式二的变通）。
-- **aarch64/ARM 机器上 `repomd.xml ... 404`**：MySQL 5.7 官方 el7 仓库没有 ARM 包（实测复现），ARM 机器走不了官方 5.7 源，改用 MariaDB 或 x86_64 环境。
+- **`No package mysql-server available.`**：CentOS 7 默认仓库没有 MySQL（实测复现），走官方源或改用 MariaDB。
+- **`Failing package is: mysql-community-server-5.7.44-1.el7.x86_64`（GPG 校验失败）**：MySQL 官方密钥 2023 年已轮换，`rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2023` 导入新密钥后重试（实测复现与修复；导入后仍失败时可用 `--nogpgcheck` 变通，仅限 EOL 环境的临时安装）。
+- **aarch64/ARM 机器上 `repomd.xml ... 404`**：MySQL 5.7 官方 el7 仓库没有 ARM 包（实测复现），ARM 机器走不了官方 5.7 源。
+- **容器里 mysqld 报 `Operation not permitted` 起不来**：部分 Docker 桌面版/VM 的默认 seccomp 配置会拦住 mysqld 的启动调用，`--privileged` 或调整 seccomp 后正常（实测环境特有，普通 Linux 主机不受影响）。
 
 ## 注意事项
 
 - 安全初始化（mysql_secure_installation）是必做的一步，root 密码、匿名用户、远程 root 都在这一步处理掉。
-- 5.7 的临时密码只出现在 /var/log/mysqld.log 里一次，装完就查，别等密码忘了才翻日志。
-- `GRANT ALL PRIVILEGES ON *.* ... WITH GRANT OPTION` 给出的权限非常大，生产环境按实际需要收窄到具体库和表。
+- 8.0 默认启用密码强度校验，`CREATE USER` 的弱密码会被直接拒绝，测试环境的密码也要凑够长度和复杂度。
+- `GRANT ALL PRIVILEGES ON *.* ...` 给出的权限非常大，生产环境像本文示例那样收窄到具体库，新账号"看不到别的库"本身就是一道审计线。
 - 应用账号不要用 root，新建专用用户并只授予它用到的库的权限。
 
-两条路最终都指向同一个终点：`mysqld` 跑起来、root 密码在自己手里、`SHOW DATABASES` 列出库列表。区别只在入口——默认仓库给的是 MariaDB，锁版本就得走官方源并处理好密钥问题。EOL 环境装 5.7 之前，先确认你真的需要它，而不是只需要"一个 MySQL 兼容的数据库"。
+两条路最终都指向同一个终点：mysqld 跑起来、root 密码在自己手里、`SHOW DATABASES` 列出库列表。区别只在入口——el9 的默认仓库直接给 MySQL 8.0，老机器上才需要与官方源的密钥问题纠缠。新部署没有理由再选 5.7：默认仓库的一条 `dnf install`，已经把事情做完了。
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

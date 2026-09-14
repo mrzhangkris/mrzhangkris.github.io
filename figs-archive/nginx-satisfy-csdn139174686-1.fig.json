@@ -1,8 +1,9 @@
-{"title": "satisfy any 实测", "lines": [
-  {"t": "config", "s": "satisfy any; allow 127.0.0.1; deny all; auth_basic ..."},
-  {"t": "cmd", "s": "curl -s localhost            # 白名单IP,无凭证"},
-  {"t": "out", "s": "200 SECRET AREA"},
-  {"t": "cmd", "s": "curl -s -u user1:wrong localhost"},
-  {"t": "out", "s": "200 (IP 关卡已放行，密码不再查)"},
-  {"t": "note", "s": "或的关系：任意一道关卡放行即可"}
+{"title": "satisfy any：白名单内免密", "lines": [
+  {"t": "cmd", "s": "curl -si localhost/ | head -1; curl -s localhost/"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "out", "s": "INDEX"},
+  {"t": "cmd", "s": "curl -si -u user:WRONG localhost/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "note", "s": "IP 关卡放行后密码关卡不再检查，密码错也放行"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

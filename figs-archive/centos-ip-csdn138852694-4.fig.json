@@ -1,0 +1,9 @@
+{"title": "路由下一跳合法性预检（ip route）", "lines": [
+  {"t": "cmd", "s": "ip route add 10.1.1.0/24 via 10.0.0.1 dev eth0"},
+  {"t": "out", "s": "Error: Nexthop has invalid gateway."},
+  {"t": "note", "s": "via 10.0.0.1 与 eth0 所在的 172.17.0.0/16 不同网段 → 拒绝"},
+  {"t": "cmd", "s": "ip route add 10.9.9.0/24 via 172.17.0.1 dev eth0"},
+  {"t": "out", "s": "10.9.9.0/24 via 172.17.0.1 dev eth0"},
+  {"t": "note", "s": "同网段下一跳立即生效；ipv4.routes 语法与此一致"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（--cap-add NET_ADMIN）"}
+]}

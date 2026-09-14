@@ -1,14 +1,15 @@
 {
-  "title": "parted print disk layout",
+  "title": "parted 3.5 loop 盘全流程实测",
   "type": "cmd",
   "lines": [
-    {"t": "cmd", "s": "sudo parted /dev/sda print"},
-    {"t": "out", "s": "Model: ATA ST1000DM003-1ER1 (scsi)"},
-    {"t": "out", "s": "Disk /dev/sda: 1000GB"},
-    {"t": "out", "s": "Partition Table: gpt"},
-    {"t": "out", "s": "Number  Start   End     Size    File system"},
-    {"t": "out", "s": " 1      1049kB  538MB   537MB   fat32"},
-    {"t": "out", "s": " 2      538MB   1000GB  999GB   ext4"},
-    {"t": "note", "s": "先确认分区表类型与布局,再动手"}
+    {"t": "cmd", "s": "losetup -f --show -P /tmp/disk2.img"},
+    {"t": "out", "s": "/dev/loop8"},
+    {"t": "cmd", "s": "parted -s /dev/loop8 mklabel gpt"},
+    {"t": "cmd", "s": "parted -s /dev/loop8 mkpart primary ext4 1MiB 500MiB"},
+    {"t": "cmd", "s": "parted /dev/loop8 align-check optimal 1"},
+    {"t": "out", "s": "1 aligned"},
+    {"t": "out", "s": " 1      1049kB  524MB  523MB               primary"},
+    {"t": "note", "s": "# 盘为稀疏文件模拟;print→mklabel→mkpart→align-check→resizepart"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (GNU parted 3.5)"}
   ]
 }

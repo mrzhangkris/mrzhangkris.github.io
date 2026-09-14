@@ -1,13 +1,10 @@
-{
-  "title": "顺序做错的两种报错 vs 正确顺序（8.0.46 实拍）",
-  "lines": [
-    {"t": "note", "s": "错：没 DISCARD，直接覆盖 .ibd 就 IMPORT"},
-    {"t": "cmd", "s": "ALTER TABLE mytable IMPORT TABLESPACE;"},
-    {"t": "out", "s": "ERROR 1813 (HY000): Tablespace 'mydb/mytable' exists."},
-    {"t": "note", "s": "错：DISCARD 后忘了放文件就 IMPORT"},
-    {"t": "out", "s": "ERROR 1812 (HY000): Tablespace is missing for table `mydb`.`mytable`."},
-    {"t": "note", "s": "对：DISCARD -> 拷回 .ibd -> IMPORT"},
-    {"t": "config", "s": "ALTER TABLE mytable DISCARD TABLESPACE;"},
-    {"t": "config", "s": "ALTER TABLE mytable IMPORT TABLESPACE;"}
-  ]
-}
+{"title": "顺序做错的两种报错 vs 正确顺序", "lines": [
+  {"t": "note", "s": "错法一：没 DISCARD，直接覆盖 .ibd 就 IMPORT"},
+  {"t": "cmd", "s": "ALTER TABLE mytable IMPORT TABLESPACE;"},
+  {"t": "out", "s": "ERROR 1813 (HY000): Tablespace 'mydb/mytable' exists."},
+  {"t": "note", "s": "错法二：DISCARD 后忘了放文件就 IMPORT"},
+  {"t": "cmd", "s": "ALTER TABLE mytable IMPORT TABLESPACE;"},
+  {"t": "out", "s": "ERROR 1812 (HY000): Tablespace is missing for table `mydb`.`mytable`."},
+  {"t": "note", "s": "对：先 DISCARD 腾位，再拷回 .ibd，最后 IMPORT"},
+  {"t": "note", "s": "实测环境：mysql:8.0.46 容器（2026-09）"}
+]}

@@ -1,8 +1,10 @@
-{"title": "keepalive 第二参数写入响应头", "lines": [
-  {"t": "config", "s": "keepalive_timeout 60s 15s;"},
-  {"t": "cmd", "s": "curl -si http://127.0.0.1/ka"},
+{"title": "keepalive_timeout 第二参数写进响应头", "lines": [
+  {"t": "config", "s": "location /ka { keepalive_timeout 60s 15s; return 200 \"ka ok\"; }"},
+  {"t": "cmd", "s": "curl -si localhost/ka"},
   {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "out", "s": "Server: nginx/1.31.5"},
   {"t": "out", "s": "Connection: keep-alive"},
   {"t": "out", "s": "Keep-Alive: timeout=15"},
-  {"t": "note", "s": "第二参数 15s 告知客户端复用窗口"}
+  {"t": "note", "s": "第二参数进了响应头：客户端 15 秒内可放心复用连接"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

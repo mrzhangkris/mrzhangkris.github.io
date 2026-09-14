@@ -1,10 +1,10 @@
 ---
 title: "用 Bash 脚本 + expdp 实现 Oracle 定时备份与异地传输"
 date: 2024-06-01 09:15:00
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Oracle]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1561233835-f937539b95b9?w=1600&q=80&fm=jpg
 ---
 
@@ -29,8 +29,6 @@ CREATE DIRECTORY dumpdir AS '/path/to/backup/directory';
 ## 备份脚本
 
 新建 `backup_script.sh`，内容如下：
-
-![配图1](/images/csdn/figures/bash-expdp-csdn139348362-1.png)
 
 ```bash
 #!/bin/sh
@@ -216,9 +214,9 @@ location /oracledownload {
 
 两个 location 各管一头：`/oraclebak` 只收上传（`client_max_body_size 2048M` 允许大文件），`/oracledownload` 开了 autoindex，供人工下载核验备份。
 
-这条接收链路可以在 OpenResty 容器里完整实测（openresty/openresty:alpine，`conf/lua/upload.lua` 与上面的配置原样载入）：上传后接口返回 `save file ok`，文件按原名落地，`cat` 校验内容一致。
+这条接收链路已在 OpenResty 容器里完整实测（openresty/openresty:alpine，`upload.lua` 原样载入；容器内本机 curl 需要能进，白名单里补了一条 `allow 127.0.0.1;`）：上传后接口返回 `save file ok`，文件按原名落地，`cat` 校验内容一致，`/oracledownload` 的 autoindex 也能列出这个包。
 
-![配图1](/images/csdn/figures/bash-expdp-csdn139348362-1.png)
+![接收端上传实测](/images/csdn/figures/bash-expdp-csdn139348362-1.png)
 
 ## 注意事项
 

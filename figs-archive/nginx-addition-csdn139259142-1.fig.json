@@ -1,10 +1,7 @@
-{
-  "title": "add_after_body 追加页脚（nginx/1.28.3 容器实拍）",
-  "lines": [
-    {"t": "config", "s": "location ~ \\.html$ { add_after_body /footer.html; }"},
-    {"t": "cmd", "s": "curl -s localhost/main.html"},
-    {"t": "out", "s": "<h1>MAIN</h1>"},
-    {"t": "out", "s": "<div>FOOTER</div>"},
-    {"t": "note", "s": "页脚由 Nginx 内部子请求拼入，客户端只发一次请求"}
-  ]
-}
+{"title": "add_after_body 给页面追加页脚", "lines": [
+  {"t": "cmd", "s": "curl -s localhost/main.html"},
+  {"t": "out", "s": "<h1>MAIN</h1>"},
+  {"t": "out", "s": "<div>FOOTER</div>"},
+  {"t": "note", "s": "FOOTER 是 Nginx 内部请求 /footer.html 拼上的"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

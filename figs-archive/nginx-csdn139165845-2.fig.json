@@ -1,9 +1,11 @@
-{"title": "缓存命中实测：连续两次同一请求", "lines": [
-  {"t": "config", "s": "proxy_cache my_cache;  add_header X-Cache-Status $upstream_cache_status;"},
-  {"t": "cmd", "s": "curl -si 127.0.0.1/ | grep -iE '^(HTTP|X-Cache-Status)'"},
-  {"t": "out", "s": "HTTP/1.1 200 OK"},
-  {"t": "out", "s": "X-Cache-Status: MISS  ← 第 1 次：穿透回源"},
-  {"t": "cmd", "s": "curl -si 127.0.0.1/ | grep -iE '^(HTTP|X-Cache-Status)'"},
-  {"t": "out", "s": "X-Cache-Status: HIT   ← 第 2 次：命中缓存"},
-  {"t": "note", "s": "第 2 次请求后端没有收到，响应直接出自缓存区"}
+{"title": "缓存命中实测：MISS → HIT", "lines": [
+  {"t": "note", "s": "实测环境：nginx/1.31.5 容器；后端响应带 Cache-Control: public, max-age=60"},
+  {"t": "config", "s": "proxy_cache_path /tmp/cache levels=1:2 keys_zone=my_cache:10m;"},
+  {"t": "cmd", "s": "curl -si localhost/ | grep -i cache"},
+  {"t": "out", "s": "Cache-Control: public, max-age=60"},
+  {"t": "out", "s": "X-Cache-Status: MISS"},
+  {"t": "cmd", "s": "curl -si localhost/ | grep -i cache"},
+  {"t": "out", "s": "X-Cache-Status: HIT"},
+  {"t": "note", "s": "MISS 穿透回源并存缓存；HIT 直接吐缓存，后端零感知"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

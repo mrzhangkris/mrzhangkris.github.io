@@ -1,0 +1,8 @@
+{"title": "编译安装 OpenSSH 9.5p1", "lines": [
+  {"t": "config", "s": "./configure --prefix=/usr --sysconfdir=/etc/ssh \\"},
+  {"t": "config", "s": "    --with-ssl-dir=/usr/local/openssl --with-pam"},
+  {"t": "cmd", "s": "make && make install"},
+  {"t": "out", "s": "make: [Makefile:385: check-config] Error 255 (ignored)"},
+  {"t": "note", "s": "check-config 失败被 make 忽略，此时 sshd 尚不可用"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（OpenSSH 9.5p1 源码）"}
+]}

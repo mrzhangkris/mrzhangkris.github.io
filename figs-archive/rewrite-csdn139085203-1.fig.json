@@ -1,0 +1,10 @@
+{"title": "实测：permanent 返回 301 永久重定向", "lines": [
+  {"t": "cmd", "s": "curl -si http://127.0.0.1/old-path | head -6"},
+  {"t": "out", "s": "HTTP/1.1 301 Moved Permanently"},
+  {"t": "out", "s": "Server: nginx/1.31.5"},
+  {"t": "out", "s": "Location: http://127.0.0.1/new-path"},
+  {"t": "cmd", "s": "curl -s http://127.0.0.1/new-path"},
+  {"t": "out", "s": "new-path-page-content"},
+  {"t": "note", "s": "permanent=301：浏览器与搜索引擎按永久迁移处理"},
+  {"t": "note", "s": "实测环境：nginx:alpine（nginx/1.31.5）"}
+]}

@@ -1,0 +1,9 @@
+{"title": "configure 成功的尾部输出", "lines": [
+  {"t": "config", "s": "./configure --with-http_ssl_module --with-http_v2_module \\"},
+  {"t": "config", "s": "    --with-openssl=/usr/local/src/openssl-3.1.4"},
+  {"t": "out", "s": "Type the following commands to build and install:"},
+  {"t": "out", "s": "    gmake"},
+  {"t": "out", "s": "    gmake install"},
+  {"t": "note", "s": "configure 结束无 ERROR、给出构建提示即通过"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（OpenResty 1.19.3.1）"}
+]}

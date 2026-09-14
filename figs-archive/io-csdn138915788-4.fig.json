@@ -1,0 +1,12 @@
+{"title": "LVM 建卷实测（loop 盘代替物理盘）", "lines": [
+  {"t": "cmd", "s": "pvcreate /dev/loop0 /dev/loop1"},
+  {"t": "cmd", "s": "vgcreate vg0 /dev/loop0 /dev/loop1"},
+  {"t": "out", "s": "Volume group \"vg0\" successfully created"},
+  {"t": "cmd", "s": "lvcreate -Z n -W n -l 60%FREE -n data vg0"},
+  {"t": "cmd", "s": "lvcreate -Z n -W n -l 80%FREE -n cache vg0"},
+  {"t": "out", "s": "Logical volume \"cache\" created."},
+  {"t": "cmd", "s": "lvs -o lv_name,lv_size,lv_attr vg0"},
+  {"t": "out", "s": "cache 488.00m -wi-a-----"},
+  {"t": "out", "s": "data  916.00m -wi-a-----"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (lvm2 2.03.33)；-Z n 跳过清零"}
+]}

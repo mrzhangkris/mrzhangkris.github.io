@@ -1,26 +1,16 @@
 ---
 title: "Nginx return 指令：不惊动后端，直接把话回了"
 date: 2024-05-20 15:01:40
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1651340550839-3b295d930048?w=1600&q=80&fm=jpg
 ---
 
 站点要停机维护，你不想让用户撞上一堆后端报错；旧链接换了域名，你不想写一行跳转代码；内网探活想要个固定应答，你不想为此起一个服务。这些事的共同点是：不需要任何后端参与，Nginx 自己就能把响应给出去。干这活的指令是 `return`，属于内置的 rewrite 模块（`ngx_http_rewrite_module`）——指定状态码、跳转地址，甚至响应正文，请求到它这里就地终结。
 
 本文按配置实战组织：先交代实验环境，再给三组可直接复制的配置与真实输出（维护页、重定向、文本应答），加上 server 级整站开关，最后用实测说清两个容易踩的坑。所有输出均为 nginx/1.31.5 实跑结果，未验证的结论会明确标注。
-
-![配图1](/images/csdn/figures/nginx-return-http-csdn139065651-1.png)
-
-![配图2](/images/csdn/figures/nginx-return-http-csdn139065651-2.png)
-
-![配图3](/images/csdn/figures/nginx-return-http-csdn139065651-3.png)
-
-![配图4](/images/csdn/figures/nginx-return-http-csdn139065651-4.png)
-
-![配图5](/images/csdn/figures/nginx-return-http-csdn139065651-5.png)
 
 ## 实验环境
 
@@ -82,7 +72,7 @@ location /redirect {
 
 ![配图2](/images/csdn/figures/nginx-return-http-csdn139065651-2.png)
 
-301 与 302 的选择：地址永久变更用 301，浏览器和搜索引擎会把权重转到新地址；临时性跳转（比如活动页）用 302，别让搜索引擎把临时地址当永久收录。
+301 与 302 的选择：地址永久变更用 301，浏览器和搜索引擎会把权重转到新地址；临时性跳转（比如活动页）用 302，别让搜索引擎把临时地址当永久收录。跳转对象如果是接口调用，还要留意 301/302 会把 POST 降级成 GET 的老问题——要求请求方法原样保留的场景，用 307（临时）或 308（永久），客户端会带着原方法重发。
 
 ## 实例三：直接回文本，健康检查专属
 
@@ -158,6 +148,7 @@ location /dup {
 - **纯文本响应配 `default_type`**。默认 `application/octet-stream` 在浏览器端表现为下载文件（上文实测），探活接口无所谓，给人看的文本必须配。
 - **错误码要带自定义头，`add_header` 必须加 `always`**。503 维护页配 `Retry-After` 却发现头丢了，九成是这个原因（上文实测）。
 - **503 页面给用户留出口**。纯状态码页面是 Nginx 内置的英文错误页，认真做维护就配 `error_page 503 /maintenance.html`，至少告诉用户"几点恢复"。
+- **444 是 Nginx 的私有状态码**。`return 444;` 不回任何响应、直接关闭连接（实测 curl 以 "Empty reply from server"、退出码 52 收场），对付纯扫描探测比 403 更省流量；浏览器端表现就是连接被掐断，别用在正常用户能碰到的路径上。
 
 ## 小结
 

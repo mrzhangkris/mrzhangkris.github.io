@@ -1,0 +1,11 @@
+{"title": "第二块网卡：dummy 模拟 + 按网段分流", "lines": [
+  {"t": "cmd", "s": "ip link add eth1 type dummy"},
+  {"t": "cmd", "s": "nmcli con add type ethernet con-name inner-eth1 ifname eth1 \\"},
+  {"t": "config", "s": "    ipv4.method manual ipv4.addresses 10.0.0.100/24"},
+  {"t": "cmd", "s": "nmcli con mod inner-eth1 +ipv4.routes \"10.1.1.0/24 10.0.0.1\""},
+  {"t": "note", "s": "# keyfile 中落为两行："},
+  {"t": "config", "s": "address1=10.0.0.100/24"},
+  {"t": "config", "s": "route1=10.1.1.0/24,10.0.0.1"},
+  {"t": "note", "s": "对内网卡只配地址不配网关，额外网段用 ipv4.routes 指"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（dummy 虚拟网卡模拟第二网卡）"}
+]}

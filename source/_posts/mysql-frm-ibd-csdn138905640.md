@@ -3,9 +3,9 @@ title: "MySQL 利用 frm 和 ibd 文件恢复表数据：DISCARD/IMPORT 实测"
 date: 2024-05-15 14:51:08
 categories: [技术]
 tags: [MySQL]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667372283496-893f0b1e7c16?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 MySQL 崩溃、实例起不来，手上又没有逻辑备份时，数据目录里的文件本身就是最后的救命稻草：`.frm` 存着表结构，`.ibd` 存着表数据和索引（InnoDB 独立表空间模式下每张表一个）。只要这两个文件还在，就能把它们挂回一个新实例里把数据捞出来。这篇用一个 mysql:8.0 容器把整条恢复链路实跑一遍——能恢复什么、顺序错一步会发生什么、5.x 和 8.0 差在哪。

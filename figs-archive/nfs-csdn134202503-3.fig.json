@@ -1,10 +1,7 @@
-{
-  "title": "客户端 showmount 查到导出清单（RHEL9 容器实拍）",
-  "lines": [
-    {"t": "note", "s": "客户端视角问服务端导出了什么（容器 IP 代入原文 192.168.0.237）"},
-    {"t": "cmd", "s": "showmount -e 172.17.0.6"},
-    {"t": "out", "s": "Export list for 172.17.0.6:"},
-    {"t": "out", "s": "/export/nfs 172.17.0.0/24"},
-    {"t": "note", "s": "看到清单说明 RPC 链路通，再执行挂载"}
-  ]
-}
+{"title": "客户端 showmount 查看服务端导出清单", "lines": [
+  {"t": "cmd", "s": "showmount -e 192.168.254.2"},
+  {"t": "out", "s": "Export list for 192.168.254.2:"},
+  {"t": "out", "s": "/export/nfs 192.168.254.0/24"},
+  {"t": "note", "s": "能看到清单说明网络与 RPC 链路都通"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 客户端容器（2026-09）"}
+]}

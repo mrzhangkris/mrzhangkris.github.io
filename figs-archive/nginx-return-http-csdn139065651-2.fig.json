@@ -1,7 +1,8 @@
-{"title": "301 重定向实测", "lines": [
+{"title": "301 重定向：Location 头", "lines": [
   {"t": "config", "s": "location /redirect { return 301 https://www.example.com; }"},
-  {"t": "cmd", "s": "curl -sI localhost/redirect"},
+  {"t": "cmd", "s": "curl -si localhost/redirect | grep -E 'HTTP/|Location'"},
   {"t": "out", "s": "HTTP/1.1 301 Moved Permanently"},
   {"t": "out", "s": "Location: https://www.example.com"},
-  {"t": "note", "s": "浏览器凭 Location 头跳新地址，全程不出 Nginx"}
+  {"t": "note", "s": "浏览器凭 Location 跳转，后端零参与"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

@@ -3,9 +3,9 @@ title: "Nginx map 模块实战：用变量映射替代 if 分支"
 date: 2024-05-30 15:19:33
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1640955785023-1854685dae05?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 写 Nginx 配置时经常遇到这种事：同一个变量在不同取值下要做不同处理，如果用一堆 if 去分支，配置会迅速变得难读——而且 Nginx 的 if 在 location 里声名狼藉（IfIsEvil），行为处处是坑。map 模块就是为这种场景准备的：根据一个变量的值映射出另一个变量的值，映射表集中写在 map 块里，逻辑一目了然。
@@ -46,7 +46,7 @@ http {
 
 请求 URL 是 /old-page 时重定向到 /new-page；是 /about 时重定向到 /about-us；其他任何 URL 落到 default 分支的 /not-found。实测把 return 301 换成回显，看映射结果：
 
-![配图1](/images/csdn/figures/nginx-map-csdn139325428-1.png)
+![map 静态查表实测](/images/csdn/figures/nginx-map-csdn139325428-1.png)
 
 整个重定向表就是 map 块里那三行，改表比改一堆 if 舒服得多——这是 map 对 if 的核心优势：数据和逻辑分离，加一条规则就是加一行。
 
@@ -63,7 +63,7 @@ map $http_user_agent $is_mobile {
 
 实测两种 UA 的请求：
 
-![配图2](/images/csdn/figures/nginx-map-csdn139325428-2.png)
+![map 正则映射实测](/images/csdn/figures/nginx-map-csdn139325428-2.png)
 
 移动端 UA 得到 1、桌面端得到 0，后续配置直接 `if ($is_mobile)` 或拿 $is_mobile 做 access_log 的标记字段——把"判断"收敛到 map 里，location 里只剩"使用"。
 
@@ -86,7 +86,7 @@ server {
 
 实测带 `version=v2` cookie 和不带 cookie 的两种请求：
 
-![配图3](/images/csdn/figures/nginx-map-csdn139325428-3.png)
+![map cookie 灰度分流实测](/images/csdn/figures/nginx-map-csdn139325428-3.png)
 
 测试同学把 cookie 设成 v2 就进新版本，普通用户走 default 进旧版本——灰度名单从"改配置文件 reload"变成"发 cookie"，运营侧就能控制。
 
@@ -105,7 +105,7 @@ map $http_x_flag $out {
 
 实测三个不同的值（经 X-Flag 请求头传入）：
 
-![配图4](/images/csdn/figures/nginx-map-csdn139325428-4.png)
+![hostnames 通配实测](/images/csdn/figures/nginx-map-csdn139325428-4.png)
 
 多租户按域名分流、白名单域名判断都用得上。注意 hostnames 模式下**精确匹配优先于通配**，且通配只能出现在开头（`*.example.com`）或结尾（`www.example.*`），不能写 `*example*` 这种双侧通配。
 

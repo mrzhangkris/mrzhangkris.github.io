@@ -1,9 +1,10 @@
-{"title": "网段放行实测：同机双 IP 对照", "lines": [
-  {"t": "config", "s": "allow 127.0.0.0/8;   # 以环回网段复演 10.0.0.0/24"},
+{"title": "网段放行实测（127.0.0.0/8）", "lines": [
+  {"t": "note", "s": "实测环境：nginx/1.31.5 容器，容器网卡 IP 172.17.0.3"},
+  {"t": "config", "s": "allow 127.0.0.0/8;"},
   {"t": "config", "s": "deny all;"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} 127.0.0.1/"},
-  {"t": "out", "s": "200  ← 来源 127.0.0.1，命中网段"},
-  {"t": "cmd", "s": "MYIP=172.17.0.11; curl -s -o /dev/null -w %{http_code} $MYIP/"},
-  {"t": "out", "s": "403  ← 来源 172.17.0.11，网段外"},
-  {"t": "note", "s": "CIDR 匹配来源 IP，与访问哪个地址无关"}
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' 127.0.0.1/"},
+  {"t": "out", "s": "200"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' 172.17.0.3/"},
+  {"t": "out", "s": "403"},
+  {"t": "note", "s": "同一台机器两个来源：环回命中网段放行，网卡 IP 网段外被拒"}
 ]}

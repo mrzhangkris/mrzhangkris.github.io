@@ -1,7 +1,8 @@
-{"title": "root 拼接实测", "lines": [
+{"title": "root：URI 原样追加", "lines": [
   {"t": "config", "s": "root /usr/share/nginx/html;"},
-  {"t": "config", "s": "location / { try_files $uri $uri/ =404; }"},
   {"t": "cmd", "s": "curl -s localhost/images/logo.png"},
   {"t": "out", "s": "LOGO"},
-  {"t": "note", "s": "实际路径 = root + URI：/usr/share/nginx/html/images/logo.png"}
+  {"t": "note", "s": "实际读取 /usr/share/nginx/html/images/logo.png"},
+  {"t": "note", "s": "URL 结构与磁盘结构一致，心智负担最低"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

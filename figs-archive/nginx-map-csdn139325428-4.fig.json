@@ -1,10 +1,12 @@
-{"title": "hostnames 通配：精确优先，通配兜底", "lines": [
-  {"t": "config", "s": "map $http_x_flag $out {"},
-  {"t": "config", "s": "  hostnames;"},
-  {"t": "config", "s": "  a.example.com \"hit-a\";"},
-  {"t": "config", "s": "  *.example.com \"hit-wildcard\";"},
+{"title": "hostnames 通配：精确优先于通配", "lines": [
+  {"t": "config", "s": "map $http_x_flag $out { hostnames;"},
+  {"t": "config", "s": "  a.example.com \"hit-a\";  *.example.com \"hit-wildcard\";"},
   {"t": "config", "s": "  default \"miss\"; }"},
-  {"t": "out", "s": "a.example.com -> hit-a"},
-  {"t": "out", "s": "b.example.com -> hit-wildcard"},
-  {"t": "out", "s": "other.net     -> miss"}
+  {"t": "cmd", "s": "curl -s -H \"X-Flag: a.example.com\" localhost/"},
+  {"t": "out", "s": "out=hit-a"},
+  {"t": "cmd", "s": "curl -s -H \"X-Flag: b.example.com\" localhost/"},
+  {"t": "out", "s": "out=hit-wildcard"},
+  {"t": "cmd", "s": "curl -s -H \"X-Flag: other.org\" localhost/"},
+  {"t": "out", "s": "out=miss"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

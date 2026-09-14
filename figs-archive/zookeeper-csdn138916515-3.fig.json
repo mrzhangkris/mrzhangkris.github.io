@@ -1,0 +1,11 @@
+{
+  "title": "zkCli 跨节点读写验证",
+  "lines": [
+    {"t": "cmd", "s": "(echo \"create /cfg v1-from-zk2\"; sleep 2) | zkCli.sh -server zk2:2181"},
+    {"t": "out", "s": "[zk: zk2:2181(CONNECTED) 0] Created /cfg"},
+    {"t": "cmd", "s": "(echo \"get /cfg\"; sleep 2) | zkCli.sh -server zk1:2181"},
+    {"t": "out", "s": "[zk: zk1:2181(CONNECTED) 0] v1-from-zk2"},
+    {"t": "note", "s": "zk2 写入、zk1 读出，数据经集群同步复制"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 x3（ZK 3.8.6）"}
+  ]
+}

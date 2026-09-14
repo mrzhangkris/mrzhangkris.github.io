@@ -1,12 +1,14 @@
 {
-  "title": "logrotate 轮转实测",
+  "title": "logrotate -f 强制轮转实测",
   "lines": [
-    {"t": "note", "s": "logrotate 3.22.0 容器实测，-f 强制轮转"},
-    {"t": "cmd", "s": "logrotate -f /etc/logrotate.d/nginx-test"},
-    {"t": "note", "s": "退出码 0，轮转无报错"},
-    {"t": "cmd", "s": "ls /var/log/nginx/ | grep access"},
-    {"t": "out", "s": "access.log"},
-    {"t": "out", "s": "access.log.1"},
-    {"t": "note", "s": "delaycompress：最近一份 access.log.1 暂不压缩"}
+    {"t": "note", "s": "logrotate 3.22.0，配置与正文一致"},
+    {"t": "cmd", "s": "logrotate -f /etc/logrotate.d/nginx && echo \"logrotate rc=0\""},
+    {"t": "out", "s": "logrotate rc=0"},
+    {"t": "cmd", "s": "ls -l /apps/openresty/nginx/logs/head/ | grep access"},
+    {"t": "out", "s": "-rw-r----- 1 nginx qhdrsj 0 ... access.log"},
+    {"t": "out", "s": "-rw-r--r-- 1 root root 196 ... access.log.1"},
+    {"t": "note", "s": "delaycompress：.1 暂不压缩；640 权限生效"},
+    {"t": "note", "s": "USR1 重开后属主按 worker 用户改写（nginx:qhdrsj）"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 容器 (logrotate 3.22.0)"}
   ]
 }

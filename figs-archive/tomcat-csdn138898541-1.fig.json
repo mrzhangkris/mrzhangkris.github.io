@@ -1,0 +1,10 @@
+{"title": "原版脚本实测：正常场景可用，健康检查要等", "lines": [
+  {"t": "cmd", "s": "./restart_v1.sh"},
+  {"t": "out", "s": "Stopping Tomcat..."},
+  {"t": "out", "s": "Starting Tomcat..."},
+  {"t": "out", "s": "Tomcat restarted successfully"},
+  {"t": "cmd", "s": "sleep 8; curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080"},
+  {"t": "out", "s": "200"},
+  {"t": "note", "s": "启动后要等 Tomcat 初始化，立即探测只会拿到 000"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（Tomcat 10.1.59）"}
+]}

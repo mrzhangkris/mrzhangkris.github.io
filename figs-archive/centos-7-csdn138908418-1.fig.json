@@ -1,11 +1,11 @@
 {
   "title": "安装与配置验证实测",
   "lines": [
-    {"t": "note", "s": "CentOS 7.9 容器实测（vault 源修复后）"},
+    {"t": "note", "s": "Rocky Linux 9 容器实测"},
     {"t": "cmd", "s": "postconf mail_version"},
-    {"t": "out", "s": "mail_version = 2.10.1"},
+    {"t": "out", "s": "mail_version = 3.5.25"},
     {"t": "cmd", "s": "dovecot --version"},
-    {"t": "out", "s": "2.2.36 (1f10bfa63)"},
+    {"t": "out", "s": "2.3.16 (7e2e900c1a)"},
     {"t": "cmd", "s": "postfix check"},
     {"t": "note", "s": "无输出即配置合法（退出码 0）"}
   ]

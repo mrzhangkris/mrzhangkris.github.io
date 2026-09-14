@@ -1,0 +1,8 @@
+{"title": "依赖安装与版本起点确认", "lines": [
+  {"t": "cmd", "s": "dnf install -y gcc make perl zlib zlib-devel pam-devel perl-IPC-Cmd"},
+  {"t": "out", "s": "Complete!"},
+  {"t": "cmd", "s": "ssh -V"},
+  {"t": "out", "s": "OpenSSH_9.9p1, OpenSSL 3.5.5 27 Jan 2026"},
+  {"t": "note", "s": "容器自带版本比目标 9.5p1/3.1.4 还新——本文验证的是编译链路"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（aarch64）"}
+]}

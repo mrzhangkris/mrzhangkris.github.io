@@ -1,0 +1,11 @@
+{"title": "只下载单个包及依赖（Rocky Linux 9 实测）", "lines": [
+  {"t": "cmd", "s": "dnf install --downloadonly --downloaddir=/tmp/dl -y wget"},
+  {"t": "out", "s": "Total download size: 882 k"},
+  {"t": "out", "s": "Complete!"},
+  {"t": "cmd", "s": "ls /tmp/dl/"},
+  {"t": "out", "s": "libpsl-0.21.1-5.el9.aarch64.rpm"},
+  {"t": "out", "s": "publicsuffix-list-dafsa-20210518-3.el9.noarch.rpm"},
+  {"t": "out", "s": "wget-1.21.1-11.el9_8.aarch64.rpm"},
+  {"t": "note", "s": "依赖也一并下载，离线安装缺一不可"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+]}

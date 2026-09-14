@@ -2,13 +2,13 @@
   "title": "Bash 脚本切割实测",
   "lines": [
     {"t": "note", "s": "nginx/1.31.5 容器实测"},
-    {"t": "cmd", "s": "mv /var/log/nginx/access.log archive/access_20260912.log"},
-    {"t": "cmd", "s": "gzip /var/log/nginx/archive/access_20260912.log"},
-    {"t": "cmd", "s": "kill -USR1 $(cat /var/run/nginx.pid)"},
-    {"t": "note", "s": "USR1 之后新请求写进新 access.log"},
+    {"t": "cmd", "s": "/root/rotate.sh"},
+    {"t": "cmd", "s": "curl -s -o /dev/null http://127.0.0.1/new-after-rotate"},
     {"t": "cmd", "s": "ls /var/log/nginx/archive/"},
-    {"t": "out", "s": "access_20260912033902.log.gz"},
-    {"t": "cmd", "s": "tail -1 /var/log/nginx/access.log"},
-    {"t": "out", "s": "... \"GET / HTTP/1.1\" 200 ..."}
+    {"t": "out", "s": "access_20260914010114.log.gz"},
+    {"t": "cmd", "s": "tail -1 /var/log/nginx/access.log | cut -c1-58"},
+    {"t": "out", "s": "127.0.0.1 - - [14/Sep/2026:01:01:14 +0000] \"GET /new-after"},
+    {"t": "note", "s": "归档落盘 .log.gz，USR1 后新请求写进新 access.log"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 容器"}
   ]
 }

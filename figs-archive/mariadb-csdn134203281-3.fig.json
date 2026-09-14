@@ -1,10 +1,12 @@
-{"title": "Access denied 排错闭环（实测）", "lines": [
-  {"t": "cmd", "s": "mysql -uroot -proot -h 172.17.0.2 -e \"show databases;\""},
-  {"t": "out", "s": "ERROR 1045 (28000): Access denied for user 'root'@'f52cee1c0d34'"},
-  {"t": "cmd", "s": "select host,user from mysql.user;"},
-  {"t": "out", "s": "localhost   root / mariadb.sys / mysql"},
-  {"t": "out", "s": "localhost   (空)    # ← 匿名用户在抢匹配"},
-  {"t": "cmd", "s": "DROP USER ''@'localhost';"},
-  {"t": "cmd", "s": "mysql -uroot -proot -h 172.17.0.2 -e \"show databases;\""},
-  {"t": "out", "s": "information_schema  mysql  performance_schema"}
+{"title": "远程验证：1130 被拒 → 授权 → 闭环", "lines": [
+  {"t": "out", "s": "ERROR 1130 (HY000): Host 'mclient.v4net' is not allowed"},
+  {"t": "out", "s": "to connect to this MariaDB server"},
+  {"t": "config", "s": "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root';"},
+  {"t": "config", "s": "ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';"},
+  {"t": "config", "s": "FLUSH PRIVILEGES;"},
+  {"t": "cmd", "s": "mysql -h <服务器IP> -uroot -proot -e \"select current_user();\""},
+  {"t": "out", "s": "current_user()"},
+  {"t": "out", "s": "root@%"},
+  {"t": "note", "s": "授权前 1130（没有 root@% 行），授权后远程列出库，闭环"},
+  {"t": "note", "s": "实测环境：Rocky 9.3 双容器网络 (mariadb 10.5.29)"}
 ]}

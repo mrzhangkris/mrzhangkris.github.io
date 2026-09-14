@@ -1,0 +1,8 @@
+{"title": "ethtool -i 查看驱动信息", "lines": [
+  {"t": "cmd", "s": "ethtool -i eth0"},
+  {"t": "out", "s": "driver: veth"},
+  {"t": "out", "s": "version: 1.0"},
+  {"t": "out", "s": "supports-statistics: yes"},
+  {"t": "note", "s": "driver 字段即网卡驱动名，装驱动/对型号时用"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器"}
+]}

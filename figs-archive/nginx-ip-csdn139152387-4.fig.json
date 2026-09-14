@@ -1,7 +1,9 @@
-{"title": "错误顺序实测：deny all 放在 allow 前", "lines": [
-  {"t": "config", "s": "deny all;           # 第一条即命中"},
-  {"t": "config", "s": "allow 127.0.0.1;    # 永远轮不到"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} 127.0.0.1/"},
-  {"t": "out", "s": "403  ← 白名单 IP 也被拒"},
-  {"t": "note", "s": "顺序匹配，命中即停，第一条拥有一票否决权"}
+{"title": "错误顺序实测：deny all 写在最前", "lines": [
+  {"t": "config", "s": "deny all;        # 错：兜底写在了最前"},
+  {"t": "config", "s": "allow 127.0.0.1;"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' localhost/"},
+  {"t": "out", "s": "403"},
+  {"t": "note", "s": "来源就是白名单里的 127.0.0.1，照样 403"},
+  {"t": "note", "s": "错误日志：access forbidden by rule, client: 127.0.0.1"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

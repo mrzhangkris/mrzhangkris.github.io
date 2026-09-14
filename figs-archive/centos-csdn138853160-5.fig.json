@@ -1,0 +1,9 @@
+{"title": "ip -s link 查看收发计数", "lines": [
+  {"t": "cmd", "s": "ip -s link show eth0"},
+  {"t": "out", "s": "    RX:  bytes packets errors dropped  missed   mcast"},
+  {"t": "out", "s": "      85202387   19866      0       0       0       0"},
+  {"t": "out", "s": "    TX:  bytes packets errors dropped carrier collsns"},
+  {"t": "out", "s": "        635081    9368      0       0       0       0"},
+  {"t": "note", "s": "计数口径与 ifconfig 一致，iproute2 是新系统首选"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（iproute 6.17）"}
+]}

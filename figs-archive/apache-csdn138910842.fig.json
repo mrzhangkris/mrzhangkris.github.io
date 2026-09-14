@@ -1,16 +1,12 @@
 {
-  "title": "Apache 2.4.41 to 2.4.46 smooth upgrade",
-  "type": "cmd",
+  "title": "确认当前版本：升级的起点",
   "lines": [
-    {"t": "cmd", "s": "apachectl -v"},
+    {"t": "cmd", "s": "/usr/local/apache2.4.41/bin/apachectl -v"},
     {"t": "out", "s": "Server version: Apache/2.4.41 (Unix)"},
-    {"t": "cmd", "s": "tar -xzf httpd-2.4.46.tar.gz && cd httpd-2.4.46"},
-    {"t": "cmd", "s": "./configure --prefix=/usr/local/apache2.4.46"},
-    {"t": "cmd", "s": "make"},
-    {"t": "cmd", "s": "sudo make install"},
-    {"t": "note", "s": "新版本装进独立目录，旧版本照常运行"},
-    {"t": "cmd", "s": "/usr/local/apache2.4.41/bin/apachectl -k stop"},
-    {"t": "cmd", "s": "/usr/local/apache2.4.46/bin/apachectl -k start"},
-    {"t": "note", "s": "测试稳定后再切换，回滚只需反向启停"}
+    {"t": "out", "s": "Server built:   Sep 14 2026 00:32:57"},
+    {"t": "cmd", "s": "curl -s http://127.0.0.1/"},
+    {"t": "out", "s": "v2.4.41-old-serving"},
+    {"t": "note", "s": "index.html 已替换为版本标记，便于切换前后对照"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器 (httpd 2.4.41)"}
   ]
 }

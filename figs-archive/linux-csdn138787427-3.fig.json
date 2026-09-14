@@ -1,9 +1,11 @@
-{"title": "清理周期实测：-mtime +48 vs -mmin +2880", "lines": [
-  {"t": "note", "s": "三个文件：49 小时前 / 3 天前 / 刚创建"},
-  {"t": "cmd", "s": "find /data/recycleDir/ -mtime +48 -type f | xargs rm -f"},
-  {"t": "out", "s": "old.log  older.log  new.log   # 什么都没删"},
-  {"t": "note", "s": "-mtime +48 = 49 个完整天之前，不是 48 小时"},
-  {"t": "cmd", "s": "find /data/recycleDir/ -mmin +2880 -type f | xargs rm -f"},
-  {"t": "out", "s": "new.log   # 48 小时前的都被清掉"},
-  {"t": "note", "s": "要按小时控制周期，用 -mmin +分钟数"}
+{"title": "-mtime 与 -mmin 语义实测", "lines": [
+  {"t": "cmd", "s": "touch -d '49 hours ago' h49.txt"},
+  {"t": "cmd", "s": "find . -name 'h49.txt' -mtime +48"},
+  {"t": "note", "s": "无输出：49 小时前的文件不满足 -mtime +48"},
+  {"t": "cmd", "s": "find . -name 'h49.txt' -mmin +2880"},
+  {"t": "out", "s": "./h49.txt"},
+  {"t": "cmd", "s": "find . -name 'd50.txt' -mtime +48"},
+  {"t": "out", "s": "./d50.txt"},
+  {"t": "note", "s": "-mtime +48 实际指 49 个完整天之前；小时级控制用 -mmin"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (findutils 4.8.0)"}
 ]}

@@ -1,7 +1,8 @@
-{"title": "改比例后的分组重排实测", "lines": [
-  {"t": "config", "s": "25% \"A\"; * \"B\";   # 从50%调到25%"},
-  {"t": "out", "s": "20个UA统计: 4 A / 16 B"},
-  {"t": "cmd", "s": "curl -A \"Mozilla/5.0 testUA\" localhost"},
-  {"t": "out", "s": "VERSION B   # 改比例前是 VERSION A"},
-  {"t": "note", "s": "调整比例会重排所有人，测试中途不要动"}
+{"title": "改 25% 后：比例变，人也重排", "lines": [
+  {"t": "config", "s": "25%  \"A\";   # 从 50% 改来"},
+  {"t": "cmd", "s": "for i in $(seq 20); do curl -s -A \"user$i\" localhost; done | sort | uniq -c"},
+  {"t": "out", "s": "       4 VERSION A"},
+  {"t": "out", "s": "      16 VERSION B"},
+  {"t": "note", "s": "user1/10/12/14/16/19 由 A 跳 B：调整即全体重新哈希"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

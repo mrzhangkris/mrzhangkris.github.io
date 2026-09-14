@@ -1,11 +1,6 @@
-{
-  "title": "recursive on：剥掉可信中间层（容器实拍）",
-  "lines": [
-    {"t": "config", "s": "set_real_ip_from 127.0.0.1;"},
-    {"t": "config", "s": "set_real_ip_from 10.0.0.5;"},
-    {"t": "config", "s": "real_ip_recursive on;"},
-    {"t": "cmd", "s": "curl -s -H 'X-Forwarded-For: 203.0.113.7, 10.0.0.5' localhost"},
-    {"t": "out", "s": "remote_addr=203.0.113.7"},
-    {"t": "note", "s": "10.0.0.5 在名单里被跳过，采信 203.0.113.7"}
-  ]
-}
+{"title": "recursive on：剥掉可信中间层", "lines": [
+  {"t": "cmd", "s": "curl -s -H \"X-Forwarded-For: 203.0.113.7, 10.0.0.5\" localhost"},
+  {"t": "out", "s": "remote_addr=203.0.113.7"},
+  {"t": "note", "s": "10.0.0.5 已入名单被跳过，采信 203.0.113.7"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

@@ -4,5 +4,6 @@
   {"t": "out", "s": "  Handler] uncaught exception in thread [main]"},
   {"t": "out", "s": "StartupException: java.lang.RuntimeException:"},
   {"t": "out", "s": "  can not run elasticsearch as root"},
-  {"t": "note", "s": "实测：ES 7.6.1 强制禁止 root 启动"}
+  {"t": "note", "s": "实测：ES 7.6.1 强制禁止 root 启动"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（linux/amd64）"}
 ]}

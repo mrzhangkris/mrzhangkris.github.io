@@ -1,10 +1,10 @@
 ---
 title: "Nginx realip 实战：把被代理藏起来的真实客户端 IP 还原出来"
 date: 2024-05-20 14:01:42
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1600&q=80&fm=jpg
 ---
 
@@ -35,6 +35,8 @@ realip 的工作方式可以压缩成一句话：**只有来自可信名单的�
 - **set_real_ip_from**：指定可信代理的 IP 或 CIDR 网段。只有来自这些地址的请求才触发还原，这是安全边界——不设它，任何人都能伪造请求头冒充别的 IP。
 - **real_ip_header**：从哪个请求头取真实 IP，常见取值是 `X-Forwarded-For` 或 `X-Real-IP`。
 - **real_ip_recursive**：多层代理时设为 `on`，Nginx 会沿代理链从后往前回溯，跳过名单里的可信地址，取第一个不在名单里的地址当作客户端 IP。
+
+三条指令都能写在 `http`、`server`、`location` 三个层级（官方文档口径）。全局统一的信任名单放 `http` 层一次配好；只有个别站点走代理时，收进对应 `server` 块更稳。还有一个容易误会的事实：realip 只改写 `$remote_addr` 变量，**不动请求头本身**——实例一的输出里 `xff=` 一行原样保留，就是证据。头会继续原样传给下游服务，下游拿到后按自己的名单再做一次还原，两边互不干扰。
 
 ## 实例一：最小配置，先把 IP 还原出来
 
@@ -126,6 +128,8 @@ real_ip_header X-Forwarded-For;
 set_real_ip_from 127.0.0.1;
 real_ip_header X-Real-IP;
 ```
+
+没有请求头可用、上游走四层透传（比如 `proxy_protocol`）的场景，走的是另一条路：`listen 80 proxy_protocol;` 直接从协议层取地址，本文不展开。
 
 日志这边补一句：`$remote_addr` 在 realip 生效后就是还原出的真实客户端 IP；再带一个 `$http_x_forwarded_for` 把原始头内容记下来，排查问题时可以对照——实例一的实拍里已经能看到这种写法的效果。
 

@@ -1,11 +1,10 @@
-{
-  "title": "七层按路径分流：/api/ 恒定到指定后端（实拍）",
-  "lines": [
-    {"t": "config", "s": "location /api/ { proxy_pass http://127.0.0.1:8081/; }"},
-    {"t": "cmd", "s": "for i in $(seq 1 3); do curl -s localhost/api/x; done"},
-    {"t": "out", "s": "APP-ONE"},
-    {"t": "out", "s": "APP-ONE"},
-    {"t": "out", "s": "APP-ONE"},
-    {"t": "note", "s": "URL 级路由是七层独有的能力，四层做不到"}
-  ]
-}
+{"title": "七层内容路由：/api/ 固定后端", "lines": [
+  {"t": "config", "s": "location /api/ { proxy_pass http://127.0.0.1:8081/; }"},
+  {"t": "cmd", "s": "for i in $(seq 1 3); do curl -s localhost:8097/api/x; done"},
+  {"t": "out", "s": "APP-ONE"},
+  {"t": "out", "s": "APP-ONE"},
+  {"t": "out", "s": "APP-ONE"},
+  {"t": "note", "s": "/api/ 恒定命中 APP-ONE，其余路径继续参与轮询"},
+  {"t": "note", "s": "URL 级路由只有解析 HTTP 的七层做得到"},
+  {"t": "note", "s": "实测：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

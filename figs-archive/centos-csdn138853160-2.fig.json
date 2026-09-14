@@ -1,0 +1,11 @@
+{"title": "ethtool 查看网卡协商速率", "lines": [
+  {"t": "cmd", "s": "ethtool eth0"},
+  {"t": "out", "s": "Settings for eth0:"},
+  {"t": "out", "s": "        Speed: 10000Mb/s"},
+  {"t": "out", "s": "        Duplex: Full"},
+  {"t": "out", "s": "        Auto-negotiation: off"},
+  {"t": "out", "s": "        Link detected: yes"},
+  {"t": "out", "s": "netlink error: Operation not permitted"},
+  {"t": "note", "s": "末行 netlink error 是容器权限限制，物理机无此行"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（ethtool 6.15，veth 网卡）"}
+]}

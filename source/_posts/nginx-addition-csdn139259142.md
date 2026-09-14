@@ -1,10 +1,10 @@
 ---
 title: "Nginx addition 模块：把子请求内容拼进主响应"
 date: 2024-05-28 10:20:58
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1680992046626-418f7e910589?w=1600&q=80&fm=jpg
 ---
 
@@ -71,10 +71,10 @@ location = /note.txt {
 `note.txt` 原样返回，页脚没有被拼进来——因为它的 Content-Type 是 `text/plain`，不在默认处理范围内。要扩展范围用 `addition_types`：
 
 ```nginx
-addition_types text/html text/css;
+addition_types text/plain;
 ```
 
-需要处理任意类型时用通配值 `addition_types *;`。这条边界记不住的代价是"配了不生效"，排错时先看响应的 Content-Type。
+实测在 location 里加上这条后，同一个页脚就真的拼到了 `text/plain` 响应的末尾（见配图3下半段）；需要处理任意类型时用通配值 `addition_types *;`。这条边界记不住的代价是"配了不生效"，排错时先看响应的 Content-Type。
 
 ## 错误写法对比：addition on 是过时指令
 
@@ -98,7 +98,10 @@ add_after_body /footer.html;
 
 - **模块不是默认编译的**。官方文档明确 `--with-http_addition_module` 需要显式启用；用自编译或精简发行版包时，先 `nginx -V` 确认模块在位，再 `nginx -t` 验证指令可识别。
 - **默认只拼 text/html**。其他 MIME 要靠 `addition_types` 显式放行，否则配置静默不生效。
-- **取消继承用空字符串**。`add_before_body "";` 会取消从上一级（http/server）继承的追加配置，嵌套 location 里做例外时用得上。
+- **取消继承用空字符串**。`add_before_body "";` 会取消从上一级（http/server）继承的追加配置。实测在 server 级配了 `add_after_body /footer.html;` 后，某个 location 里写 `add_after_body "";`，这个 location 的响应就不再拼页脚，其余 location 照常继承。
+
+![配图5](/images/csdn/figures/nginx-addition-csdn139259142-5.png)
+
 - **性能有代价**。每个追加项都是一次内部子请求，片段多、流量大时 Nginx 和后端的负载都会上升，功能与成本要一起算。
 - **内容一致性**。拼出来的页面要各片段样式结构对得上，片段由不同团队维护时容易错乱，改版时把片段一并检查。
 

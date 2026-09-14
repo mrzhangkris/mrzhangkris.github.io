@@ -1,13 +1,12 @@
 {
-  "title": "ls -la directory listing",
-  "type": "cmd",
+  "title": "Linux 五条基础命令速查",
   "lines": [
-    {"t": "cmd", "s": "ls -la"},
-    {"t": "out", "s": "total 44"},
-    {"t": "out", "s": "dr-xr-x---.  3 root root   181 May  8 17:29 ."},
-    {"t": "out", "s": "dr-xr-xr-x. 19 root root   247 May  8 15:17 .."},
-    {"t": "out", "s": "-rw-------.  1 root root  3812 May 10 17:30 .bash_history"},
-    {"t": "out", "s": "-rw-r--r--.  1 root root    18 Feb 11  2022 .bash_logout"},
-    {"t": "note", "s": "d 开头是目录，- 开头是普通文件"}
+    {"t": "note", "s": "日常文件操作速查卡"},
+    {"t": "config", "s": "ls -lah         # 详细列表含隐藏文件，大小可读"},
+    {"t": "config", "s": "cd /var/log     # 切换目录，pwd 确认位置"},
+    {"t": "config", "s": "mkdir -p a/b/c  # 整条路径一次建齐"},
+    {"t": "config", "s": "rm -rf a        # 递归强删，执行前看两遍路径"},
+    {"t": "config", "s": "cp -ri a d      # 复制目录，覆盖前提示"},
+    {"t": "note", "s": "目录操作必带 -r；删除没有回收站"}
   ]
 }

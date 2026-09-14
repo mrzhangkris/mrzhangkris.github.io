@@ -1,10 +1,12 @@
-{
-  "title": "错误写法：proxy_cache_path 放进 server 块",
-  "lines": [
-    {"t": "cmd", "s": "nginx -t"},
-    {"t": "out", "s": "nginx: [emerg] \"proxy_cache_path\" directive is not allowed here"},
-    {"t": "out", "s": "in /etc/nginx/conf.d/default.conf:3"},
-    {"t": "out", "s": "nginx: configuration file /etc/nginx/nginx.conf test failed"},
-    {"t": "note", "s": "只能放 http 层（nginx/1.31.5 实测）"}
-  ]
-}
+{"title": "配置错误实测：层级与目录", "lines": [
+  {"t": "note", "s": "错误一：proxy_cache_path 写进 server 块"},
+  {"t": "cmd", "s": "nginx -t -c /tmp/t.conf"},
+  {"t": "out", "s": "\"proxy_cache_path\" directive is not allowed here in /tmp/t.conf:5"},
+  {"t": "out", "s": "nginx: configuration file /tmp/t.conf test failed"},
+  {"t": "note", "s": "该指令只能放 http 层，写进 server 块直接拒绝启动"},
+  {"t": "note", "s": "错误二：声明的缓存目录不存在"},
+  {"t": "cmd", "s": "nginx -t -c /tmp/t2.conf"},
+  {"t": "out", "s": "mkdir() \"/data/nocache\" failed (2: No such file or directory)"},
+  {"t": "note", "s": "目录不会自动创建：部署脚本先 mkdir -p 再启动"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

@@ -1,0 +1,8 @@
+{"title": "安装 ethtool / net-tools 并确认版本", "lines": [
+  {"t": "cmd", "s": "dnf install -y ethtool net-tools"},
+  {"t": "out", "s": "Complete!"},
+  {"t": "cmd", "s": "rpm -q ethtool net-tools"},
+  {"t": "out", "s": "ethtool-6.15-2.el9.aarch64"},
+  {"t": "out", "s": "net-tools-2.0-0.64.20160912git.el9.aarch64"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（dnf，aarch64）"}
+]}

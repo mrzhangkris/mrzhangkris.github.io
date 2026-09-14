@@ -1,0 +1,10 @@
+{"title": "ifconfig 查看接口状态", "lines": [
+  {"t": "cmd", "s": "ifconfig eth0"},
+  {"t": "out", "s": "eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 65535"},
+  {"t": "out", "s": "        inet 172.17.0.3  netmask 255.255.0.0  broadcast 172.17.255.255"},
+  {"t": "out", "s": "        RX packets 19866  bytes 85202387 (81.2 MiB)"},
+  {"t": "out", "s": "        RX errors 0  dropped 0  overruns 0  frame 0"},
+  {"t": "out", "s": "        TX packets 9368  bytes 635081 (620.1 KiB)"},
+  {"t": "note", "s": "UP,RUNNING = 接口已启用且链路正常；容器 veth 的 MTU 是 65535"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（net-tools 2.0）"}
+]}

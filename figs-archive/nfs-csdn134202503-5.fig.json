@@ -1,0 +1,10 @@
+{"title": "三个高频报错实拍（全部复现过）", "lines": [
+  {"t": "note", "s": "错1：客户端 IP 不在导出网段"},
+  {"t": "out", "s": "mount.nfs: access denied by server while mounting..."},
+  {"t": "note", "s": "错2：客户端 rpcbind/statd 未启动（NFSv3 锁需要）"},
+  {"t": "out", "s": "mount.nfs: rpc.statd is not running but is required..."},
+  {"t": "cmd", "s": "systemctl start rpcbind && rpc.statd"},
+  {"t": "note", "s": "错3：默认 root_squash 下客户端 root 写入"},
+  {"t": "out", "s": "touch: cannot touch '/data/deny2.txt': Permission denied"},
+  {"t": "note", "s": "实测环境：双 Rocky Linux 9 容器（2026-09）"}
+]}

@@ -1,221 +1,200 @@
 ---
-title: "Cobbler 自动装机：从部署到 PXE 批量装系统（CentOS 7）"
+title: "Cobbler 自动装机：从部署到 PXE 批量装系统（Rocky Linux 9，附 CentOS 7 差异）"
 date: 2020-04-06 20:59:23
 categories: [技术]
 tags: [Linux]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
-机房里十几台新机器等着装系统，一台台插 U 盘不现实。Cobbler 把 PXE 引导、DHCP、kickstart 应答文件串成一整套，机器开机选网络启动就能自动装完。这篇按部署顺序完整走一遍，从装服务到按 MAC 定制装机。环境为 CentOS 7 + Cobbler 2.8（文中输出为当时实测记录）；openssl 密码生成命令已在 Rocky 9（OpenSSL 3.0.7）复核，结果一致。Cobbler 3.x 的配置与参数有变化，照搬本文前先核对官方文档。CentOS 7 已于 2024-06 EOL：本文 `yum install cobbler` 等命令需先把 repo 的 `baseurl` 切到 `http://vault.centos.org`（注释掉 `mirrorlist` 后 `yum clean all`）才能装成；xinetd、koan 等配套包同样只存在于 vault。
+机房里十几台新机器等着装系统，一台台插 U 盘不现实。Cobbler 把 PXE 引导、DHCP、应答文件串成一整套，机器开机选网络启动就能自动装完。这篇按部署顺序完整走一遍，从装服务到按 MAC 定制装机。主环境为 Rocky Linux 9 + Cobbler 3.3.7（EPEL），服务端部署、DHCP 接管、distro/profile/system 建档与 PXE 制品生成均在 Rocky 9 容器实测（容器内核与网络条件所限，真实客户机 PXE 引导那一跳未实测）；Cobbler 3.x 相对 CentOS 7 时代的 2.x 变化很大，文末附老版本差异对照。
 
 官方文档：[cobbler](https://cobbler.readthedocs.io/en/latest/)
 
+## 先看这个：Cobbler 2.x → 3.x 高频变化
+
+CentOS 7 老教程（包括本文历史版本）在 3.x 上直接照搬会四处碰壁，先把最常撞上的差异列全：
+
+| 2.x（CentOS 7）写法 | 3.x（Rocky 9）写法 | 实测结果 |
+|---------------------|---------------------|----------|
+| 配置文件 `/etc/cobbler/settings` | `/etc/cobbler/settings.yaml` | 格式改 YAML |
+| `manage_dhcp: 1` | `manage_dhcp_v4: true` | 只改旧键**不生效**，sync 不渲染 DHCP |
+| `--kickstart=/path/xx.ks` | `--autoinstall=xx.ks` | 路径相对 `/var/lib/cobbler/templates/` |
+| `system add --subnet=` | `system add --netmask=` | 旧选项直接报错 no such option |
+| `sample_end.ks` | `default.ks` | 模板目录迁到 `/var/lib/cobbler/templates/` |
+| `cobbler get-loaders` | `cobbler mkloaders` | 命令已更名 |
+| syslinux（pxelinux.0） | el9 仓库**没有** syslinux | BIOS PXE 的 pxelinux.0 需自行放置 |
+| `cobbler-web` 包 | EPEL9 无此包（实测 dnf 无匹配） | Web 界面按官方文档另行安装 |
+
 ## 前置条件
 
-- CentOS 7 服务器一台（root 权限），客户机与它**同网段**；
+- Rocky Linux 9 服务器一台（root 权限），客户机与它**同网段**；
 - `/var` 分区剩余空间 ≥ 10GB（每导入一个发行版占 5-10GB）；
-- 关闭 SELinux（PXE/TFTP 会受它干扰），防火墙放行 dhcp/http/tftp 相关端口；
+- 关闭 SELinux（PXE/TFTP 会受它干扰），防火墙放行 dhcp(67/68)/http(80)/tftp(69) 端口；
 - 网络里没有其他 DHCP 服务抢答（两个 DHCP 会随机响应，装机时灵时不灵）。
 
 关 SELinux：改配置文件重启后彻底生效，当前会话用 `setenforce 0` 过渡：
 
 ```bash
-[root@localhost ~]# sed -i s#SELINUX=enforcing#SELINUX=disabled#g /etc/selinux/config
-[root@localhost ~]# grep "SELINUX=" /etc/selinux/config
-SELINUX=disabled
-[root@localhost ~]# setenforce 0
-[root@localhost ~]# getenforce
-Permissive
+sed -i s#SELINUX=enforcing#SELINUX=disabled#g /etc/selinux/config
+grep "SELINUX=" /etc/selinux/config
+setenforce 0 && getenforce
 ```
 
-## 一、部署 Cobbler
+## 一、安装与启动
 
-### 安装与启动
+EPEL 源就绪后一次装齐，启动 cobblerd，然后跑 `cobbler check`——它列出当前环境的问题清单，是整个部署过程的导航（每步做完回来复查）：
 
 ```bash
-[root@localhost ~]# yum install -y epel-release
-[root@localhost ~]# yum clean all
-[root@localhost ~]# yum makecache
-[root@localhost ~]# yum install -y net-tools vim
-[root@localhost ~]# yum install -y httpd dhcp xinetd tftp cobbler cobbler-web pykickstart
+dnf install -y epel-release
+dnf install -y cobbler dhcp-server tftp-server pykickstart httpd
+systemctl start cobblerd
+cobbler check
 ```
-
-启动四个相关服务，逐个确认 `active (running)`（验证点）：
-
-```bash
-[root@localhost ~]# systemctl start httpd
-[root@localhost ~]# systemctl start cobblerd
-[root@localhost ~]# systemctl start xinetd
-[root@localhost ~]# systemctl start rsyncd
-```
-
-```bash
-[root@localhost ~]# systemctl status httpd
-● httpd.service - The Apache HTTP Server
-   Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; vendor preset: disabled)
-   Active: active (running) since Mon 2020-04-06 12:02:06 CST; 10min ago
-```
-
-### 按 check 建议修配置
-
-`cobbler check` 列出当前环境的问题清单，它给的是建议，不必每条都执行。首查会报九项，这里处理 1（server）、2（next_server）、8（默认密码）、5（引导程序）、4（tftp）这五条。
-
-**1+2. server 与 next_server：改成本机真实 IP**。编辑 `/etc/cobbler/settings`：server 是 kickstart 功能依赖的地址，next_server 是 PXE 客户机下载启动文件的 TFTP 地址，两者都配成 `192.168.3.129`（本例的 cobbler 服务器 IP）。改完应看到：文件里不再有 `127.0.0.1`。注意不要写成 0.0.0.0，它不是一个监听地址。
-
-**8. 换掉默认 root 密码**。`default_password_crypted` 是新装系统 root 的密码，默认值是公开的 `cobbler`，必须换。用 check 建议的命令生成哈希——此命令与系统版本无关，实测输出与 2020 年一致：
 
 ![配图1](/images/csdn/figures/linux-cobbler-csdn105320427-1.png)
 
-把生成的值替换进 settings：
+首查 9 条。它给的是建议，不必每条都执行：本文处理 1（server）、2（next_server_v4）、8（默认密码）这三条必改项，加上 DHCP 接管和 tftp 相关配置；3（next_server_v6，不做 IPv6 PXE 可跳过）、4（boot-loaders，见下文 loaders 一节）、5-7/9（reposync、debmirror、fencing 等可选功能）视需要处理。
 
-```
-default_password_crypted: "$1$cobbler$M6SE55xZodWc9.vAKLJs6."
-```
+## 二、按 check 建议修配置
 
-**5. 下载网络引导程序**。`/var/lib/cobbler/loaders` 缺 pxelinux.0、menu.c32 等 PXE 文件，跑一次下载：
+**1+2. server 与 next_server_v4：改成本机真实 IP**。编辑 `/etc/cobbler/settings.yaml`：server 是新装机下载应答文件用的地址，next_server_v4 是 PXE 客户机下载启动文件的 TFTP 地址，两者都配成 cobbler 服务器的真实 IP（示例容器环境是 172.17.0.6，实机换成你的）。注意 YAML 对缩进和冒号后空格敏感，改动前先备份。
 
-```bash
-[root@localhost ~]# cobbler get-loaders
-downloading https://cobbler.github.io/loaders/pxelinux.0-3.86 to /var/lib/cobbler/loaders/pxelinux.0
-downloading https://cobbler.github.io/loaders/menu.c32-3.86 to /var/lib/cobbler/loaders/menu.c32
-downloading https://cobbler.github.io/loaders/grub-0.97-x86_64.efi to /var/lib/cobbler/loaders/grub-x86_64.efi
-*** TASK COMPLETE ***
-```
-
-**4. 启用 TFTP**。编辑 `/etc/xinetd.d/tftp`，`disable = yes` 改成 `no`，然后 `systemctl restart xinetd`。
-
-五条处理完，重启 cobblerd 复查（验证点）：
+**8. 换掉默认 root 密码**。`default_password_crypted` 是新装系统 root 的密码哈希，默认值是公开的 `cobbler`，必须换。用 check 建议的 openssl 命令生成，把输出替换进 settings.yaml：
 
 ![配图2](/images/csdn/figures/linux-cobbler-csdn105320427-2.png)
 
-剩下的 SELinux 适配、debmirror（Debian 支持）、fence-agents（电源管理）属于可选功能，不影响装机。
+**3. 接管 DHCP**。这里埋着 3.x 最大的坑：settings.yaml 里同时有 `manage_dhcp` 和 `manage_dhcp_v4`/`manage_dhcp_v6` 两个时代的开关，实测只把旧键 `manage_dhcp` 改成 true 时，`cobbler sync` 走完流程却**不渲染任何 DHCP 配置**——必须写 `manage_dhcp_v4: true`。
 
-### 让 Cobbler 接管 DHCP
+DHCP 模板在 `/etc/cobbler/dhcp.template`，通常只改子网几行：subnet 的网段、掩码要和服务器网卡真实所在网段一致，`routers` 填真实网关。实测中把掩码写成与网卡不符（网卡 /16、模板 /24），`dhcpd -t` 语法检查能过，但 `systemctl restart dhcpd` 会失败（dhcpd 找不到匹配接口的子网声明直接退出）——sync 的报错只有一句 "Restarting service dhcpd failed"，真相在 `journalctl -u dhcpd` 里。
 
-settings 里 `manage_dhcp: 0` 改成 `1`，cobbler 就会基于模板生成 dhcpd.conf。模板在 `/etc/cobbler/dhcp.template`，通常只改子网几行（`routers` 填真实网关）：
+配置完成，重启 cobblerd 并 sync：
 
-```
-subnet 192.168.3.0 netmask 255.255.255.0 {
-     option routers             192.168.3.129;
-     option domain-name-servers 192.168.3.1;
-     option subnet-mask         255.255.255.0;
-     range dynamic-bootp        192.168.3.100 192.168.3.254;
-```
+![配图3](/images/csdn/figures/linux-cobbler-csdn105320427-3.png)
 
-重启 cobblerd 后 `cobbler sync`——它会生成 DHCP 配置、语法自检（`dhcpd -t`）并自动重启 DHCP 服务：
+sync 做三件事：用模板渲染 `/etc/dhcp/dhcpd.conf`（grep 能看到子网和 `next-server`）、跑 `dhcpd -t` 语法自检、重启 dhcpd。三步全绿（`*** TASK COMPLETE ***`、dhcpd 变 active），DHCP 就归 cobbler 管了。
 
-```bash
-[root@localhost ~]# cobbler sync
-...
-generating /etc/dhcp/dhcpd.conf
-running: dhcpd -t -q
-running: service dhcpd restart
-*** TASK COMPLETE ***
-```
+**4. 引导装载程序（loaders）**。2.x 的 `cobbler get-loaders` 在 3.x 已更名为 `cobbler mkloaders`。实测在 el9 上它会如实报告缺什么：ipxe 目录缺失时装不了 iPXE，**syslinux 在 el9 仓库已消失**，pxelinux.0 无法生成；装上 `grub2-tools-minimal`、`ipxe-bootimgs`、`shim-*` 后能产出 grub/undionly 部分制品。x86_64 实机的完整路径：UEFI 机器走 grub/shim（mkloaders 可生成），老 BIOS 机器的 pxelinux.0 需要从 syslinux 项目自行下载放到 `/var/lib/cobbler/loaders/`——check 第 4 条官方也明说"只做 x86/x86_64 网络启动可忽略"。
 
-验证点：/etc/dhcp/dhcpd.conf 已出现模板渲染的子网与 `next-server`。
+**5. 启用 TFTP**。el9 的 tftp 由 `tftp-server` 提供 socket 激活：`systemctl enable --now tftp.socket` 即可，不再需要 2.x 时代改 xinetd 配置那一套。
 
-## 二、自动安装系统
+## 三、建档：distro、profile、system
 
-先把系统镜像挂上来，导入。import 自动识别发行版签名并创建 distro 和 profile：
+Cobbler 的对象模型是三层：distro（内核+initrd）→ profile（发行版+应答文件）→ system（机器绑定 profile）。导入发行版有两条路：
+
+**经典路径 `cobbler import`**：把发行版 ISO 挂载后导入，自动识别签名创建 distro 和 profile：
 
 ```bash
-[root@localhost ~]# mount /dev/sr1 /mnt/
-mount: /dev/sr1 is write-protected, mounting read-only
-[root@localhost ~]# cobbler import --path=/mnt/ --name=Centos7-x86-64 --arch=x86_64
-Found a matching signature: breed=redhat, version=rhel7
-creating new distro: Centos7-64-x86_64
-creating new profile: Centos7-64-x86_64
-*** TASK COMPLETE ***
+mount rocky-9.4-x86_64-dvd.iso /mnt/
+cobbler import --path=/mnt/ --name=rocky9-x86_64 --arch=x86_64
+cobbler profile report --name=rocky9-x86_64
 ```
 
-`--arch` 通常可自动检测，显式指定是为了避免识别出多个体系结构。导入成功后 report 查看详情（验证点：Distribution 与 Kickstart 两行）：
+**轻量路径 `distro add`**：手头只有内核和 initrd 文件时直接建档。容器里实测用了已装 `kernel-core` 的 `/boot` 文件（实机同样适用——升级过的服务器 `/boot` 下就有现成的内核对）：
 
 ```bash
-[root@localhost ~]# cobbler profile report Centos7-64-x86_64
-Name                           : Centos7-64-x86_64
-Distribution                   : Centos7-64-x86_64
-Kickstart                      : /var/lib/cobbler/kickstarts/sample_end.ks
+dnf install -y kernel-core
+KV=$(ls /boot/vmlinuz-* | head -1 | sed 's|/boot/vmlinuz-||')
+cobbler distro add --name=rocky9-demo --kernel=/boot/vmlinuz-$KV \
+  --initrd=/boot/initramfs-$KV.img --breed=redhat
+cobbler profile add --name=rocky9-demo --distro=rocky9-demo --autoinstall=default.ks
 ```
 
-默认 ks 是 sample_end.ks，生产上换成自己的应答文件：
+两个 3.x 细节：应答文件选项叫 `--autoinstall`（不叫 `--kickstart`），且路径必须写成相对 `/var/lib/cobbler/templates/` 的文件名，写绝对路径会报 "Invalid automatic installation template file location"（实测踩中）。生产上把自己的模板放进 templates 目录再引用。
+
+建好 profile 后 report 看关键字段：
+
+![配图4](/images/csdn/figures/linux-cobbler-csdn105320427-4.png)
+
+注意字段名：2.x 的 `Kickstart` 在 3.x 叫 `Automatic Installation Template`。`cobbler status` 此刻是张空表（还没有机器来装过），客户机开始装机后这里会出现 IP、进度和状态，是批量装机时最有用的观察窗口。
+
+## 四、按 MAC 定制装机
+
+给指定机器预分配 IP、主机名。规划：MAC `52:54:00:11:22:33`，IP 172.17.0.123/24，网关 172.17.0.1，主机名 node1：
 
 ```bash
-[root@localhost ~]# cobbler profile edit --distro=Centos7-64-x86_64 --name=Centos7-64-x86_64 --kickstart=/var/lib/cobbler/kickstarts/centos7-x86_64.ks
-[root@localhost ~]# cobbler sync
+cobbler system add --name=node1 --profile=rocky9-demo \
+  --mac=52:54:00:11:22:33 --ip-address=172.17.0.123 \
+  --netmask=255.255.255.0 --gateway=172.17.0.1 \
+  --hostname=node1 --interface=eth0 --static=1
+cobbler sync
 ```
 
-sync 无报错后再 report 一次（验证点）：Kickstart 一行已变成新路径。到这里装机环境就绪——客户机与 cobbler 同网段、第一启动项为 PXE，加电即自动安装。此时 PXE 菜单仍需手动选系统，配合第五节的 MAC 绑定才能全自动。
+- `--mac` 是关键开关：只有 MAC 匹配的机器才按此配置自动装，未登记的机器停在 PXE 菜单等人工选择；
+- `--netmask` 取代了 2.x 的 `--subnet`，写旧名直接报 no such option；
+- `--interface` 填的是客户端记录的网卡名（如 eth0），不是 cobbler 服务器的网卡。
 
-## 三、已装机器在线重装（koan）
+sync 之后验证：`/var/lib/tftpboot/pxelinux.cfg/` 下出现以 MAC 命名的配置（`01-52-54-00-11-22-33`），`images/` 下是对应 distro 的内核链接——PXE 菜单和引导文件全部就位：
 
-在需要重装的机器上操作：
+![配图5](/images/csdn/figures/linux-cobbler-csdn105320427-5.png)
 
-```bash
-# 1. 装 koan
-[root@localhost ~]# yum install -y epel-release && yum install -y koan
+到这里装机环境就绪：客户机与 cobbler 同网段、第一启动项为 PXE，加电即自动安装。
 
-# 2. 看 cobbler 上有哪些 profile（验证点：列出 Centos7-64-x86_64）
-[root@localhost ~]# koan --server=192.168.3.129 --list=profiles
-Centos7-64-x86_64
+## 五、已装机器在线重装（koan）
 
-# 3. 指定重装目标，koan 把安装内核写进本地引导项
-[root@localhost ~]# koan --replace-self --server=192.168.3.129 --profile=Centos7-64-x86_64
-- reboot to apply changes
+在需要重装的机器上用 koan 发起重装：`koan --server=<cobbler IP> --list=profiles` 看 profile，`koan --replace-self --server=<IP> --profile=<名>` 把安装内核写进本地引导项，重启即自动重装，全程不碰 PXE 菜单。**注意这是破坏性操作**，`--replace-self` 后重启即格式化重装。
 
-# 4. 重启即进入自动重装
-[root@localhost ~]# reboot
-```
+> 注：koan 在 EPEL9 有包（实测 `dnf list koan` 可见 3.0.1），但在线重装未在 Rocky 9 复测，操作流程来自原文与官方文档；重装生产机器前先用测试机演练。
 
-原理：koan 把安装内核/initrd 追加为本地默认引导项，重启后走 kickstart 完成重装，全程不碰 PXE 菜单。**注意这是破坏性操作**，`--replace-self` 后重启即格式化重装。## 四、自定义 yum 源
+## 六、自定义 yum 源（可选）
 
-让新装机器直接用私网源 `http://192.168.3.50/centos7`：
+让新装机器直接用私网源：
 
 ```bash
-[root@localhost ~]# cobbler repo add --name=my_repo --mirror=http://192.168.3.50/centos7 --arch=x86_64 --breed=yum
-[root@localhost ~]# cobbler reposync
-[root@localhost ~]# cobbler profile edit --name=Centos7-64-x86_64 --repos="my_repo"
+cobbler repo add --name=my_repo --mirror=http://192.168.3.50/centos9 --breed=yum
+cobbler reposync
+cobbler profile edit --name=rocky9-demo --repos="my_repo"
 ```
 
 装系统时会在 yum.repos.d 下自动生成 repo 文件。repo 需要定期同步，crontab 定时跑 `cobbler reposync` 即可。
 
-## 五、按 MAC 定制装机
+## 历史版本差异（CentOS 7 + Cobbler 2.8）
 
-给指定机器预分配 IP、主机名。规划：MAC `08:00:27:D8:D9:D0`，IP 192.168.3.123/24，网关 192.168.3.1，DNS 202.106.0.20，主机名 node1：
+老机器还在跑 CentOS 7 的话，流程骨架相同，细节按下面来。CentOS 7 已于 2024-06 EOL，安装前先把 repo 的 `baseurl` 切到 `http://vault.centos.org`（注释掉 `mirrorlist` 后 `yum clean all`）：
 
 ```bash
-[root@localhost ~]# cobbler system add --name=centos-node1 --mac=08:00:27:D8:D9:D0 --profile=Centos7-64-x86_64 --ip-address=192.168.3.123 --subnet=255.255.255.0 --gateway=192.168.3.1 --interface=eth0 --static=1 --hostname=node1 --name-servers="202.106.0.20" --kickstart=/var/lib/cobbler/kickstarts/centos7-x86_64.ks
+yum install -y epel-release cobbler cobbler-web dhcp xinetd tftp pykickstart
+# /etc/cobbler/settings（非 YAML）：server 与 next_server 两行改本机 IP
+openssl passwd -1 -salt 'random-phrase-here' 'your-password'
+# 哈希填入 default_password_crypted
+cobbler get-loaders                     # 2.x 专有命令
+sed -i 's/disable = yes/disable = no/' /etc/xinetd.d/tftp   # xinetd 管 tftp
+# manage_dhcp: 1 → cobbler sync         # 2.x 单一开关即可生效
 ```
 
-- `mac` 是关键开关：只有 MAC 匹配的机器才按此配置自动装，未登记的机器停在 PXE 菜单等人工选择；
-- `--interface` 填的是客户端记录的网卡名（如 eth0），不是 cobbler 服务器的网卡；
-- `--static=1` 表示静态 IP。
-
-验证点：`cobbler system list` 应列出 `centos-node1`。
+2.8 的 import/koan/MAC 绑定流程与上文同构，选项用 `--kickstart`、`--subnet`。新装机一律建议直接按 Rocky 9 流程部署。
 
 ## 失败出口
 
-- **改坏了 settings**：改回原值后 `systemctl restart cobblerd && cobbler sync`；每次改 settings 都必须重启+sync 才生效。
-- **DHCP 不想要 cobbler 管了**：`manage_dhcp` 改回 0，`cobbler sync` 后手工维护 /etc/dhcp/dhcpd.conf。开着 manage_dhcp 时手工改 dhcpd.conf 会被覆盖。
-- **删掉某个 MAC 绑定**：`cobbler system remove --name=centos-node1 && cobbler sync`。
-- **整个卸掉**：`yum remove cobbler cobbler-web`，残留的 /var/lib/cobbler、/var/www/cobbler 手动清理。
+- **改坏了 settings.yaml**：恢复备份后 `systemctl restart cobblerd && cobbler sync`；每次改配置都必须重启+sync 才生效。
+- **sync 报 "Restarting service dhcpd failed"**：八成是模板子网与服务器网卡网段不符，`journalctl -u dhcpd` 看真实原因，改 `/etc/cobbler/dhcp.template` 后重新 sync。
+- **sync 走完但 dhcpd.conf 没变化**：检查 `manage_dhcp_v4` 是否为 true——旧键 `manage_dhcp` 在 3.x 不触发渲染（实测踩中）。
+- **DHCP 不想要 cobbler 管了**：`manage_dhcp_v4` 改回 false，sync 后手工维护 dhcpd.conf；开着管理时手工改会被覆盖。
+- **删掉某个 MAC 绑定**：`cobbler system remove --name=node1 && cobbler sync`。
+- **整个卸掉**：`dnf remove cobbler dhcp-server`，残留的 /var/lib/cobbler、/var/www/cobbler 手动清理。
 
-## 常用参数速查
+## 常用命令速查
 
 | 命令 | 作用 |
 |------|------|
 | `cobbler check` | 检查配置问题，给建议清单 |
-| `cobbler import` | 导入镜像，新增 PXE 启动项（distro+profile） |
+| `cobbler mkloaders` | 生成引导装载程序（3.x，替代 get-loaders） |
+| `cobbler import` | 导入镜像，新增 distro+profile |
+| `cobbler distro/profile/system add` | 手工建档三层对象 |
 | `cobbler list` / `report` | 列出条目 / 详细信息 |
 | `cobbler sync` | 改配置后同步，重新生成 PXE/DHCP 配置 |
+| `cobbler status` | 查看装机任务进度 |
 | `cobbler reposync` | 同步 repo 源 |
-| `cobbler profile edit` | 改 profile（换 ks、挂 repo） |
-| `cobbler system add/remove` | 管理 MAC 绑定 |## 注意事项
+| `cobbler profile edit` | 改 profile（换应答文件、挂 repo） |
+| `cobbler system add/remove` | 管理 MAC 绑定 |
+
+## 注意事项
 
 - 每个导入的发行版占 5-10GB，规划好 /var 空间再导镜像。
 - default_password_crypted 必须改掉，否则装出来的机器 root 密码是公开默认值。
+- **老教程在 3.x 上不可照搬**：配置文件、开关名、子命令名都变了，动手前先跑 `cobbler check` 对照官方文档。
+- **el9 没有 syslinux**：BIOS 老机器批量装前，确认 pxelinux.0 已经就位或全部走 UEFI。
 
 ---
 

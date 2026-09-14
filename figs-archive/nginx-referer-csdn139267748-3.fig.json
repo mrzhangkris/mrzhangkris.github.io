@@ -1,10 +1,11 @@
-{
-  "title": "盗链请求的日志行，$http_referer 原样记录（实拍）",
-  "lines": [
-    {"t": "out", "s": "127.0.0.1 - - [12/Sep/2026:03:26:38 +0000] \"GET /"},
-    {"t": "out", "s": "HTTP/1.1\" 403 153 \"https://evil.example/hotlink\""},
-    {"t": "out", "s": "\"curl/8.22.0\" \"-\""},
-    {"t": "note", "s": "状态 403：请求已被防盗链拒绝"},
-    {"t": "note", "s": "$http_referer 字段记下盗链页面，分析直接可用"}
-  ]
-}
+{"title": "referer 落日志：来源原样入库", "lines": [
+  {"t": "config", "s": "log_format ref '$status \"$http_referer\"';"},
+  {"t": "config", "s": "access_log /var/log/nginx/ref.log ref;"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -H 'Referer: https://yourwebsite.com' localhost"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -H 'Referer: https://evil.example/hotlink' localhost"},
+  {"t": "cmd", "s": "tail -2 /var/log/nginx/ref.log"},
+  {"t": "out", "s": "200 \"https://yourwebsite.com\""},
+  {"t": "out", "s": "403 \"https://evil.example/hotlink\""},
+  {"t": "note", "s": "合法来源与盗链来源各留一行，统计审计都有据可查"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

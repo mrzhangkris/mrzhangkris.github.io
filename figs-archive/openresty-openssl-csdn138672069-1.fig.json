@@ -1,1 +1,14 @@
-{"title": "根因：--with-openssl 是源码树语义", "lines": [{"t": "cmd", "s": "./configure --help | grep with-openssl"}, {"t": "out", "s": "--with-openssl=DIR  set path to OpenSSL library sources"}, {"t": "cmd", "s": "sed -n 1196,1200p objs/Makefile"}, {"t": "out", "s": "/usr/local/openssl/.openssl/include/openssl/ssl.h:"}, {"t": "out", "s": "\tcd /usr/local/openssl \\"}, {"t": "out", "s": "\t&& ./config --prefix=/usr/local/openssl/.openssl \\"}, {"t": "out", "s": "\t   no-shared no-threads && $(MAKE) && ..."}, {"t": "note", "s": "实测：nginx 1.19.9 —— 它要在该目录跑 config 构建源码"}]}
+{
+  "title": "根因：--with-openssl 要的是源码树",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "./configure --help | grep with-openssl"},
+    {"t": "out", "s": "--with-openssl=DIR  set path to OpenSSL library sources"},
+    {"t": "config", "s": "objs/Makefile 自动生成的子构建规则:"},
+    {"t": "out", "s": "/usr/local/openssl/.openssl/include/openssl/ssl.h:"},
+    {"t": "out", "s": "  cd /usr/local/openssl && ./config --prefix=.../.openssl \\"},
+    {"t": "out", "s": "  && $(MAKE) && $(MAKE) install_sw LIBDIR=lib"},
+    {"t": "note", "s": "# 把传入目录当源码树:进去构建,产物装到 .openssl 子目录"},
+    {"t": "note", "s": "实测环境：debian:12 容器,OpenResty 1.27.1.1 (nginx 1.27.1)"}
+  ]
+}

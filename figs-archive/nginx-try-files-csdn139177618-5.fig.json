@@ -1,0 +1,14 @@
+{
+  "title": "兜底指向自己 → 500 死循环",
+  "type": "cmd",
+  "lines": [
+    {"t": "config", "s": "location / { try_files $uri /loop.html; }"},
+    {"t": "note", "s": "# loop.html 磁盘上不存在,且仍命中本 location"},
+    {"t": "cmd", "s": "curl -s -o /dev/null -w [%{http_code}] localhost:8080/nope.html"},
+    {"t": "out", "s": "[500]"},
+    {"t": "out", "s": "rewrite or internal redirection cycle"},
+    {"t": "out", "s": "  while internally redirecting to \"/loop.html\""},
+    {"t": "note", "s": "# 循环达 10 次上限,Nginx 强制 500"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 (nginx:alpine 容器)"}
+  ]
+}

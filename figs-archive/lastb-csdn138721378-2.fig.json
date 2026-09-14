@@ -1,0 +1,12 @@
+{"title": "成功失败分账与统计陷阱", "lines": [
+  {"t": "cmd", "s": "ssh-keyscan localhost >> /root/.ssh/known_hosts"},
+  {"t": "cmd", "s": "sshpass -p RealPass123 ssh -tt testu@localhost exit"},
+  {"t": "cmd", "s": "last -n 3"},
+  {"t": "out", "s": "testu  pts/1  ::1  Mon Sep 14 00:30  still logged in"},
+  {"t": "note", "s": "成功登录进 wtmp（last 查看）；失败登录进 btmp（lastb）"},
+  {"t": "cmd", "s": "lastb | awk '{print $1}' | sort | uniq -c | sort -rn"},
+  {"t": "out", "s": "   2 admin"},
+  {"t": "out", "s": "   1 root"},
+  {"t": "out", "s": "   1 btmp"},
+  {"t": "note", "s": "尾行 btmp begins 会混进统计，先 -n 限条数。实测 Rocky 9.3"}
+]}

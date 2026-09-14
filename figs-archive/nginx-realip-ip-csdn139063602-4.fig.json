@@ -1,10 +1,6 @@
-{
-  "title": "名单之外：伪造的头部不生效（容器实拍）",
-  "lines": [
-    {"t": "config", "s": "set_real_ip_from 10.0.0.99;  # 名单里没有请求来源"},
-    {"t": "cmd", "s": "curl -s -H 'X-Forwarded-For: 6.6.6.6' localhost"},
-    {"t": "out", "s": "remote_addr=127.0.0.1"},
-    {"t": "note", "s": "来源不在名单，realip 不参与还原"},
-    {"t": "note", "s": "头写什么都无效，$remote_addr 保持 TCP 对端地址"}
-  ]
-}
+{"title": "来源不在名单：头写了也不认", "lines": [
+  {"t": "cmd", "s": "curl -s -H \"X-Forwarded-For: 203.0.113.7, 10.0.0.5\" localhost"},
+  {"t": "out", "s": "remote_addr=127.0.0.1"},
+  {"t": "note", "s": "请求来源 127.0.0.1 不在名单：$remote_addr 纹丝不动"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

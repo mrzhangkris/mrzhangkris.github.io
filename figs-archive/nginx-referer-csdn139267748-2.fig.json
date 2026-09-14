@@ -1,10 +1,11 @@
-{
-  "title": "blocked：空 Referer 头也放行（容器实拍）",
-  "lines": [
-    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} -H 'Referer;' localhost"},
-    {"t": "out", "s": "200"},
-    {"t": "note", "s": "-H 'Referer;' 发送存在但值为空的头"},
-    {"t": "note", "s": "值被网关/插件剥掉的请求靠 blocked 放行"},
-    {"t": "note", "s": "none 与 blocked 都删，这类用户会全体 403"}
-  ]
-}
+{"title": "blocked 的作用：删掉它就见分晓", "lines": [
+  {"t": "config", "s": "valid_referers none blocked yourwebsite.com;"},
+  {"t": "cmd", "s": "curl -sI -H 'Referer;' localhost | head -1"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "note", "s": "空头请求按 blocked 声明放行"},
+  {"t": "config", "s": "valid_referers none yourwebsite.com;   # 删掉 blocked"},
+  {"t": "cmd", "s": "curl -sI -H 'Referer;' localhost | head -1"},
+  {"t": "out", "s": "HTTP/1.1 403 Forbidden"},
+  {"t": "note", "s": "同一请求立刻被判盗链：这就是 blocked 兜的底"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

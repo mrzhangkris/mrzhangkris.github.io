@@ -1,10 +1,10 @@
 ---
 title: "Nginx Concat 模块：安装与合并静态资源"
 date: 2024-05-27 14:41:46
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?w=1600&q=80&fm=jpg
 ---
 
@@ -62,6 +62,8 @@ server {
 默认 `concat_unique on` 时，把 CSS 和 JS 塞进同一个请求会被拒绝（400）；声明 `concat_unique off;` 后，css 与 js 才能合并返回——实测两种行为对比：
 
 ![配图2](/images/csdn/figures/nginx-concat-csdn139237844-2.png)
+
+> 注：混类型实测用的是同一目录下的 css+js；URL 里带 `../` 跨目录引用一律 400（模块防路径穿越，`concat_unique off` 也不放行），别把"unique off"误当成能跨目录合并。
 
 ### 实例三：边界的三个 400
 

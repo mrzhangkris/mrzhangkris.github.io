@@ -3,9 +3,9 @@ title: "Nginx 限流实战：limit_req 与 limit_conn 的生效阶段与配置"
 date: 2024-05-22 10:06:41
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1580584126903-c17d41830450?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 高流量场景下不对客户端做约束，一个失控的爬虫就能把后端拖垮。Nginx 给了两道闸门：limit_req 限请求频率，limit_conn 限并发连接。两者看着像，实际拦的是不同维度——一个管"每秒来多少次"，一个管"同时挂着几个"。这篇把两个模块的生效阶段、配置写法讲清，并用 nginx/1.31.5 容器实测三组典型行为：burst 突发放行、严格限速拒绝、并发连接超限。
@@ -50,7 +50,7 @@ http {
 
 rate=1r/s 配 burst=5 nodelay，瞬间打 10 个请求：
 
-![配图1](/images/csdn/figures/nginx-limit-req-limit-conn-csdn139112232-1.png)
+![burst=5 nodelay 十连发实测](/images/csdn/figures/nginx-limit-req-limit-conn-csdn139112232-1.png)
 
 结果完全符合令牌桶模型：桶里初始有 1 个当前令牌 + 5 个 burst 令牌 = 6 个，前 6 个请求立即放行（200），第 7 个起令牌耗尽被拒（503）。这就是 nodelay 的意义——突发额度内的请求不排队，直接处理。
 
@@ -58,7 +58,7 @@ rate=1r/s 配 burst=5 nodelay，瞬间打 10 个请求：
 
 去掉 burst，只留 `limit_req zone=one;`，连续打 10 个，再每隔 1 秒打 1 个：
 
-![配图2](/images/csdn/figures/nginx-limit-req-limit-conn-csdn139112232-2.png)
+![无 burst 严格限速实测](/images/csdn/figures/nginx-limit-req-limit-conn-csdn139112232-2.png)
 
 无 burst 时令牌桶容量为 0，只认当前速率：连续请求里只有第一个能拿到令牌，其余全 503；而每隔 1 秒的匀速请求，因为每秒补一个令牌，全部放行。对比实测一可以看出 burst 的作用就是"容忍多大的突发"。
 
@@ -85,9 +85,9 @@ http {
 
 并发连接限制不好测——请求太快连接瞬间就断了，数不出"同时几个"。用 `limit_rate 20k` 把 200KB 文件的下载拖慢，让 4 个连接真实并存：
 
-![配图3](/images/csdn/figures/nginx-limit-req-limit-conn-csdn139112232-3.png)
+![limit_conn 并发超限实测](/images/csdn/figures/nginx-limit-req-limit-conn-csdn139112232-3.png)
 
-limit_conn addr 2 下，4 个并发请求里只有 2 个拿到连接（200），另外 2 个立即被拒（503）。注意 c1/c2 反而被拒、c3/c4 通过——谁先建立连接谁占额度，与请求发起顺序无关，这正是并发竞争的真实表现。
+limit_conn addr 2 下，4 个并发请求里只有 2 个拿到连接（200），另外 2 个立即被拒（503）。注意通过的是 1/2、被拒的是 3/4——谁先建立连接谁占额度，与发起书写顺序无关，这正是并发竞争的真实表现。
 
 **生效阶段**：limit_conn 同样在 preaccess 阶段生效，连接建立时立即按配置计数。
 

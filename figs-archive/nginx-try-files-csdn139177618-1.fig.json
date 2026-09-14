@@ -1,0 +1,14 @@
+{
+  "title": "SPA 回退：/orders/42 刷新不再 404",
+  "type": "cmd",
+  "lines": [
+    {"t": "config", "s": "location / { try_files $uri $uri/ /index.html; }"},
+    {"t": "cmd", "s": "curl -s localhost:8080/about.html"},
+    {"t": "out", "s": "<h1>ABOUT</h1>"},
+    {"t": "cmd", "s": "curl -s -w ' [%{http_code}]' localhost:8080/orders/42"},
+    {"t": "out", "s": "<h1>INDEX</h1> [200]"},
+    {"t": "note", "s": "# about.html 被 $uri 直接命中;/orders/42 磁盘不存在"},
+    {"t": "note", "s": "# 兜底返回入口页,前端 JS 读 URL 渲染路由"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 (nginx:alpine 容器)"}
+  ]
+}

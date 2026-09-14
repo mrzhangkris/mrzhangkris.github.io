@@ -1,10 +1,9 @@
-{"title": "nr_requests 调整实测：能调小，调大被拒", "lines": [
-  {"t": "cmd", "s": "echo 64 > /sys/block/loop30/queue/nr_requests"},
-  {"t": "out", "s": "64    # 调小生效"},
-  {"t": "cmd", "s": "echo 256 > /sys/block/loop30/queue/nr_requests"},
-  {"t": "out", "s": "bash: echo: write error: Invalid argument"},
-  {"t": "cmd", "s": "cat /sys/block/loop30/queue/nr_requests"},
-  {"t": "out", "s": "64    # 原值未变，内核拒绝时不会写坏"},
-  {"t": "note", "s": "虚拟化/loop 设备常不接受调大，真实 SATA/SAS 一般可行"},
-  {"t": "note", "s": "echo 完必须读回验证，脚本里要检查退出码"}
+{"title": "iostat 采样写入负载（关键三列）", "lines": [
+  {"t": "cmd", "s": "dd if=/dev/zero of=/dev/loop5 bs=256K oflag=direct &"},
+  {"t": "cmd", "s": "iostat -dx /dev/loop5 1 3"},
+  {"t": "out", "s": "loop5  ...  w_await  wareq-sz  ...  aqu-sz  %util"},
+  {"t": "out", "s": "loop5  ...     0.38       512  ...    0.84  85.64"},
+  {"t": "note", "s": "直写期间 aqu-sz 0.84、%util 85：队列真的在用、盘接近打满"},
+  {"t": "note", "s": "调参前后各采一组对比 await 与 aqu-sz 才算数"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (sysstat 12.5.4)"}
 ]}

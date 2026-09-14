@@ -1,9 +1,10 @@
-{"title": "分析 COMBINED 格式日志生成 HTML 报告", "lines": [
-  {"t": "cmd", "s": "goaccess /var/log/nginx/access.log \\"},
-  {"t": "cmd", "s": "  --log-format=COMBINED -o /tmp/report.html"},
-  {"t": "out", "s": "[SETTING UP STORAGE access.log] {5} @ {1/s}"},
-  {"t": "cmd", "s": "ls -lh /tmp/report.html"},
+{"title": "COMBINED 日志生成 HTML 报告（Debian 12 实测）", "lines": [
+  {"t": "cmd", "s": "goaccess /tmp/access.log --log-format=COMBINED \\"},
+  {"t": "cmd", "s": "  -o report.html"},
+  {"t": "cmd", "s": "ls -lh report.html"},
   {"t": "out", "s": "-rw-r--r-- 1 root root 346K report.html"},
-  {"t": "note", "s": "5 条请求全部解析成功（{5} = valid requests）"},
-  {"t": "note", "s": "报告内嵌全部数据，单文件浏览器直接打开"}
+  {"t": "cmd", "s": "grep -oE '\"valid_requests\": [0-9]+' report.json"},
+  {"t": "out", "s": "\"valid_requests\": 5"},
+  {"t": "note", "s": "自造 5 条 combined 测试日志，全部解析进报告"},
+  {"t": "note", "s": "实测环境：debian:12 容器，GoAccess 1.7"}
 ]}

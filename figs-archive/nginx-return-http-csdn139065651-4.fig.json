@@ -1,7 +1,8 @@
-{"title": "server 级 return 短路实测", "lines": [
+{"title": "server 级 return：location 全部失效", "lines": [
   {"t": "config", "s": "server { return 301 https://new.example.com; ... }"},
-  {"t": "cmd", "s": "curl -sI localhost/ok"},
+  {"t": "cmd", "s": "curl -si localhost/ok | grep -E 'HTTP/|Location'"},
   {"t": "out", "s": "HTTP/1.1 301 Moved Permanently"},
   {"t": "out", "s": "Location: https://new.example.com"},
-  {"t": "note", "s": "location /ok 里的 return 200 完全没机会执行"}
+  {"t": "note", "s": "location 里写明的 return 200 完全没机会执行"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

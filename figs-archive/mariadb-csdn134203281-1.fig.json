@@ -1,9 +1,10 @@
-{"title": "MariaDB 安装与启动实测（Rocky 9, MariaDB 10.5.29）", "lines": [
+{"title": "安装版本与本地登录（Rocky 9）", "lines": [
   {"t": "cmd", "s": "dnf install -y mariadb mariadb-server"},
-  {"t": "out", "s": "mariadb-server-10.5.29-3.el9"},
+  {"t": "cmd", "s": "rpm -q mariadb-server"},
+  {"t": "out", "s": "mariadb-server-10.5.29-3.el9_7.aarch64"},
   {"t": "cmd", "s": "mysql -uroot -e \"select version();\""},
+  {"t": "out", "s": "version()"},
   {"t": "out", "s": "10.5.29-MariaDB"},
-  {"t": "note", "s": "CentOS 7.6 用 yum install mariadb-server，装到 5.5.x"},
-  {"t": "note", "s": "systemctl enable mariadb --now：开机自启+立即启动"},
-  {"t": "note", "s": "验证点：systemctl is-active mariadb → active"}
+  {"t": "note", "s": "RHEL9 源即 10.5；CentOS 7.6 同法装到 5.5.x（EOL 需切 vault）"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (dnf)"}
 ]}

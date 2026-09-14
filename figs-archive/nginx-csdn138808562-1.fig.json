@@ -1,10 +1,8 @@
-{
-  "title": "burst=5 nodelay：10 连发的放行分布（实拍）",
-  "lines": [
-    {"t": "config", "s": "limit_req_zone $binary_remote_addr zone=z1:10m rate=3r/s;"},
-    {"t": "config", "s": "limit_req zone=z1 burst=5 nodelay;"},
-    {"t": "cmd", "s": "for i in $(seq 1 10); do curl -s -o /dev/null -w %{http_code} ..; done"},
-    {"t": "out", "s": "200 200 200 200 200 200 503 503 503 503"},
-    {"t": "note", "s": "第 1 个+burst 5 个立即放行，超出即 503"}
-  ]
-}
+{"title": "burst=5 nodelay：连发 10 个", "lines": [
+  {"t": "config", "s": "limit_req zone=z1 burst=5 nodelay;   # rate=3r/s"},
+  {"t": "cmd", "s": "for i in $(seq 1 10); do curl -s -o /dev/null \\"},
+  {"t": "cmd", "s": "  -w \"%{http_code} \" localhost:8095/bn/; done"},
+  {"t": "out", "s": "200 200 200 200 200 200 503 503 503 503"},
+  {"t": "note", "s": "1 个初始配额 + 5 个 burst 名额立即放行，其余拒绝"},
+  {"t": "note", "s": "实测：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

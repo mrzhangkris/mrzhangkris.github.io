@@ -1,0 +1,11 @@
+{"title": "通信验证：test.ping 与 grains", "lines": [
+  {"t": "cmd", "s": "salt \"*\" test.ping"},
+  {"t": "out", "s": "master-node1:"},
+  {"t": "out", "s": "    True"},
+  {"t": "out", "s": "minion-node2:"},
+  {"t": "out", "s": "    True"},
+  {"t": "cmd", "s": "salt \"minion*\" grains.get osfinger"},
+  {"t": "out", "s": "Rocky Linux-9"},
+  {"t": "note", "s": "4505 发布 / 4506 返回，全程 AES 加密"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 双容器"}
+]}

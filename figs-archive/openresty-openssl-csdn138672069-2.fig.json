@@ -1,0 +1,14 @@
+{
+  "title": "两种正解编译通过 (OpenResty 1.27.1.1)",
+  "type": "cmd",
+  "lines": [
+    {"t": "config", "s": "./configure --with-cc-opt=\"-I/usr/local/openssl/include\" \\"},
+    {"t": "config", "s": "  --with-ld-opt=\"-L/usr/local/openssl/lib -Wl,-rpath,…\""},
+    {"t": "cmd", "s": "make -j$(nproc) && make install"},
+    {"t": "out", "s": "nginx version: openresty/1.27.1.1"},
+    {"t": "out", "s": "built with OpenSSL 3.3.1 4 Jun 2024"},
+    {"t": "cmd", "s": "ldd sbin/nginx | grep ssl"},
+    {"t": "out", "s": "libssl.so.3 => /usr/local/openssl/lib/libssl.so.3"},
+    {"t": "note", "s": "# 解法二 --with-openssl=源码目录 同样编译通过,产物在其 .openssl 下"}
+  ]
+}

@@ -1,9 +1,13 @@
-{"title": "对齐检查与 resizepart 扩容", "lines": [
-  {"t": "cmd", "s": "parted /dev/loop0 align-check optimal 1"},
-  {"t": "out", "s": "1 aligned"},
-  {"t": "cmd", "s": "parted -s ---pretend-input-tty /dev/loop0 \\"},
-  {"t": "cmd", "s": "  resizepart 1 900MiB <<< \"Yes\""},
-  {"t": "cmd", "s": "parted /dev/loop0 print | tail -2"},
-  {"t": "out", "s": " 1      1049kB  944MB  943MB               primary"},
-  {"t": "note", "s": "500MiB → 900MiB 扩容成功，分区边界即时更新"}
-]}
+{
+  "title": "resizepart 扩容 500MiB → 900MiB",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "parted -s /dev/loop8 resizepart 1 900MiB"},
+    {"t": "cmd", "s": "parted -s /dev/loop8 print"},
+    {"t": "out", "s": "Number  Start   End    Size   File system  Name     Flags"},
+    {"t": "out", "s": " 1      1049kB  944MB  943MB               primary"},
+    {"t": "note", "s": "# 分区边界 524MB→944MB;文件系统不会自动跟上"},
+    {"t": "note", "s": "# ext4 后续 resize2fs;xfs 用 xfs_growfs 挂载点"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (GNU parted 3.5)"}
+  ]
+}

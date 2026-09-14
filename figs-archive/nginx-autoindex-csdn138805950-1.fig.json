@@ -1,13 +1,10 @@
-{
-  "title": "autoindex on 生成目录列表（nginx/1.28.3 实拍）",
-  "lines": [
-    {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} localhost/plain/"},
-    {"t": "out", "s": "403"},
-    {"t": "note", "s": "files/ 配了 autoindex on："},
-    {"t": "cmd", "s": "curl -s localhost/files/ | grep href"},
-    {"t": "out", "s": "<a href=\"../\">../</a>"},
-    {"t": "out", "s": "<a href=\"big-archive.tar\">big-archive.tar</a>  12-Sep-2026  1M"},
-    {"t": "out", "s": "<a href=\"app.log\">app.log</a>  12-Sep-2026 03:27  4"},
-    {"t": "note", "s": "不开是 403，开了才有列表；1M 为友好大小"}
-  ]
-}
+{"title": "同一个 Nginx：没配的 403，配了的是文件列表", "lines": [
+  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost/plain/"},
+  {"t": "out", "s": "403"},
+  {"t": "cmd", "s": "curl -s localhost/files/"},
+  {"t": "out", "s": "<h1>Index of /files/</h1><hr><pre><a href=\"../\">../</a>"},
+  {"t": "out", "s": "<a href=\"big-archive.tar\">big-archive.tar</a>  14-Sep-2026 00:27  1M"},
+  {"t": "out", "s": "<a href=\"readme.txt\">readme.txt</a>           14-Sep-2026 00:27   15"},
+  {"t": "note", "s": "exact_size off 让 tar 显示 1M，localtime on 显示本地时间"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

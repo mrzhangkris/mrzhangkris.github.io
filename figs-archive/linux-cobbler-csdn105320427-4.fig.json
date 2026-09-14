@@ -1,0 +1,12 @@
+{"title": "profile report 字段名已变（3.x）", "lines": [
+  {"t": "cmd", "s": "cobbler version | head -1"},
+  {"t": "out", "s": "Cobbler 3.3.7"},
+  {"t": "cmd", "s": "cobbler profile report --name=rocky9-demo | head -5"},
+  {"t": "out", "s": "Name                           : rocky9-demo"},
+  {"t": "out", "s": "Automatic Installation Template : default.ks"},
+  {"t": "out", "s": "Automatic Installation Metadata : <<inherit>>"},
+  {"t": "out", "s": "TFTP Boot Files                : <<inherit>>"},
+  {"t": "out", "s": "Boot loaders                   : <<inherit>>"},
+  {"t": "note", "s": "原 Kickstart 字段已更名 Automatic Installation Template"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (Cobbler 3.3.7)"}
+]}

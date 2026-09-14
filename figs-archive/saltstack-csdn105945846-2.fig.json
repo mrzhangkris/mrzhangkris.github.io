@@ -1,0 +1,12 @@
+{"title": "常用模块实测：network 与文件分发", "lines": [
+  {"t": "cmd", "s": "salt \"*\" network.get_fqdn"},
+  {"t": "out", "s": "master-node1:"},
+  {"t": "out", "s": "    master-node1"},
+  {"t": "out", "s": "minion-node2:"},
+  {"t": "out", "s": "    minion-node2"},
+  {"t": "cmd", "s": "salt \"*\" cmd.run \"ls -l /opt/hosts-copy\""},
+  {"t": "out", "s": "    -rw-r--r-- 1 root root 172 Sep 14 01:52 /opt/hosts-copy"},
+  {"t": "note", "s": "salt-cp 推文件到两台后验证，state.show_top 空值均实测"},
+  {"t": "note", "s": "service 模块依赖 systemd，无 systemd 容器内返回 False"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 双容器"}
+]}

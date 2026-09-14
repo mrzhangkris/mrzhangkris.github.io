@@ -1,10 +1,11 @@
-{"title": "各匹配模式命中实测（nginx/1.31.5）", "lines": [
-  {"t": "cmd", "s": "curl -s http://127.0.0.1<URI>"},
-  {"t": "out", "s": "/exact       -> HIT exact=      (= 精确)"},
-  {"t": "out", "s": "/static/a.php-> HIT ^~static    (^~ 跳过正则)"},
-  {"t": "out", "s": "/a.php       -> HIT regex-php   (~ 区分大小写)"},
-  {"t": "out", "s": "/b.JPG       -> HIT regex-ci    (~* 不分大小写)"},
-  {"t": "out", "s": "/prefix/sub  -> HIT prefix      (前缀)"},
-  {"t": "out", "s": "/other       -> HIT default     (/ 兜底)"},
-  {"t": "note", "s": "/static/a.php 命中 ^~ 而非 .php 正则 → ^~ 跳过正则"}
+{"title": "四类 location 同场竞技实测", "lines": [
+  {"t": "note", "s": "标记：A==/exact B=^~static C=~*图片 D=~php E=/prefix F=/"},
+  {"t": "cmd", "s": "for u in exact static/a.php b.JPG nope; do curl -s localhost/$u; done"},
+  {"t": "out", "s": "ABCF"},
+  {"t": "note", "s": "/exact 命中 =；/static/a.php 命中 B：^~ 跳过了 php 正则"},
+  {"t": "note", "s": "/b.JPG 命中 C：~* 不分大小写；/nope 落到 F 兜底"},
+  {"t": "cmd", "s": "for u in exact/aaa prefix/sub; do curl -s localhost/$u; done"},
+  {"t": "out", "s": "FE"},
+  {"t": "note", "s": "/exact/aaa 没中 =（多一段不算）；/prefix/sub 按最长前缀进 E"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

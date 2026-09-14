@@ -1,12 +1,12 @@
-{
-  "title": "DISCARD 后 .ibd 被删除（mysql:8.0.46 实拍）",
-  "lines": [
-    {"t": "note", "s": "锁定并拷出一致性的 .ibd 作备份"},
-    {"t": "config", "s": "FLUSH TABLES mytable FOR EXPORT;"},
-    {"t": "cmd", "s": "cp /var/lib/mysql/mydb/mytable.ibd /tmp/mytable.ibd.bak"},
-    {"t": "note", "s": "重建同结构空表后执行 DISCARD"},
-    {"t": "cmd", "s": "ALTER TABLE mytable DISCARD TABLESPACE;"},
-    {"t": "cmd", "s": "ls /var/lib/mysql/mydb/"},
-    {"t": "note", "s": "目录为空：mytable.ibd 已被 DISCARD 删除"}
-  ]
-}
+{"title": "备份 .ibd 后 DISCARD，数据目录里的 .ibd 被一并删除", "lines": [
+  {"t": "note", "s": "锁表导出一致性副本，趁锁定拷出备份"},
+  {"t": "config", "s": "FLUSH TABLES mytable FOR EXPORT;"},
+  {"t": "cmd", "s": "cp /var/lib/mysql/mydb/mytable.ibd /tmp/mytable.ibd.bak"},
+  {"t": "cmd", "s": "ls /var/lib/mysql/mydb/"},
+  {"t": "out", "s": "mytable.ibd"},
+  {"t": "config", "s": "ALTER TABLE mytable DISCARD TABLESPACE;"},
+  {"t": "cmd", "s": "ls -A /var/lib/mysql/mydb/ | wc -l"},
+  {"t": "out", "s": "0"},
+  {"t": "note", "s": "目录为空：.ibd 被 DISCARD 删除是流程一部分"},
+  {"t": "note", "s": "实测环境：mysql:8.0.46 容器（2026-09）"}
+]}

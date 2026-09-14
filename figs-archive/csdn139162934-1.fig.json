@@ -1,0 +1,9 @@
+{"title": "容器隔离的两层证据：PID namespace 与 cgroups", "lines": [
+  {"t": "cmd", "s": "docker run --rm rockylinux:9 bash -c \\"},
+  {"t": "config", "s": "  'echo \"bash PID: $$\"; cat /sys/fs/cgroup/memory.max'"},
+  {"t": "out", "s": "bash PID: 1"},
+  {"t": "out", "s": "max"},
+  {"t": "note", "s": "bash 在容器内是 1 号进程，宿主机上是另一个 PID——PID namespace"},
+  {"t": "note", "s": "memory.max 为 max 即未设内存上限——cgroups v2 的配额口"},
+  {"t": "note", "s": "实测环境：Docker（rockylinux:9 容器，cgroups v2）"}
+]}

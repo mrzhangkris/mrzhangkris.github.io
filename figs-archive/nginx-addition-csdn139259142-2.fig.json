@@ -1,12 +1,8 @@
-{
-  "title": "before + after 前后包夹（实拍）",
-  "lines": [
-    {"t": "config", "s": "add_before_body /banner.html;"},
-    {"t": "config", "s": "add_after_body /footer.html;"},
-    {"t": "cmd", "s": "curl -s localhost/main-both.html"},
-    {"t": "out", "s": "<div>BANNER</div>"},
-    {"t": "out", "s": "<h1>MAIN</h1>"},
-    {"t": "out", "s": "<div>FOOTER</div>"},
-    {"t": "note", "s": "固定顺序：before -> 主响应 -> after"}
-  ]
-}
+{"title": "before + after 前后包夹", "lines": [
+  {"t": "cmd", "s": "curl -s localhost/main-both.html"},
+  {"t": "out", "s": "<div>BANNER</div>"},
+  {"t": "out", "s": "<h1>MAIN BOTH</h1>"},
+  {"t": "out", "s": "<div>FOOTER</div>"},
+  {"t": "note", "s": "顺序固定：before -> 主响应 -> after"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

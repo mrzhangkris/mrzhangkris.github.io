@@ -1,10 +1,10 @@
 ---
 title: "Nginx try_files：一条指令管住静态文件的查找与回退"
 date: 2024-05-26 09:00:00
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?w=1600&q=80&fm=jpg
 ---
 
@@ -20,7 +20,8 @@ cover: https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?w=1600&q=80&
 
 - nginx/1.31.5（docker 镜像 `nginx:alpine`）；
 - 站点目录挂载到 `/usr/share/nginx/html`，配置挂载到 `/etc/nginx/conf.d/`；
-- 每轮改动配置后 `docker exec 容器名 nginx -s reload`，用 `curl` 验证。
+- 宿主机 8080 端口映射到容器 80，下文所有 `curl` 均从宿主机发起；
+- 每轮改动配置后 `docker exec 容器名 nginx -s reload` 再验证；错误日志用 `docker logs` 看（容器里 `/var/log/nginx/error.log` 是指向 stderr 的软链，`tail` 它会挂住）。
 
 最小站点结构：
 
@@ -61,13 +62,13 @@ server {
 
 四种请求的实跑结果（含一个意料之外的状态码）：
 
-![SPA 回退实测](/images/csdn/figures/tryfiles-1-spa.png)
+![配图1：SPA 回退实测](/images/csdn/figures/nginx-try-files-csdn139177618-1.png)
 
 读图：`about.html` 存在，`$uri` 直接命中；`nope.html` 不存在，两个检查参数落空，兜底到 `/index.html`——用户拿到的是首页内容和 200。前端拿到入口页后由 JS 读取 URL 渲染路由，用户无感，这就是 F5 404 问题的解法。
 
 **但这套配置里藏着一个 403 坑。** 请求 `/report/`（目录存在，里面没有 index.html）：
 
-![403 坑实测](/images/csdn/figures/tryfiles-2-403.png)
+![配图2：目录 403 实测](/images/csdn/figures/nginx-try-files-csdn139177618-2.png)
 
 原因：`$uri/` 检查的是"目录是否存在"，`report/` 存在即命中；随后 `index` 指令找目录下的 `index.html`，找不到，autoindex 默认关闭，于是 403。**命中目录不等于能给出内容**——不想要这个行为，把 `$uri/` 从参数里去掉即可。
 
@@ -86,11 +87,11 @@ server {
 }
 ```
 
-实测结果——状态码保持 404，响应体被 `error_page` 替换成自定义页，两件事各干各的：
+实测结果如下，注意状态码和响应体分别发生了什么：
 
-![自定义 404 实测](/images/csdn/figures/tryfiles-3-404page.png)
+![配图3：=404 兜底实测](/images/csdn/figures/nginx-try-files-csdn139177618-3.png)
 
-状态码保持 404，响应体被 `error_page` 替换成自定义页——两件事各干各的，互不冲突。`=404` 与 URI 兜底的语义差别：`=404` 直接终结请求，省一次内部重定向；URI 兜底要重走 location 匹配。前者更省，后者更灵活。
+状态码保持 404，响应体却被 `error_page` 替换成自定义页——两件事各干各的，互不冲突。顺带对比两种兜底的语义差别：`=404` 直接终结请求，省一次内部重定向；URI 兜底要重走 location 匹配。前者更省，后者更灵活。
 
 ## 实例三：转发后端时，查询参数别弄丢
 
@@ -108,9 +109,9 @@ location = /index.php {
 
 带参数请求的实跑结果：
 
-![query_string 透传实测](/images/csdn/figures/tryfiles-4-query.png)
+![配图4：query_string 透传 A/B 实测](/images/csdn/figures/nginx-try-files-csdn139177618-4.png)
 
-`$query_string` 把 `id=42&type=report` 完整带到兜底目标。漏写它，后端拿不到业务参数，这是 try_files 最高频的事故。输出里还有个细节：兜底后 `uri=/fallback.php`——**内部重定向发生时，`$uri` 已变成兜底目标本身**；要拿用户原始路径，用 `$request_uri`。
+配图4 是一组 A/B 实验：上半段兜底写全 `?$query_string`，后端拿到 `qs=id=42&type=report`；下半段只把兜底改成 `/index.php`，同样的请求过去，`qs=` 空了。漏写 `$query_string`，后端拿不到业务参数，这是 try_files 最高频的事故。下半段输出里还有个细节：兜底后 `uri=/index.php`——**内部重定向发生时，`$uri` 已变成兜底目标本身**；用户原始路径 `/missing?id=42&type=report` 只在 `$request_uri` 里还能找回来。
 
 ## 事故实验：兜底目标选了自己，500 伺候
 
@@ -124,7 +125,7 @@ location / {
 
 请求任意不存在的路径，实测直接 500，错误日志精确指出了死循环位置：
 
-![死循环 500 实测](/images/csdn/figures/tryfiles-5-loop.png)
+![配图5：死循环 500 实测](/images/csdn/figures/nginx-try-files-csdn139177618-5.png)
 
 链路是：`/nope.html` 不存在 → 兜底到 `/loop.html` → 内部重定向重新匹配 location → `/loop.html` 还是不存在 → 再兜底到自己 → 循环到 10 次上限，Nginx 强制 500。**兜底目标必须最终能被命中**，写完配置拿一个必然不存在的路径 curl 一遍，是基本自测动作。
 

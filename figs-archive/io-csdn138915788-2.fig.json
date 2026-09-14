@@ -1,7 +1,10 @@
-{"title": "调度器实测（Rocky 9, kernel 5.14）", "lines": [
+{"title": "调度器列表与切换实测", "lines": [
   {"t": "cmd", "s": "cat /sys/block/vda/queue/scheduler"},
   {"t": "out", "s": "none [mq-deadline] kyber"},
-  {"t": "note", "s": "方括号 = 当前生效的调度器"},
-  {"t": "note", "s": "可选列表里没有 noop 和 cfq：cfq 于内核 5.0 移除"},
-  {"t": "note", "s": "新内核 SSD 选 none，HDD/通用负载选 mq-deadline"}
+  {"t": "cmd", "s": "echo none > /sys/block/vda/queue/scheduler"},
+  {"t": "cmd", "s": "cat /sys/block/vda/queue/scheduler"},
+  {"t": "out", "s": "[none] mq-deadline kyber"},
+  {"t": "note", "s": "列表里没有 cfq/noop：cfq 已随新内核移除，noop 并入 none"},
+  {"t": "note", "s": "方括号是当前生效项；改动立即生效，重启恢复默认"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器，默认 mq-deadline"}
 ]}

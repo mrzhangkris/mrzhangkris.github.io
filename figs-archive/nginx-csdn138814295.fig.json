@@ -1,10 +1,11 @@
-{"title": "Vim nginx 高亮安装实测（Alpine vim 9.2 容器）", "lines": [
-  {"t": "cmd", "s": "mkdir -p /usr/share/vim/vimfiles"},
-  {"t": "cmd", "s": "cp -r nginx-1.28.0/contrib/vim/* /usr/share/vim/vimfiles/"},
-  {"t": "cmd", "s": "ls /usr/share/vim/vimfiles/"},
-  {"t": "out", "s": "ftdetect  ftplugin  indent  syntax"},
-  {"t": "note", "s": "不先 mkdir 时报：can't create directory ... No such file or directory"},
-  {"t": "cmd", "s": "vim -c 'redir!>/tmp/o|set ft?|redir END' -c q /etc/nginx.conf"},
+{"title": "vim 9.1 内置 nginx 识别对照实测（零安装）", "lines": [
+  {"t": "note", "s": "实测环境：Alpine 3.20 容器 / vim 9.1，未拷任何语法文件"},
+  {"t": "note", "s": "对照组：同内容 server 块分别存为三种文件名"},
+  {"t": "cmd", "s": "vim -es -c \"filetype detect\" -c \"set ft?\" -c q /tmp/nginx.conf"},
   {"t": "out", "s": "filetype=nginx"},
-  {"t": "note", "s": "对照组：app.nginx → nginx，app.conf → conf（不识别）"}
+  {"t": "cmd", "s": "vim -es -c \"filetype detect\" -c \"set ft?\" -c q /tmp/app.nginx"},
+  {"t": "out", "s": "filetype=nginx"},
+  {"t": "cmd", "s": "vim -es -c \"filetype detect\" -c \"set ft?\" -c q /tmp/app.conf"},
+  {"t": "out", "s": "filetype=conf"},
+  {"t": "note", "s": "交互模式同样开箱即中；app.conf 不识别是规则设计使然"}
 ]}

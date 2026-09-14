@@ -1,0 +1,12 @@
+{"title": "老 vim 的补救：拷 contrib/vim 与 mkdir 坑实测", "lines": [
+  {"t": "note", "s": "实测环境：Alpine 3.20 容器 / nginx-1.28.0 源码包"},
+  {"t": "cmd", "s": "tar xzf nginx-1.28.0.tar.gz && cd nginx-1.28.0"},
+  {"t": "cmd", "s": "cp -r contrib/vim/* /usr/share/vim/vimfiles/"},
+  {"t": "out", "s": "cp: can't create directory '/usr/share/vim/vimfiles/ftdetect':"},
+  {"t": "out", "s": "  No such file or directory"},
+  {"t": "cmd", "s": "mkdir -p /usr/share/vim/vimfiles/"},
+  {"t": "cmd", "s": "cp -r contrib/vim/* /usr/share/vim/vimfiles/"},
+  {"t": "cmd", "s": "ls /usr/share/vim/vimfiles/"},
+  {"t": "out", "s": "ftdetect  ftplugin  indent  syntax"},
+  {"t": "note", "s": "vimfiles 不预建的精简系统必须先 mkdir -p，实测少这步必报错"}
+]}

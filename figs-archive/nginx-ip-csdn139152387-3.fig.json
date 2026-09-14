@@ -1,8 +1,9 @@
-{"title": "location 级限制实测：只锁 /admin", "lines": [
+{"title": "location 级限制实测", "lines": [
   {"t": "config", "s": "location /admin { allow 192.168.1.1; deny all; }"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} 127.0.0.1/admin"},
-  {"t": "out", "s": "403  ← 本机不在 /admin 名单"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} 127.0.0.1/"},
-  {"t": "out", "s": "200  ← 其余路径不受影响"},
-  {"t": "note", "s": "规则效力严格限定在所在块内"}
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' localhost/admin"},
+  {"t": "out", "s": "403"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' localhost/"},
+  {"t": "out", "s": "200"},
+  {"t": "note", "s": "本机不在 /admin 名单 → 403；首页不受影响 → 200"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

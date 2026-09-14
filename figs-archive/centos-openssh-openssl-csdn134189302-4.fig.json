@@ -1,0 +1,10 @@
+{"title": "el9 新坑：9.5p1 读不了 crypto-policies", "lines": [
+  {"t": "out", "s": "/etc/crypto-policies/back-ends/opensshserver.config: line 3:"},
+  {"t": "out", "s": "    Bad configuration option: GSSAPIKexAlgorithms"},
+  {"t": "cmd", "s": "mv /etc/ssh/sshd_config.d/50-redhat.conf{,.bak}"},
+  {"t": "cmd", "s": "sshd -t && /usr/sbin/sshd"},
+  {"t": "out", "s": "sshd -t ok / sshd-started"},
+  {"t": "out", "s": "Warning: Permanently added 'localhost' (ED25519)"},
+  {"t": "note", "s": "移开 include 后配置检查通过，新 sshd 能完成密钥交换"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（--cap-add NET_ADMIN）"}
+]}

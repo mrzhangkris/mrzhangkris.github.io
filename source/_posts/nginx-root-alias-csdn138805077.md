@@ -1,26 +1,16 @@
 ---
 title: "Nginx root 与 alias：一个是追加，一个是替换"
 date: 2024-05-13 15:27:15
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?w=1600&q=80&fm=jpg
 ---
 
 配置静态文件服务时，`root` 和 `alias` 都负责告诉 Nginx 去文件系统的哪个目录找文件。这俩指令长得像、干的活不同，混淆的后果很直接：请求 404，或者拿到的根本不是你想要的文件。最经典的翻车现场是——配置怎么看怎么对，error_log 里却躺着一个从未写过的路径。
 
 本文按配置实战组织：先交代实验环境，再用三组配置加真实输出把"追加"和"替换"两种行为跑给你看，然后实测两个最容易踩的路径拼接坑。所有输出均为 nginx/1.31.5 实跑结果。
-
-![配图1](/images/csdn/figures/nginx-root-alias-csdn138805077-1.png)
-
-![配图2](/images/csdn/figures/nginx-root-alias-csdn138805077-2.png)
-
-![配图3](/images/csdn/figures/nginx-root-alias-csdn138805077-3.png)
-
-![配图4](/images/csdn/figures/nginx-root-alias-csdn138805077-4.png)
-
-![配图5](/images/csdn/figures/nginx-root-alias-csdn138805077-5.png)
 
 ## 实验环境
 
@@ -33,7 +23,7 @@ cover: https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?w=1600&q=80&
 
 ## 机制一句话：root 追加，alias 替换
 
-两个指令的全部区别浓缩成一句话：**root 把完整 URI 追加到自己后面；alias 把 location 匹配掉的前缀替换成自己**。root 可以写在 http、server、location 任意层级；alias 只能写在 location 里。
+两个指令的全部区别浓缩成一句话：**root 把完整 URI 追加到自己后面；alias 把 location 匹配掉的前缀替换成自己**。root 可以写在 http、server、location 任意层级；alias 只能写在 location 里。root 写在 server 块后，内部所有 location 继承这个值，除非自己再写一个覆盖——继承规则和大多数 Nginx 值型指令一样，就近生效。
 
 ## 实例一：root，URI 原样拼接
 
@@ -56,7 +46,7 @@ server {
 
 ![配图1](/images/csdn/figures/nginx-root-alias-csdn138805077-1.png)
 
-注意拼接是"原样"的：URI 长什么样，追加后就长什么样，不做任何剥除。这就是 root 心智负担低的原因——URL 结构和磁盘结构完全一致。
+注意拼接是"原样"的：URI 长什么样，追加后就长什么样，不做任何剥除。这就是 root 心智负担低的原因——URL 结构和磁盘结构完全一致。这个特性也意味着：在子路径 location 里换 root，前缀依然带着走，`location /static/ { root /data; }` 对 `/static/a.png` 读的是 `/data/static/a.png`，不是 `/data/a.png`。要"剥掉前缀"的语义，那是 alias 的活，下一节就是。
 
 ## 实例二：alias，匹配前缀被替换
 
@@ -141,17 +131,16 @@ location /images/ {
 }
 ```
 
-存在的文件 200，不存在的文件 404 兜底正常，error_log 显示检查路径为 `/data/uploads//nope.png`：
+存在的文件 200，不存在的文件 404 兜底正常。把 error_log 开到 debug 级（官方镜像自带 `nginx-debug` 二进制），请求一个必然不存在的路径，日志写明检查的是 `/data/uploads/nope.png`——单斜杠、按"前缀替换"语义拼装，旧版拼出双斜杠错路径的行为在这个版本已不存在。但你在老版本上复用配置时，别默认它正确——开 debug 日志或直接 curl 一个必然不存在的路径验证行为，是部署前的固定动作。
 
 ![配图5](/images/csdn/figures/nginx-root-alias-csdn138805077-5.png)
-
-结论：这个版本下 `try_files $uri` 已经按"前缀替换"语义检查（URL 前缀换成 alias 值），多出的双斜杠被文件系统容忍，旧版拼错路径的行为已修复。但你在老版本上复用配置时，别默认它正确——拿一个必然不存在的路径 curl 验证检查路径，是部署前的固定动作。
 
 ## 注意事项
 
 - **尾斜杠两边对齐**：location 和 alias 值都以 `/` 结尾（或都不带），错位轻则路径粘连 404（上文实测），重则在带目录语义的配置里行为飘忽。
 - **正则 location 的 alias 必须引用捕获组**：`alias /data/uploads/$1;`，漏写启动报错；捕获组写几个引用几个，别凭记忆写。
 - **alias 只能写在 location 里**，root 四个层级都行；需要整站统一根目录用 root，局外部落映射用 alias。
+- **正则 location 优先级高于普通前缀 location**：`location ~ ^/images/(.+)$` 会抢走 `location /images/` 的请求（除非后者加 `^~` 修饰），同一资源别让两条规则都能命中。
 - **alias location 会遮蔽 root**：一旦命中，root 对该请求完全失效（上文实测），排查"文件明明在却读不到"先看是不是被 alias 截胡。
 - **排查路径问题先开 error_log**：`open() "..." failed` 里的路径就是 Nginx 实际拼出来的路径，root/alias 的问题 90% 在这一行里现形。
 

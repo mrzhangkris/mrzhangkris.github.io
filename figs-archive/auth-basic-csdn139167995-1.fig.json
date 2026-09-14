@@ -1,13 +1,15 @@
 {
-  "title": "auth_basic 基础流程实测",
+  "title": "三种凭证各打一次：401 / 200 / 401",
   "lines": [
-    {"t": "note", "s": "nginx/1.31.5 容器实测，后端以静态页模拟"},
-    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" localhost"},
+    {"t": "cmd", "s": "u=user1:demo-pass-123"},
+    {"t": "cmd", "s": "url=http://127.0.0.1/"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" $url"},
     {"t": "out", "s": "401"},
-    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" -u user1:password1 localhost"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" -u $u $url"},
     {"t": "out", "s": "200"},
-    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" -u user1:wrong localhost"},
+    {"t": "cmd", "s": "curl -so /dev/null -w \"%{http_code}\\n\" -u user1:x $url"},
     {"t": "out", "s": "401"},
-    {"t": "note", "s": "无凭证与错密码同为 401，正确凭证放行"}
+    {"t": "note", "s": "无凭证与错密码同为 401，正确凭证放行"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5（nginx:alpine 容器）"}
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "title": "三节点集群选举完成：1 Leader 2 Follower",
+  "lines": [
+    {"t": "cmd", "s": "/opt/zookeeper/bin/zkServer.sh start"},
+    {"t": "note", "s": "三台分别执行；首启可能报 FAILED TO START，属探活过早"},
+    {"t": "cmd", "s": "/opt/zookeeper/bin/zkServer.sh status"},
+    {"t": "out", "s": "Client port found: 2181. Client address: localhost."},
+    {"t": "out", "s": "Mode: leader"},
+    {"t": "note", "s": "zk1、zk3 同命令输出 Mode: follower；srvr 命令亦可查"},
+    {"t": "note", "s": "实测：zk2 当选 Leader；Rocky Linux 9.3 容器 x3 组网"}
+  ]
+}

@@ -1,0 +1,12 @@
+{"title": "nmcli 配置静态 IP 并落盘为 keyfile", "lines": [
+  {"t": "cmd", "s": "nmcli con add type ethernet con-name static-eth0 ifname eth0 \\"},
+  {"t": "config", "s": "    ipv4.method manual ipv4.addresses 192.168.1.100/24 \\"},
+  {"t": "config", "s": "    ipv4.gateway 192.168.1.1 ipv4.dns 8.8.8.8"},
+  {"t": "out", "s": "Connection 'static-eth0' … successfully added."},
+  {"t": "note", "s": "# /etc/NetworkManager/system-connections/static-eth0.nmconnection"},
+  {"t": "config", "s": "address1=192.168.1.100/24"},
+  {"t": "config", "s": "gateway=192.168.1.1"},
+  {"t": "config", "s": "dns=8.8.8.8;"},
+  {"t": "config", "s": "method=manual"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（NetworkManager 1.54.3）"}
+]}

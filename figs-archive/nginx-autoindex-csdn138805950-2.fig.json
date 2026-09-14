@@ -1,13 +1,9 @@
-{
-  "title": "autoindex_format json 机器可读输出（实拍）",
-  "lines": [
-    {"t": "config", "s": "autoindex_format json;"},
-    {"t": "cmd", "s": "curl -s localhost/json/"},
-    {"t": "out", "s": "["},
-    {"t": "out", "s": "{ \"name\":\"app.log\", \"type\":\"file\","},
-    {"t": "out", "s": "  \"mtime\":\"Sat, 12 Sep 2026 03:27:40 GMT\", \"size\":4 },"},
-    {"t": "out", "s": "{ \"name\":\"big-archive.tar\", ... \"size\":1500000 }"},
-    {"t": "out", "s": "]"},
-    {"t": "note", "s": "size 恒为精确字节，脚本可直接按数值比较"}
-  ]
-}
+{"title": "autoindex_format json 输出", "lines": [
+  {"t": "config", "s": "location /json/ { alias .../files/; autoindex_format json; }"},
+  {"t": "cmd", "s": "curl -s localhost/json/"},
+  {"t": "out", "s": "[{ \"name\":\"app.log\", \"type\":\"file\", ..., \"size\":28 },"},
+  {"t": "note", "s": "（每行含 name/type/mtime/size 四个字段）"},
+  {"t": "out", "s": "{ \"name\":\"big-archive.tar\", ..., \"size\":1048576 }]"},
+  {"t": "note", "s": "size 永远是精确字节，不受 exact_size 影响"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

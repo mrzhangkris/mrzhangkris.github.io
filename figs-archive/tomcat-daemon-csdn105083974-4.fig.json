@@ -1,0 +1,12 @@
+{"title": "jsvc 进程结构与两个贴心默认值", "lines": [
+  {"t": "cmd", "s": "ps -eo user,pid,ppid,comm | grep jsvc"},
+  {"t": "out", "s": "root          24       1 jsvc"},
+  {"t": "out", "s": "tomcat        25      24 jsvc"},
+  {"t": "note", "s": "root 控制进程 fork 出 tomcat 用户的 JVM 子进程"},
+  {"t": "cmd", "s": "ps -eo args | grep [j]svc | grep -oE '\\-wait [0-9]+|\\-umask [0-9]+' | sort -u"},
+  {"t": "out", "s": "-umask 0027"},
+  {"t": "out", "s": "-wait 10"},
+  {"t": "note", "s": "-wait 10：start 等 Tomcat 初始化完成才返回"},
+  {"t": "note", "s": "-umask 0027：新文件默认权限收紧到组内可读"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+]}

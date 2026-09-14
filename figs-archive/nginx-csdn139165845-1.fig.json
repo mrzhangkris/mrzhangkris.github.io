@@ -1,10 +1,11 @@
-{"title": "反代透传与响应头实测（nginx/1.31.5 容器）", "lines": [
-  {"t": "config", "s": "server_tokens off;  gzip on;  gzip_types text/plain;"},
-  {"t": "cmd", "s": "curl -sI -H 'Accept-Encoding: gzip' 127.0.0.1/whoami"},
+{"title": "反向代理透传实测（server_tokens off + gzip）", "lines": [
+  {"t": "note", "s": "后端用 return 200 回显收到的请求头（$http_* 变量）"},
+  {"t": "config", "s": "proxy_set_header Host $host;"},
+  {"t": "config", "s": "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"},
+  {"t": "cmd", "s": "curl -si --compressed localhost/"},
   {"t": "out", "s": "Server: nginx"},
   {"t": "out", "s": "Content-Encoding: gzip"},
-  {"t": "note", "s": "版本号已隐藏（默认 Server: nginx/1.31.5），压缩生效"},
-  {"t": "cmd", "s": "curl -s --compressed -H 'Host: myapp.example.com' 127.0.0.1/whoami"},
-  {"t": "out", "s": "host=myapp.example.com real=127.0.0.1 proto=http"},
-  {"t": "note", "s": "proxy_set_header 透传生效，后端拿到真实客户端信息"}
+  {"t": "out", "s": "host=localhost|realip=127.0.0.1|xff=127.0.0.1|proto=http"},
+  {"t": "note", "s": "版本号被隐藏；host/realip/xff/proto 全部穿透到后端"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

@@ -1,0 +1,11 @@
+{"title": "实测：循环改写触发 500，修正后恢复 200", "lines": [
+  {"t": "cmd", "s": "curl -s -o /dev/null -w 'status=%{http_code}\\n' http://127.0.0.1/old/a"},
+  {"t": "out", "s": "status=500"},
+  {"t": "out", "s": "*1 rewrite or internal redirection cycle"},
+  {"t": "out", "s": "  while processing \"/old/xxxxxxxxxxxa\""},
+  {"t": "config", "s": "rewrite ^/old/(.*)$ /new/$1 last;"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w 'status=%{http_code}\\n' http://127.0.0.1/old/a"},
+  {"t": "out", "s": "status=200"},
+  {"t": "note", "s": "循环命中 10 次内部重定向后 nginx 主动 500 收口"},
+  {"t": "note", "s": "实测环境：nginx:alpine（nginx/1.31.5，location 内改写）"}
+]}

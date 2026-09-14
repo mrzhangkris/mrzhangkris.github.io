@@ -1,0 +1,7 @@
+{"title": "default_server 方案：语法检查通过", "lines": [
+  {"t": "cmd", "s": "nginx -t"},
+  {"t": "out", "s": "nginx: the configuration file /etc/nginx/nginx.conf syntax is ok"},
+  {"t": "out", "s": "nginx: configuration file /etc/nginx/nginx.conf test is successful"},
+  {"t": "note", "s": "三块 server：80 重定向 / 拒绝握手兜底 / 业务块"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器（nginx/1.31.5，自签证书）"}
+]}

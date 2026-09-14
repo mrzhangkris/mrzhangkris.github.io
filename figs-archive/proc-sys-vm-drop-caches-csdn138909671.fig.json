@@ -1,12 +1,14 @@
 {
-  "title": "drop caches memory release",
+  "title": "重定向坑：失败写法与两种正解",
   "type": "cmd",
   "lines": [
-    {"t": "note", "s": "执行前先 sync,把脏数据刷盘"},
-    {"t": "cmd", "s": "sync"},
-    {"t": "cmd", "s": "echo 1 | sudo tee /proc/sys/vm/drop_caches"},
-    {"t": "note", "s": "1=页面缓存 2=dentries+inodes 3=全部"},
+    {"t": "cmd", "s": "sudo echo 3 > /proc/sys/vm/drop_caches"},
+    {"t": "out", "s": "bash: line 1: /proc/sys/vm/drop_caches: Permission denied"},
+    {"t": "note", "s": "# > 重定向由当前 shell 执行,sudo 提权的只是 echo"},
     {"t": "cmd", "s": "echo 3 | sudo tee /proc/sys/vm/drop_caches"},
-    {"t": "note", "s": "清理后性能短暂下降,生产低峰期用"}
+    {"t": "out", "s": "3"},
+    {"t": "cmd", "s": "sudo sh -c \"echo 3 > /proc/sys/vm/drop_caches\""},
+    {"t": "note", "s": "# tee 或 sh -c:让\"写文件\"这个动作本身以 root 执行"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 特权容器(失败行为以非 root 复现)"}
   ]
 }

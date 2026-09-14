@@ -1,16 +1,16 @@
 ---
 title: "Python 实时读取子进程输出：-u 参数与 flush=True"
 date: 2020-03-22 11:46:08
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Python]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1605436247078-f0ef43ee8d5c?w=1600&q=80&fm=jpg
 ---
 
 用 `subprocess` 调用外部 Python 脚本时，常会遇到一个怪现象：子进程明明在逐行打印，父进程却要等它跑完才一次性拿到所有输出。原因是子进程的标准输出接了管道之后不再是终端，Python 会从行缓冲退化为**块缓冲**——输出攒够一批（通常 4KB/8KB）或进程退出才真正写出去。
 
-解法有两个：调用时给解释器加 `-u` 参数，或者在子进程的 `print` 里用 `flush=True`。这篇用两个小脚本在 Python 3.11.16 容器里把两种方法都实测验证，并给出带时间戳的对照数据——缓冲与否，一眼就能看出来。
+解法有两个：调用时给解释器加 `-u` 参数，或者在子进程的 `print` 里用 `flush=True`。这篇用几个小脚本在 debian:12 容器（apt 安装的 Python 3.11.2）里把两种方法都实测验证，并给出带时间戳的对照数据——缓冲与否，一眼就能看出来。
 
 ## 核心机制一句话
 
@@ -55,9 +55,9 @@ while res.poll() is None:
 
 实测复现（父进程在每行到达时打上自己的时间戳）：
 
-![配图1](/images/csdn/figures/python-csdn105020997-1.png)
+![配图1：基线缓冲实测](/images/csdn/figures/python-csdn105020997-1.png)
 
-子进程的输出时间是 11/12/13 秒（每秒一行），但父进程在 13 秒这一刻才一次性收到全部三行——管道缓冲的铁证。
+子进程的输出时间是 29/30/31 秒（每秒一行），但父进程在 31 秒这一刻才一次性收到全部三行——管道缓冲的铁证。
 
 ## 方法一：给子进程加 -u 参数
 
@@ -77,7 +77,7 @@ while res.poll() is None:
 
 再运行，父进程就能实时地每隔一秒读到一条时间了：
 
-![配图2](/images/csdn/figures/python-csdn105020997-2.png)
+![配图2：-u 实时实测](/images/csdn/figures/python-csdn105020997-2.png)
 
 `-u` 让解释器强制不缓冲 stdout 和 stderr，每条输出立即写入管道。适合**改不了对方代码**的场景——比如子进程是第三方脚本或系统工具（`python -u some_tool.py`），一个参数解决整个进程的缓冲问题。
 
@@ -116,7 +116,7 @@ for line in range(0, 3):
 
 运行后同样能实时逐行读到输出：
 
-![配图3](/images/csdn/figures/python-csdn105020997-3.png)
+![配图3：flush=True 实时实测](/images/csdn/figures/python-csdn105020997-3.png)
 
 `flush=True` 的作用范围只在这一条 `print`，每次打印后立刻强制刷新缓冲区。适合**能改子进程代码**、只想让关键输出（进度、日志、告警）实时可见的场景——其余输出照旧攒批，整体开销比全程无缓冲小。
 
@@ -138,6 +138,10 @@ env = dict(os.environ, PYTHONUNBUFFERED="1")
 res = subprocess.Popen(["/usr/bin/python3", "/root/system_time.py"],
                        stdout=subprocess.PIPE, env=env, text=True)
 ```
+
+实测同样逐秒实时到达：
+
+![配图4：PYTHONUNBUFFERED 实测](/images/csdn/figures/python-csdn105020997.png)
 
 ## 顺手说两个相关坑
 

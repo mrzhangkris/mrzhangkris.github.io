@@ -1,414 +1,113 @@
 ---
-title: "Tomcat 以 daemon 模式启动（jsvc）"
+title: "Tomcat 以 daemon 模式启动（jsvc）：Rocky Linux 9 实测"
 date: 2020-03-25 01:04:21
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Tomcat]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1519086588705-c935fdedcc14?w=1600&q=80&fm=jpg
 ---
 
-用 `startup.sh` 起的 Tomcat 是挂在当前 shell 下的，退出终端或用户权限一变就容易出问题。daemon 模式通过 jsvc 把 Tomcat 托管成独立的服务进程，可以用专用的 `daemon.sh` 启停。这篇记录在 CentOS 8 上把 Tomcat 9 配成 daemon 模式的全过程，包括编译 jsvc 时踩到的几个坑。
+用 `startup.sh` 起的 Tomcat 挂在当前 shell 下，退出终端、会话断开都可能把进程带死，权限管理也只能整把交给启动用户。daemon 模式通过 jsvc 把 Tomcat 托管成独立服务进程：root 侧的控制器负责拉起和信号处理，JVM 则跑在一个专用的不可登录用户下，启停用配套的 `daemon.sh start/stop`。这篇在 Rocky Linux 9 上用 Tomcat 9.0.121 + OpenJDK 11 把全过程实跑了一遍——包括编译 jsvc、配置 daemon.sh、启动验证和停止闭环。
 
-## 环境检查
+照着做完全程，你会得到：一个编译好的 jsvc、一套以 tomcat 用户运行的 daemon 模式 Tomcat，以及一套可复用的 start/stop 操作命令。
 
-先看服务器上有没有 JDK 环境：
+## 前置条件
 
-```bash
-[root@localhost ~]# java -version
--bash: /usr/bin/java: No such file or directory
-```
+- 操作系统：Rocky Linux 9（本文实测环境为 rockylinux:9 容器，aarch64）
+- 软件版本：Tomcat 9.0.121（官方 tarball），commons-daemon 1.6.1，java-11-openjdk 11.0.25
+- 权限：root 或 sudo（编译和建用户需要）
+- 网络：能访问 tomcat.apache.org 下载源
 
-not found 说明当前服务器没有 JDK 环境，需要安装 JDK。
+## 安装依赖与准备用户
 
-> OpenJDK 默认安装路径 `/usr/lib/jvm/`
-
-## 安装
-
-创建不可登录的 tomcat 组和用户：
+jsvc 是 C 程序，编译链和 JDK 头文件一样都不能少。Rocky 9 上一条命令装齐：
 
 ```bash
-[root@localhost ~]# groupadd tomcat
-[root@localhost ~]# useradd -g tomcat -s /usr/sbin/nologin tomcat
+dnf install -y java-11-openjdk-devel gcc make wget tar gzip
 ```
 
-进入 Tomcat 的 bin 目录，解压 commons-daemon-native.tar.gz：
+注意装的是 `java-11-openjdk-devel` 而不是运行时包——只有 devel 才带 include 头文件，configure 阶段要用。装完确认版本：
+
+![配图1](/images/csdn/figures/tomcat-daemon-csdn105083974-1.png)
+
+创建专用的不可登录用户，Tomcat 之后以这个身份运行：
 
 ```bash
-tar -zxvf commons-daemon-native.tar.gz
+groupadd tomcat
+useradd -g tomcat -s /usr/sbin/nologin tomcat
 ```
 
-两个可能遇到的问题：
-
-> - 出现 `-bash: tar: command not found`，需使用 yum 安装 tar
-> - 不存在 commons-daemon-native.tar.gz 文件，可以在相同版本的 tomcat 中拷贝到当前 tomcat/bin 目录下，也可以去 [http://www.apache.org/dist/commons/daemon/source/](http://www.apache.org/dist/commons/daemon/source/) 下载
-
-解压完毕后进入 `commons-daemon-1.2.2-native-src/unix/`：
+然后下载解压 Tomcat，本文装到 /opt：
 
 ```bash
-[root@localhost bin]# cd commons-daemon-1.2.2-native-src/unix/
-[root@localhost unix]# ls
-configure  configure.in  INSTALL.txt  Makedefs.in  Makefile.in  man  native  support
-[root@localhost unix]#
+cd /opt
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.121/bin/apache-tomcat-9.0.121.tar.gz
+tar -zxf apache-tomcat-9.0.121.tar.gz
 ```
 
-### 编译 jsvc：三个常见的 configure 报错
+一个要先说破的误区：网上不少说法（包括本文旧版）认为新版 Tomcat 的 bin 目录里带了现成的 jsvc，不用编译。**实测 9.0.121 并非如此**——bin/ 里只有 `commons-daemon-native.tar.gz` 源码包，`daemon.sh` 也在，唯独没有 jsvc 二进制。编译这一步躲不掉，好在新系统上一次就能过。
 
-执行 `./configure`：
+## 编译 jsvc
+
+进入 Tomcat 的 bin 目录解开源码包，到 unix 子目录里编译：
 
 ```bash
-./configure
+cd /opt/apache-tomcat-9.0.121/bin
+tar -zxf commons-daemon-native.tar.gz
+cd commons-daemon-1.6.1-native-src/unix
 ```
 
-第一次执行报错：
+`--with-java` 指向 JDK 的实际路径（`readlink -f /usr/lib/jvm/java-11-openjdk` 可以拿到），configure 通过后 make：
 
 ```bash
-[root@localhost unix]# ./configure
-*** Current host ***
-checking build system type... x86_64-pc-linux-gnu
-checking host system type... x86_64-pc-linux-gnu
-checking cached host system type... ok
-*** C-Language compilation tools ***
-checking for gcc... no
-checking for cc... no
-checking for cl.exe... no
-configure: error: in `/root/apache-tomcat-9.0.33/bin/commons-daemon-1.2.2-native-src/unix':
-configure: error: no acceptable C compiler found in $PATH
-See `config.log' for more details
+./configure --with-java=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-7.el9.aarch64
+make
 ```
 
-该错误说明当前环境没有 C 编译器，用 yum 安装 gcc 解决：
+实测输出：
+
+![配图2](/images/csdn/figures/tomcat-daemon-csdn105083974-2.png)
+
+configure 出现 `*** All done ***` 即检查通过，make 结束后在当前目录生成 jsvc 可执行文件，把它复制到 Tomcat 的 bin 目录：
 
 ```bash
-yum install gcc -y
+cp jsvc ../../
 ```
 
-安装 gcc 后重新执行，这次走到了 JDK 检查一步：
+在 Rocky 9 上装齐依赖后 configure 一次通过，不会再遇到老文章里"缺 gcc、缺 JDK 头文件、缺 make"的三连报错——那些是老环境的坑，留到文末"历史版本差异"一节对照。
+
+## 配置 daemon 模式
+
+先把目录归属交给 tomcat 用户，并给 daemon.sh 加执行权限：
 
 ```bash
-[root@localhost unix]# ./configure
-*** Current host ***
-checking build system type... x86_64-pc-linux-gnu
-checking host system type... x86_64-pc-linux-gnu
-checking cached host system type... ok
-*** C-Language compilation tools ***
-checking for gcc... gcc
-checking whether the C compiler works... yes
-checking for C compiler default output file name... a.out
-checking for suffix of executables...
-checking whether we are cross compiling... no
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ISO C89... none needed
-checking for ranlib... ranlib
-checking for strip... strip
-*** Host support ***
-checking C flags dependant on host system type... ok
-*** Java compilation tools ***
-checking for JDK location... configure: error: Java Home not defined. Rerun with --with-java=... parameter
+cd /opt/apache-tomcat-9.0.121
+chown -R tomcat:tomcat .
+chmod a+x bin/daemon.sh
 ```
 
-这个报错的处理：
-
-- 若已经安装 JDK，需要使用 `--with-java` 参数指定 JDK 路径
-- 若未安装 JDK，需要先安装 JDK，再使用 `--with-java` 参数指定 JDK 路径
-- OpenJDK 的安装位置可以在 `/usr/lib/jvm/` 目录下找到
-
-加上 `--with-java` 参数再次执行：
-
-```bash
-[root@localhost unix]# ./configure --with-java=/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
-*** Current host ***
-checking build system type... x86_64-pc-linux-gnu
-checking host system type... x86_64-pc-linux-gnu
-checking cached host system type... ok
-*** C-Language compilation tools ***
-checking for gcc... gcc
-checking whether the C compiler works... yes
-checking for C compiler default output file name... a.out
-checking for suffix of executables...
-checking whether we are cross compiling... no
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ISO C89... none needed
-checking for ranlib... ranlib
-checking for strip... strip
-*** Host support ***
-checking C flags dependant on host system type... ok
-*** Java compilation tools ***
-checking JAVA_HOME... /usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
-checking for JDK os include directory... Cannot find jni_md.h in /usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/
-configure: error: You should retry --with-os-type=SUBDIR
-```
-
-`/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64` 是我的 JDK 路径，你的可能不同。这次的报错是找不到 `jni_md.h`，需要加上 `--with-os-type` 参数指定 JDK include 中的 `jni_md.h` 文件。
-
-若 JDK 内不存在 include 文件夹或 `jni_md.h` 文件，可以用 yum 安装当前 JDK 的 devel 管理包；若存在则跳过此步骤：
-
-```bash
-[root@localhost unix]# java -version
-openjdk version "11.0.5" 2019-10-15 LTS
-OpenJDK Runtime Environment 18.9 (build 11.0.5+10-LTS)
-OpenJDK 64-Bit Server VM 18.9 (build 11.0.5+10-LTS, mixed mode, sharing)
-[root@localhost unix]# yum search *jdk*
-Last metadata expiration check: 0:55:15 ago on Tue 24 Mar 2020 10:46:41 PM CST.
-=============================================================================== Name & Summary Matched: *jdk* ===============================================================================
-java-11-openjdk-demo.x86_64 : OpenJDK Demos 11
-java-1.8.0-openjdk-demo.x86_64 : OpenJDK Demos 8
-java-11-openjdk-jmods.x86_64 : JMods for OpenJDK 11
-java-11-openjdk-src.x86_64 : OpenJDK Source Bundle 11
-java-11-openjdk.x86_64 : OpenJDK Runtime Environment 11
-java-1.8.0-openjdk-src.x86_64 : OpenJDK Source Bundle 8
-java-11-openjdk.x86_64 : OpenJDK Runtime Environment 11
-copy-jdk-configs.noarch : JDKs configuration files copier
-copy-jdk-configs.noarch : JDKs configuration files copier
-java-1.8.0-openjdk.x86_64 : OpenJDK Runtime Environment 8
-java-11-openjdk-javadoc.x86_64 : OpenJDK 11 API documentation
-java-1.8.0-openjdk-javadoc.noarch : OpenJDK 8 API documentation
-java-11-openjdk-devel.x86_64 : OpenJDK Development Environment 11
-java-1.8.0-openjdk-devel.x86_64 : OpenJDK Development Environment 8
-java-11-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 11
-java-11-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 11
-java-11-openjdk-accessibility.x86_64 : OpenJDK 8 accessibility connector
-java-1.8.0-openjdk-headless.x86_64 : OpenJDK Headless Runtime Environment 8
-java-11-openjdk-javadoc-zip.x86_64 : OpenJDK 11 API documentation compressed in single archive
-================================================================================== Summary Matched: *jdk* ===================================================================================
-icedtea-web.noarch : Additional Java components for OpenJDK - Java browser plug-in and Web Start implementation
-[root@localhost unix]# yum install java-11-openjdk-devel.x86_64 -y
-Last metadata expiration check: 0:55:32 ago on Tue 24 Mar 2020 10:46:41 PM CST.
-Dependencies resolved.
-=============================================================================================================================================================================================
- Package                                             Architecture                         Version                                              Repository                               Size
-=============================================================================================================================================================================================
-Installing:
- java-11-openjdk-devel                               x86_64                               1:11.0.5.10-2.el8_1                                  AppStream                               3.3 M
-
-Transaction Summary
-=============================================================================================================================================================================================
-Install  1 Package
-
-Total download size: 3.3 M
-Installed size: 5.3 M
-Downloading Packages:
-java-11-openjdk-devel-11.0.5.10-2.el8_1.x86_64.rpm                                                                                                           641 kB/s | 3.3 MB     00:05
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Total                                                                                                                                                        558 kB/s | 3.3 MB     00:06
-Running transaction check
-Transaction check succeeded.
-Running transaction test
-Transaction test succeeded.
-Running transaction
-  Preparing        :                                                                                                                                                                     1/1
-  Installing       : java-11-openjdk-devel-1:11.0.5.10-2.el8_1.x86_64                                                                                                                    1/1
-  Running scriptlet: java-11-openjdk-devel-1:11.0.5.10-2.el8_1.x86_64                                                                                                                    1/1
-  Verifying        : java-11-openjdk-devel-1:11.0.5.10-2.el8_1.x86_64                                                                                                                    1/1
-
-Installed:
-  java-11-openjdk-devel-1:11.0.5.10-2.el8_1.x86_64
-
-Complete!
-[root@localhost unix]#
-```
-
-安装 JDK devel 包后重新执行 configure：
-
-```bash
-[root@localhost unix]# ./configure --with-java=/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
-*** Current host ***
-checking build system type... x86_64-pc-linux-gnu
-checking host system type... x86_64-pc-linux-gnu
-checking cached host system type... ok
-*** C-Language compilation tools ***
-checking for gcc... gcc
-checking whether the C compiler works... yes
-checking for C compiler default output file name... a.out
-checking for suffix of executables...
-checking whether we are cross compiling... no
-checking for suffix of object files... o
-checking whether we are using the GNU C compiler... yes
-checking whether gcc accepts -g... yes
-checking for gcc option to accept ISO C89... none needed
-checking for ranlib... ranlib
-checking for strip... strip
-*** Host support ***
-checking C flags dependant on host system type... ok
-*** Java compilation tools ***
-checking JAVA_HOME... /usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
-checking for JDK os include directory...  linux
-gcc flags added
-checking how to run the C preprocessor... gcc -E
-checking for grep that handles long lines and -e... /usr/bin/grep
-checking for egrep... /usr/bin/grep -E
-checking for ANSI C header files... yes
-checking for sys/types.h... yes
-checking for sys/stat.h... yes
-checking for stdlib.h... yes
-checking for string.h... yes
-checking for memory.h... yes
-checking for strings.h... yes
-checking for inttypes.h... yes
-checking for stdint.h... yes
-checking for unistd.h... yes
-checking sys/capability.h usability... no
-checking sys/capability.h presence... no
-checking for sys/capability.h... no
-configure: WARNING: cannot find headers for libcap
-*** Writing output files ***
-configure: creating ./config.status
-config.status: creating Makefile
-config.status: creating Makedefs
-config.status: creating native/Makefile
-*** All done ***
-Now you can issue "make"
-[root@localhost unix]#
-```
-
-出现 `All done` 说明 configure 通过，可以进行编译安装了。若还是报 `configure: error: You should retry --with-os-type=SUBDIR`，可以用 `find / -name "jni_md.h"` 找到路径，指定 `--with-os-type`，出现 `All done` 即可进行编译。
-
-### make 编译
-
-执行 make：
-
-```bash
-[root@localhost unix]# make
--bash: make: command not found
-[root@localhost unix]#
-```
-
-command not found，用 yum 安装 make：
-
-```bash
-yum install make -y
-```
-
-安装 make 包后重新执行：
-
-```bash
-[root@localhost unix]# make
-(cd native; make  all)
-make[1]: Entering directory '/root/apache-tomcat-9.0.33/bin/commons-daemon-1.2.2-native-src/unix/native'
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c jsvc-unix.c -o jsvc-unix.o
-jsvc-unix.c: In function ‘run_controller’:
-jsvc-unix.c:1293:20: warning: assignment to ‘__sighandler_t’ {aka ‘void (*)(int)’} from incompatible pointer type ‘void (*)(int,  siginfo_t *, void *)’ {aka ‘void (*)(int,  struct <anonymous> *, void *)’} [-Wincompatible-pointer-types]
-     act.sa_handler = controller;
-                    ^
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c arguments.c -o arguments.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c debug.c -o debug.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c dso-dlfcn.c -o dso-dlfcn.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c dso-dyld.c -o dso-dyld.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c help.c -o help.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c home.c -o home.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c java.c -o java.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c location.c -o location.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c replace.c -o replace.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c locks.c -o locks.o
-gcc -g -O2 -DOS_LINUX -DDSO_DLFCN -DCPU=\"amd64\" -Wall -Wstrict-prototypes   -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include -I/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/include/linux -c signals.c -o signals.o
-ar cr libservice.a arguments.o debug.o dso-dlfcn.o dso-dyld.o help.o home.o java.o location.o replace.o locks.o signals.o
-ranlib libservice.a
-gcc   jsvc-unix.o libservice.a -ldl -lpthread -o ../jsvc
-make[1]: Leaving directory '/root/apache-tomcat-9.0.33/bin/commons-daemon-1.2.2-native-src/unix/native'
-[root@localhost unix]# ls
-config.log  config.nice  config.status  configure  configure.in  INSTALL.txt  jsvc  Makedefs  Makedefs.in  Makefile  Makefile.in  man  native  support
-[root@localhost unix]#
-```
-
-编译生成了一个 `jsvc` 文件，把它复制到 tomcat 的 bin 目录：
-
-```bash
-[root@localhost unix]# cp jsvc ../../
-[root@localhost bin]# cd ../../
-[root@localhost bin]# ls
-bootstrap.jar  catalina-tasks.xml  commons-daemon-1.2.2-native-src  configtest.bat  digest.bat  makebase.bat      setclasspath.sh  startup.bat      tomcat-native.tar.gz  version.bat
-catalina.bat   ciphers.bat         commons-daemon.jar               configtest.sh   digest.sh   makebase.sh       shutdown.bat     startup.sh       tool-wrapper.bat      version.sh
-catalina.sh    ciphers.sh          commons-daemon-native.tar.gz     daemon.sh       jsvc        setclasspath.bat  shutdown.sh      tomcat-juli.jar  tool-wrapper.sh
-[root@localhost bin]#
-```
-
-## 配置 daemon.sh
-
-编辑 `daemon.sh` 文件，找到如下内容：
+daemon.sh 里有两处和运行身份相关的配置。`TOMCAT_USER` 的默认值就是 tomcat，建了同名用户的话这行不用动：
 
 ```bash
 test ".$TOMCAT_USER" = . && TOMCAT_USER=tomcat
-# Set JAVA_HOME to working JDK or JRE
-# JAVA_HOME=/opt/jdk-1.6.0.22
 ```
 
-做两处修改：`TOMCAT_USER=tomcat` 的 tomcat 改成你所需的用户；`# JAVA_HOME=/opt/jdk-1.6.0.22` 的路径改为你的 JDK 路径。修改后的结果：
+JAVA_HOME 的处理方式和几年前不同了。9.0.121 的 daemon.sh 里已经没有 `# JAVA_HOME=/opt/jdk-...` 这样的注释行可以取消注释，现在的逻辑是：没设置时从 PATH 里的 java 自动反推 JDK 路径，同时支持 `--java-home` 参数显式传入。**建议显式指定**——我在最小化容器里实测过，环境里没有 which 命令时自动探测会失效，jsvc 拿到空的 -java-home 参数；显式指定就不会有这种环境依赖：
 
 ```bash
-test ".$TOMCAT_USER" = . && TOMCAT_USER=tomcat
-# Set JAVA_HOME to working JDK or JRE
-JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
+bin/daemon.sh --java-home /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-7.el9.aarch64 start
 ```
 
-tomcat 是我创建的用户，`/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64` 是我的 JDK 路径。
+## 启动与验证
 
-然后修改 tomcat 目录的所属用户和组，并给 `daemon.sh` 赋可执行权限：
+start 之后等十秒左右让 Tomcat 完成初始化，然后做两层验证：
 
-```bash
-[root@localhost bin]# cd
-[root@localhost ~]# chown -R tomcat:tomcat apache-tomcat-9.0.33
-[root@localhost ~]# chmod a+x apache-tomcat-9.0.33/bin/daemon.sh
-```
+![配图3](/images/csdn/figures/tomcat-daemon-csdn105083974-3.png)
 
-到此所有配置都完成了。若 tomcat 中的项目需要读取其他文件夹，需要确认该文件夹的权限是否满足 tomcat 用户的需求。
+功能层：`curl http://localhost:8080/` 返回 200，浏览器能打开 Tomcat 欢迎页（远程机器访问不到时，先检查防火墙是否放行了 8080）。日志层：`logs/catalina-daemon.out` 里出现 `Server startup in [N] milliseconds` 和 `Starting ProtocolHandler ["http-nio-8080"]` 即成功。
 
-验证点：`daemon.sh run` 启动后日志中出现 `Server startup in [N] milliseconds` 和 `Starting ProtocolHandler ["http-nio-8080"]` 即成功。
-
-> 注：编译 jsvc 的完整过程（configure 报错 → 缺 gcc/JDK-devel/make → make 通过 → cp jsvc）为 2020 年 CentOS 8 实测记录，此处保留排错过程供参考；Tomcat 9.0.50+ 和 10.1+ 版本的 bin 目录已内置预编译的 jsvc，不再需要手动编译——如果用的是新版 Tomcat，直接跳到"配置 daemon.sh"一节即可。
-
-## 验证
-
-使用 `apache-tomcat-9.0.33/bin/daemon.sh run` 命令启动：
-
-```bash
-[root@localhost ~]# apache-tomcat-9.0.33/bin/daemon.sh run
-25-Mar-2020 00:43:13.119 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version name:   Apache Tomcat/9.0.33
-25-Mar-2020 00:43:13.122 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server built:          Mar 11 2020 09:31:38 UTC
-25-Mar-2020 00:43:13.122 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Server version number: 9.0.33.0
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Name:               Linux
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log OS Version:            4.18.0-147.el8.x86_64
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Architecture:          amd64
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Java Home:             /usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Version:           11.0.5+10-LTS
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log JVM Vendor:            Oracle Corporation
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_BASE:         /root/apache-tomcat-9.0.33
-25-Mar-2020 00:43:13.123 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log CATALINA_HOME:         /root/apache-tomcat-9.0.33
-25-Mar-2020 00:43:13.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.config.file=/root/apache-tomcat-9.0.33/conf/logging.properties
-25-Mar-2020 00:43:13.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
-25-Mar-2020 00:43:13.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dignore.endorsed.dirs=
-25-Mar-2020 00:43:13.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.base=/root/apache-tomcat-9.0.33
-25-Mar-2020 00:43:13.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcatalina.home=/root/apache-tomcat-9.0.33
-25-Mar-2020 00:43:13.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Djava.io.tmpdir=/root/apache-tomcat-9.0.33/temp
-25-Mar-2020 00:43:13.158 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcommons.daemon.process.id=21214
-25-Mar-2020 00:43:13.159 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcommons.daemon.process.parent=21208
-25-Mar-2020 00:43:13.159 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: -Dcommons.daemon.version=1.2.2
-25-Mar-2020 00:43:13.159 INFO [main] org.apache.catalina.startup.VersionLoggerListener.log Command line argument: abort
-25-Mar-2020 00:43:13.159 INFO [main] org.apache.catalina.core.AprLifecycleListener.lifecycleEvent The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/lib/server:/usr/lib/jvm/java-11-openjdk-11.0.5.10-2.el8_1.x86_64/lib:/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib]
-25-Mar-2020 00:43:13.963 INFO [main] org.apache.coyote.AbstractProtocol.init Initializing ProtocolHandler ["http-nio-8080"]
-25-Mar-2020 00:43:14.051 INFO [main] org.apache.catalina.startup.Catalina.load Server initialization in [1,466] milliseconds
-25-Mar-2020 00:43:14.202 INFO [main] org.apache.catalina.core.StandardService.startInternal Starting service [Catalina]
-25-Mar-2020 00:43:14.202 INFO [main] org.apache.catalina.core.StandardEngine.startInternal Starting Servlet engine: [Apache Tomcat/9.0.33]
-25-Mar-2020 00:43:14.237 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/root/apache-tomcat-9.0.33/webapps/ROOT]
-25-Mar-2020 00:43:14.926 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/root/apache-tomcat-9.0.33/webapps/ROOT] has finished in [688] ms
-25-Mar-2020 00:43:14.926 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/root/apache-tomcat-9.0.33/webapps/docs]
-25-Mar-2020 00:43:14.979 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/root/apache-tomcat-9.0.33/webapps/docs] has finished in [53] ms
-25-Mar-2020 00:43:14.979 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/root/apache-tomcat-9.0.33/webapps/examples]
-25-Mar-2020 00:43:15.624 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/root/apache-tomcat-9.0.33/webapps/examples] has finished in [645] ms
-25-Mar-2020 00:43:15.625 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/root/apache-tomcat-9.0.33/webapps/host-manager]
-25-Mar-2020 00:43:15.738 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/root/apache-tomcat-9.0.33/webapps/host-manager] has finished in [113] ms
-25-Mar-2020 00:43:15.738 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deploying web application directory [/root/apache-tomcat-9.0.33/webapps/manager]
-25-Mar-2020 00:43:15.806 INFO [main] org.apache.catalina.startup.HostConfig.deployDirectory Deployment of web application directory [/root/apache-tomcat-9.0.33/webapps/manager] has finished in [68] ms
-25-Mar-2020 00:43:15.836 INFO [main] org.apache.coyote.AbstractProtocol.start Starting ProtocolHandler ["http-nio-8080"]
-25-Mar-2020 00:43:15.939 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [1,887] milliseconds
-```
-
-启动后可以在浏览器中访问到 tomcat。若访问不到，检查防火墙中是否添加了 tomcat 端口、防火墙是否开启。
-
-## daemon 模式的基本操作
+## 日常操作
 
 ```text
 bin/daemon.sh start   启动
@@ -417,12 +116,46 @@ bin/daemon.sh version 查看版本
 logs/catalina-daemon.out 查看日志
 ```
 
+daemon 模式的进程结构值得看一眼，这也是它和 startup.sh 的本质区别：
+
+![配图4](/images/csdn/figures/tomcat-daemon-csdn105083974-4.png)
+
+root 名下的 jsvc 是控制进程（pid 文件在 `logs/catalina-daemon.pid`），它 fork 出的子进程切到 tomcat 用户运行 JVM。stop 之后用 curl 再探一次 8080，连接被拒即停止完成；退出时 jsvc 会顺手删掉 pid 文件，这个细节也可以当停止成功的旁证。从实测的进程参数还能看到两个贴心默认值：`-wait 10` 让 start 命令等 Tomcat 真正初始化完成才返回（而不是发完信号就走人），`-umask 0027` 把新文件的默认权限收紧到组内可读。
+
+除了 start，还有一个 `run` 子命令——前台模式，日志直接打在当前终端：
+
+![配图5](/images/csdn/figures/tomcat-daemon-csdn105083974-5.png)
+
+与 start 有一个容易想当然的差异：run 模式不做身份切换——实测前台运行时两个 jsvc 进程都以 root 跑，tomcat 用户的身份隔离只在 start 模式生效。进程挂在前台，终端断开或手动 kill，Tomcat 跟着停。调配置、看启动报错时用它最顺手，生产上常驻还是用 start/stop。
+
+## 启动失败时先看哪里
+
+start 之后 curl 不通，按这个顺序排：
+
+- **看日志**：`logs/catalina-daemon.out` 收着启动期的全部输出，`Server startup in [N] milliseconds` 之前最后一行通常就是失败原因；访问日志则按天写在 `logs/catalina.YYYY-MM-DD.log` 里。
+- **看进程参数**：`ps -ef | grep jsvc` 检查 `-java-home` 是否为空——空了说明 daemon.sh 的自动探测没生效，改用 `--java-home` 显式指定（本文实测踩过的坑）。
+- **看端口**：8080 被其他进程占着时启动会失败，`ss -ltnp | grep 8080` 看占用；远程机器访问不到但本机 curl 通，则是防火墙没放行（firewalld 下 `firewall-cmd --permanent --add-port=8080/tcp && firewall-cmd --reload`）。
+
+> 注：firewalld 两条命令未在容器内执行（容器无 systemd），为 firewalld 常规用法；其余排查项均为本次实测内容。
+
+## 历史版本差异（CentOS 8，2020 年记录）
+
+原文在 CentOS 8 + Tomcat 9.0.33 上首次配置时踩过三个 configure 报错，报错特征保留如下，便于老环境读者对号入座：
+
+1. `configure: error: no acceptable C compiler found in $PATH`——没装编译器，`dnf install gcc`。
+2. `configure: error: Java Home not defined. Rerun with --with-java=... parameter`——没装 JDK 或没指路径，装 `java-11-openjdk-devel` 后加 `--with-java=<JDK路径>`。
+3. `Cannot find jni_md.h ... You should retry --with-os-type=SUBDIR`——JDK 头文件不全。这是老版本 JDK 布局特有的坑，实测 Rocky 9 的 java-11-openjdk-devel 装好后不需要任何 --with-os-type 参数，configure 直接通过。
+
+另外老文章里"编辑 daemon.sh、把 `# JAVA_HOME=/opt/jdk-...` 取消注释"的做法只适用于旧版脚本，9.0.x 新版按上文用 `--java-home` 参数或环境变量即可。
+
 ## 注意事项
 
-- 编译 jsvc 的三连坑都跟缺包有关：缺 gcc、缺 JDK include（装 `java-11-openjdk-devel`）、缺 make，报错信息里都有明确提示，对症安装即可。
-- `--with-java` 要指向 JDK 的实际路径，OpenJDK 默认在 `/usr/lib/jvm/` 下；`jni_md.h` 找不到时用 `find / -name "jni_md.h"` 定位再配 `--with-os-type`。
-- daemon.sh 里的 `TOMCAT_USER` 决定 Tomcat 以哪个用户运行，配套的 `chown -R` 别漏，否则启动后写不了日志和临时目录。
-- tomcat 用户是 `/usr/sbin/nologin` 的不可登录用户，专门用于跑服务，不要图省事用 root 跑。
-- 项目若要读写 tomcat 目录之外的文件夹，记得确认该文件夹对 tomcat 用户的权限，这是 daemon 模式最常见的启动后故障。
+- `chown -R tomcat:tomcat` 别漏。daemon 模式下 Tomcat 以 tomcat 用户写 logs、temp、work，目录归属不对是最常见的"启动后写不了日志"故障。
+- JAVA_HOME 显式指定最稳。自动探测依赖 PATH 里的 java 和 which 命令，精简系统上可能失灵。
+- tomcat 用户是 `/usr/sbin/nologin` 的不可登录用户，专门跑服务用，不要图省事用 root 跑 JVM。
+- 项目若要读写 Tomcat 目录之外的文件夹，记得单独给 tomcat 用户授权，daemon 模式下没有 root 权限兜底。
+- 回退方案：`bin/daemon.sh stop` 停止后直接删除 Tomcat 目录即可（tarball 解压式安装，不涉及包管理），不再需要时可用 `userdel tomcat` 清理用户。
+
+daemon 模式换来的是两件实在的事：会话退出带不死进程，JVM 不再跑在 root 身份下。代价只是编译一次 jsvc、多一个专用用户——在 Rocky 9 上这两步都已实测顺畅，照着做即可。
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

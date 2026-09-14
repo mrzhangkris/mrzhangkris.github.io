@@ -1,0 +1,7 @@
+{"title": "nmcli 在 NetworkManager 未运行时报错", "lines": [
+  {"t": "cmd", "s": "nmcli device show eth0"},
+  {"t": "out", "s": "Error: Could not create NMClient object:"},
+  {"t": "out", "s": "  Could not connect: No such file or directory."},
+  {"t": "note", "s": "输出按原始单行折行展示；nmcli 依赖 NetworkManager 运行"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（NM 1.54.3 已装、守护进程未跑）"}
+]}

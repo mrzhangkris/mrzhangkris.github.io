@@ -1,0 +1,15 @@
+{
+  "title": "cd / mkdir 实测",
+  "lines": [
+    {"t": "cmd", "s": "cd /var/log && pwd"},
+    {"t": "out", "s": "/var/log"},
+    {"t": "cmd", "s": "mkdir -p /root/a/b/c"},
+    {"t": "cmd", "s": "ls -R /root/a | grep -v \"^$\""},
+    {"t": "out", "s": "/root/a:"},
+    {"t": "out", "s": "b"},
+    {"t": "out", "s": "/root/a/b:"},
+    {"t": "out", "s": "c"},
+    {"t": "out", "s": "/root/a/b/c:"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+  ]
+}

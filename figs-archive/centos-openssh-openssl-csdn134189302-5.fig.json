@@ -1,0 +1,8 @@
+{"title": "升级后版本验证", "lines": [
+  {"t": "cmd", "s": "openssl version"},
+  {"t": "out", "s": "OpenSSL 3.1.4 24 Oct 2023 (Library: OpenSSL 3.1.4 24 Oct 2023)"},
+  {"t": "cmd", "s": "ssh -V"},
+  {"t": "out", "s": "OpenSSH_9.5p1, OpenSSL 3.1.4 24 Oct 2023"},
+  {"t": "note", "s": "两段都要核对；OpenSSL 仍是旧版 = --with-ssl-dir 没指对，重编"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（编译后）"}
+]}

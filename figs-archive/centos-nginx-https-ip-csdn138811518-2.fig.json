@@ -1,0 +1,9 @@
+{"title": "域名访问与 80 重定向验证", "lines": [
+  {"t": "cmd", "s": "curl -sk -o /dev/null -w \"%{http_code}\" \\"},
+  {"t": "config", "s": "    --resolve yourdomain.com:443:127.0.0.1 https://yourdomain.com/"},
+  {"t": "out", "s": "200"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\" http://127.0.0.1/"},
+  {"t": "out", "s": "301 -> https://127.0.0.1/"},
+  {"t": "note", "s": "域名 HTTPS 200（HTTP/2 生效）；80 按预期 301"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器（nginx/1.31.5）"}
+]}

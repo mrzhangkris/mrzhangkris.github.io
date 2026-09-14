@@ -1,0 +1,9 @@
+{"title": "错法二：认证服务日志里的子请求形态", "lines": [
+  {"t": "note", "s": "POST 主请求 + 正确凭证，认证服务 access_log 实录："},
+  {"t": "config", "s": "# 配了 proxy_pass_request_body off 时："},
+  {"t": "out", "s": "method=GET clength=-"},
+  {"t": "config", "s": "# 漏配后：请求体随子请求转发（clength=3 即 k=v）"},
+  {"t": "out", "s": "method=GET clength=3"},
+  {"t": "note", "s": "子请求恒为 GET；宽容端点无感，严格端点报 4xx"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

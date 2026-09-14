@@ -1,0 +1,10 @@
+{"title": "环回盘准备：50M 磁盘 + 分区 + 挂载（扩容前）", "lines": [
+  {"t": "cmd", "s": "truncate -s 50M /tmp/disk.img"},
+  {"t": "cmd", "s": "losetup -f --show /tmp/disk.img"},
+  {"t": "out", "s": "/dev/loop4"},
+  {"t": "cmd", "s": "echo \"start=2048, type=83\" | sfdisk /dev/loop4"},
+  {"t": "cmd", "s": "mkfs.ext4 -q /dev/loop4p1 && mount /dev/loop4p1 /mnt/demo"},
+  {"t": "cmd", "s": "df -h /mnt/demo | tail -1"},
+  {"t": "out", "s": "/dev/loop4p1     41M   14K   38M   1% /mnt/demo"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（--privileged，环回盘模拟云盘）"}
+]}

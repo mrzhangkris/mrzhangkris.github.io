@@ -1,0 +1,10 @@
+{"title": "激活连接并验证地址与默认路由", "lines": [
+  {"t": "cmd", "s": "nmcli con up static-eth0"},
+  {"t": "out", "s": "Connection successfully activated"},
+  {"t": "cmd", "s": "ip -4 addr show eth0 | grep inet"},
+  {"t": "out", "s": "    inet 192.168.1.100/24 brd 192.168.1.255 scope global"},
+  {"t": "cmd", "s": "ip route show | grep default"},
+  {"t": "out", "s": "default via 192.168.1.1 dev eth0 proto static metric 100"},
+  {"t": "note", "s": "地址与默认路由同时生效，来自 con add 里的 address/gateway"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（NetworkManager 1.54.3）"}
+]}

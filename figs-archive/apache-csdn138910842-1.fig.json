@@ -1,13 +1,10 @@
 {
-  "title": "新旧版本并行实测",
+  "title": "编译安装完成：新目录报出目标版本",
   "lines": [
-    {"t": "note", "s": "新版本 8080 测试，旧版本继续服务 80（容器实测）"},
-    {"t": "cmd", "s": "/usr/local/apache2.4.46/bin/apachectl -v | head -1"},
+    {"t": "cmd", "s": "/usr/local/apache2.4.46/bin/apachectl -v"},
     {"t": "out", "s": "Server version: Apache/2.4.46 (Unix)"},
-    {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080"},
-    {"t": "out", "s": "200"},
-    {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}\\n' localhost"},
-    {"t": "out", "s": "403"},
-    {"t": "note", "s": "旧版本仍在 80 应答（无站点内容故为 403）"}
+    {"t": "out", "s": "Server built:   Sep 14 2026 00:34:07"},
+    {"t": "note", "s": "--prefix=/usr/local/apache2.4.46 独立安装，未动旧版"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器 (--with-included-apr)"}
   ]
 }

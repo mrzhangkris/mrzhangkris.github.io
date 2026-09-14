@@ -1,11 +1,14 @@
 {
-  "title": "openresty openssl conf",
-  "type": "config",
+  "title": "报错复现：OpenResty 1.27.1.1 (debian:12)",
+  "type": "cmd",
   "lines": [
-    {"t": "config", "s": "CORE_INCS=\"$CORE_INCS $OPENSSL/include\""},
-    {"t": "config", "s": "CORE_DEPS=\"$CORE_DEPS $OPENSSL/include/openssl/ssl.h\""},
-    {"t": "config", "s": "CORE_LIBS=\"$CORE_LIBS $OPENSSL/lib/libssl.a\""},
-    {"t": "config", "s": "CORE_LIBS=\"$CORE_LIBS $OPENSSL/lib/libcrypto.a\""},
-    {"t": "note", "s": "去掉默认的 .openssl 前缀，适配系统 OpenSSL 布局"}
+    {"t": "cmd", "s": "./configure --with-openssl=/usr/local/openssl"},
+    {"t": "cmd", "s": "make -j$(nproc)"},
+    {"t": "out", "s": "/bin/sh: 3: ./config: not found"},
+    {"t": "out", "s": "make[2]: *** [objs/Makefile:3095:"},
+    {"t": "out", "s": "  /usr/local/openssl/.openssl/include/openssl/ssl.h] Error 127"},
+    {"t": "note", "s": "# make 走到 OpenSSL 子构建:cd 进目录跑 ./config,但没有该脚本"},
+    {"t": "note", "s": "# 报错里出现 .openssl 路径,就是选项语义走错的信号"},
+    {"t": "note", "s": "实测环境：debian:12 容器,OpenResty 1.27.1.1 + OpenSSL 3.3.1"}
   ]
 }

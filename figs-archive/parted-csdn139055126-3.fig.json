@@ -1,10 +1,16 @@
-{"title": "-s 脚本模式下缩小分区被安全拦截", "lines": [
-  {"t": "cmd", "s": "parted -s /dev/loop0 resizepart 1 600MiB"},
-  {"t": "out", "s": "Warning: Shrinking a partition can cause"},
-  {"t": "out", "s": "  data loss, are you sure you want to"},
-  {"t": "out", "s": "  continue?"},
-  {"t": "note", "s": "实测：分区当前 839MB，缩到 600MiB 被拦"},
-  {"t": "note", "s": "-s 脚本模式不自动应答 → 操作中止，分区未变"},
-  {"t": "note", "s": "扩容不问，缩小必问——脚本里要用"},
-  {"t": "note", "s": "---pretend-input-tty + 管道喂 \"Yes\""}
-]}
+{
+  "title": "缩小分区：-s 被拦，pretend-input-tty 放行",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "parted -s /dev/loop8 resizepart 1 300MiB"},
+    {"t": "out", "s": "Warning: Shrinking a partition can cause data loss,"},
+    {"t": "out", "s": "  are you sure you want to continue?"},
+    {"t": "out", "s": "exit=1"},
+    {"t": "note", "s": "# -s 无人应答直接中止,print 确认 End 仍 944MB"},
+    {"t": "cmd", "s": "printf \"Yes\\n\" | parted ---pretend-input-tty /dev/loop8 \\"},
+    {"t": "cmd", "s": "  resizepart 1 300MiB"},
+    {"t": "out", "s": "Yes/No? Yes"},
+    {"t": "note", "s": "# 放行后 End 变 315MB;关键是不带 -s,应答经管道喂入"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (GNU parted 3.5)"}
+  ]
+}

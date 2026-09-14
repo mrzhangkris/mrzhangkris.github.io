@@ -1,0 +1,14 @@
+{
+  "title": "query_string 透传：漏写即丢参（A/B 实测）",
+  "type": "cmd",
+  "lines": [
+    {"t": "config", "s": "try_files $uri $uri/ /index.php?$query_string;"},
+    {"t": "cmd", "s": "curl -s 'localhost:8080/missing?id=42&type=report'"},
+    {"t": "out", "s": "qs=id=42&type=report uri=/index.php"},
+    {"t": "config", "s": "try_files $uri $uri/ /index.php;   # 漏写参数"},
+    {"t": "cmd", "s": "curl -s 'localhost:8080/missing?id=42&type=report'"},
+    {"t": "out", "s": "qs= uri=/index.php orig=/missing?id=42&type=report"},
+    {"t": "note", "s": "# 漏写则 qs 为空;原始路径要从 $request_uri 取"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 (nginx:alpine 容器)"}
+  ]
+}

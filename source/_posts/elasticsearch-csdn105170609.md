@@ -3,18 +3,18 @@ title: "Elasticsearch 7.6.1 安装：tar 包手动部署并指定 JDK"
 date: 2020-03-29 10:05:30
 categories: [技术]
 tags: [Elasticsearch]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1762163516269-3c143e04175c?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 在 Linux 上快速跑起一个 Elasticsearch，用官方 tar 包手动部署是最直接的方式。这篇记录 Elasticsearch 7.6.1（no-jdk 版本，安装包内不含 JDK）的完整安装过程：先装好 JDK，创建专用用户，再解压、指定 JDK 路径、启动并验证。每一步带验证点，关键报错都来自实跑。
 
-装完你能得到什么：一个监听 9200 端口的单节点 ES，`curl 127.0.0.1:9200` 返回版本 JSON，集群健康 green。
+装好的是一个监听 9200 端口的单节点 ES，`curl 127.0.0.1:9200` 返回版本 JSON，集群健康 green。
 
 ## 前置条件
 
-- 操作系统：Linux x86_64（本文实跑环境为 aarch64 容器 + ES 7.6.1 tar 包；x86_64 生产环境流程完全一致，个别平台相关报错见"常见报错"）
+- 操作系统：Linux x86_64（本文实跑环境为 rockylinux:9 容器，linux/amd64，ES 7.6.1 no-jdk tar 包；其他发行版流程一致，个别平台相关报错见"常见报错"）
 - JDK：11（ES 7.6.1 官方支持 JDK 11；no-jdk 版不含 JDK，必须先装）
 - 权限：root（安装阶段）+ 一个普通用户（运行阶段，ES 拒绝 root 启动）
 - 系统参数：`vm.max_map_count ≥ 262144`、文件描述符 ≥ 65536（ES 启动时的 bootstrap checks 会强制校验）
@@ -25,15 +25,17 @@ updated: 2026-09-11
 先装基础工具，再装 JDK：
 
 ```bash
-yum install -y wget tar net-tools vim
-yum install -y java-11-openjdk.x86_64
+dnf install -y wget tar
+dnf install -y java-11-openjdk.x86_64
 ```
 
-验证点：`java --version` 输出 openjdk 11.x：
+Rocky 9 上 `/usr/bin/yum` 是指向 dnf 的软链接，老命令照常能用；CentOS 7 上把 dnf 换回 yum 即可。
+
+验证点：`java --version` 输出 openjdk 11.x。实测装到的是 11.0.25：
 
 ![配图1](/images/csdn/figures/elasticsearch-csdn105170609-1.png)
 
-`yum search "*jdk*"` 可以按关键字列出仓库里所有 JDK 包（原文用这个方式找包名），从结果里挑 `java-11-openjdk` 装上即可。OpenJDK 默认安装在 /usr/lib/jvm/ 目录下，后面配 JAVA_HOME 要用这个路径。
+`dnf search jdk` 可以按关键字列出仓库里所有 JDK 包（原文用 `yum search "*jdk*"` 找包名，两者等价），从结果里挑 `java-11-openjdk` 装上即可。OpenJDK 默认安装在 /usr/lib/jvm/ 目录下，后面配 JAVA_HOME 要用这个路径。
 
 ## 创建 elasticsearch 用户和用户组
 
@@ -57,7 +59,7 @@ tar -zxf elasticsearch-7.6.1-no-jdk-linux-x86_64.tar.gz
 
 验证点：解压后出现 `elasticsearch-7.6.1/` 目录，里面有 bin/config/lib 等子目录。
 
-> 实测注：上述下载 URL 于 2026-09 验证仍有效（HTTP 200，148MB）。
+> 实测注：上述下载 URL 于 2026-09-14 复验仍有效（HTTP 200，148131656 字节）。
 
 ## 在 elasticsearch-env 文件中指定 JDK 路径
 
@@ -74,11 +76,11 @@ cd elasticsearch-7.6.1/bin/
 vim elasticsearch-env
 ```
 
-插入的内容（路径换成你自己的 JDK 路径，`ls -d /usr/lib/jvm/java-11-openjdk-*` 可以查到）：
+插入的内容（路径换成你自己的 JDK 路径，`ls -d /usr/lib/jvm/java-11-openjdk-*` 可以查到；下面是本次 Rocky 9 实测的真实路径）：
 
 ```bash
 # now set the path to java
-JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.6.10-0.el8_1.x86_64
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.25.0.9-7.el9.x86_64
 if [ ! -z "$JAVA_HOME" ]; then
   JAVA="$JAVA_HOME/bin/java"
   JAVA_TYPE="JAVA_HOME"
@@ -106,12 +108,17 @@ echo 'es hard nofile 65536' >> /etc/security/limits.conf
 
 ## 启动 elasticsearch
 
-把安装目录交给 es 用户，再以 es 身份启动：
+把安装目录交给 es 用户，再以 es 身份启动。两个实跑踩到的位置问题先说清：
+
+- **安装目录别放在 /root 下**。es 用户进不去 /root（700 权限），`su es` 后 `cd` 直接 Permission denied——本次实测把目录放在 /opt 下解决；
+- **精简系统要装 procps-ng**。`-d` 后台启动依赖 `ps` 命令，Rocky 9 最小环境（容器）实测报 `./elasticsearch: line 58: ps: command not found`，`dnf install -y procps-ng` 即可。
 
 ```bash
-chown -R es:es elasticsearch-7.6.1
+mv elasticsearch-7.6.1 /opt/            # 别放 /root 下
+dnf install -y procps-ng                # 精简环境补 ps 命令
+chown -R es:es /opt/elasticsearch-7.6.1
 su es
-cd elasticsearch-7.6.1/bin/
+cd /opt/elasticsearch-7.6.1/bin/
 ./elasticsearch          # 前台启动
 ./elasticsearch -d -p /tmp/es.pid   # 后台启动并记录 PID
 ```
@@ -146,7 +153,8 @@ curl '127.0.0.1:9200/_cluster/health?pretty'
 - **`can not run elasticsearch as root`**：用 root 启动了，切到普通用户（本文的 es）再跑。
 - **`max virtual memory areas vm.max_map_count [65530] is too low`**：bootstrap check 拦截，按上文调 sysctl。
 - **`max file descriptors [4096] for elasticsearch process is too low`**：同上，调 limits.conf 后重新登录 es 用户生效。
-- **ARM 平台报 `X-Pack is not supported and Machine Learning is not available for [linux-aarch64]`**：7.6.1 的 ML 模块没有 ARM 构建。x86_64 生产环境不会遇到；ARM 环境实测在 config/elasticsearch.yml 加 `xpack.ml.enabled: false` 后可正常启动（其余 X-Pack 功能标记为 unsupported 但可用）。
+- **`failed to obtain node locks, tried [[.../data]] with lock id [0]`**：data 目录已被别的 ES 进程锁住——多数是上一个节点还在跑（先 `kill $(cat /tmp/es.pid)` 或 `jps` 找进程），也可能是复用了旧集群的 data 目录，清空或换目录。
+- **ARM 机器上没有 7.6.1 可装**：7.6.1 官方只发了 linux-x86_64 构建包（2026-09-14 实测 aarch64 tar 下载链接 404），官方 linux-aarch64 构建从 7.8 起才有（7.8.1 aarch64 包实测 HTTP 200）。ARM 机器要么升版本，要么用 Docker 官方镜像处理跨架构。
 
 ## 注意事项
 

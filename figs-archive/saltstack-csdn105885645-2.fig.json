@@ -1,0 +1,12 @@
+{"title": "Minion 密钥认证：-A 接受后进入 Accepted", "lines": [
+  {"t": "cmd", "s": "salt-key -y -A"},
+  {"t": "out", "s": "The following keys are going to be accepted:"},
+  {"t": "out", "s": "Key for minion master-node1 accepted."},
+  {"t": "out", "s": "Key for minion minion-node2 accepted."},
+  {"t": "cmd", "s": "salt-key -L"},
+  {"t": "out", "s": "Accepted Keys:"},
+  {"t": "out", "s": "master-node1"},
+  {"t": "out", "s": "minion-node2"},
+  {"t": "note", "s": "认证前先用 salt-key -F master 比对指纹防 MiTM"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 双容器"}
+]}

@@ -1,12 +1,12 @@
-{
-  "title": "profile 恒回源；no_cache=1 参数同样绕过（实测）",
-  "lines": [
-    {"t": "cmd", "s": "curl -si localhost/profile/ | grep -E '^HTTP|X-Proxy-Cache'"},
-    {"t": "out", "s": "HTTP/1.1 200 OK"},
-    {"t": "out", "s": "X-Proxy-Cache: BYPASS"},
-    {"t": "note", "s": "proxy_cache_bypass 1 恒真，永远回源"},
-    {"t": "cmd", "s": "curl -si 'localhost/?no_cache=1' | grep X-Proxy-Cache"},
-    {"t": "out", "s": "X-Proxy-Cache: BYPASS"},
-    {"t": "note", "s": "$arg_no_cache 命中，读缓存被跳过"}
-  ]
-}
+{"title": "个人页恒回源，其余路径照常缓存", "lines": [
+  {"t": "cmd", "s": "curl -si http://localhost/profile/ | grep -E '^HTTP|X-Proxy-Cache'"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "out", "s": "X-Proxy-Cache: BYPASS"},
+  {"t": "note", "s": "bypass 1 恒真：重复请求依旧 BYPASS，每次回源"},
+  {"t": "cmd", "s": "curl -si 'http://localhost/?no_cache=1' | grep X-Proxy-Cache"},
+  {"t": "out", "s": "X-Proxy-Cache: BYPASS"},
+  {"t": "note", "s": "查询参数命中 $arg_no_cache，同样绕过"},
+  {"t": "cmd", "s": "curl -si http://localhost/ | grep X-Proxy-Cache"},
+  {"t": "out", "s": "X-Proxy-Cache: HIT"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

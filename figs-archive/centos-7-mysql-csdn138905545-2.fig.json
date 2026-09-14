@@ -1,0 +1,14 @@
+{
+  "title": "Rocky Linux 9 安装 MySQL 8.0 实测",
+  "lines": [
+    {"t": "cmd", "s": "mysql -u root --skip-password -e \"SELECT VERSION();\""},
+    {"t": "out", "s": "8.0.46"},
+    {"t": "cmd", "s": "mysql -u root --skip-password -e \"SHOW DATABASES;\" | tr \"\\n\" \" \""},
+    {"t": "out", "s": "Database information_schema mysql performance_schema sys"},
+    {"t": "cmd", "s": "mysql -u newuser -p'Str0ng_pass-1' -h 127.0.0.1 -e \"SHOW DATABASES;\""},
+    {"t": "out", "s": "Database"},
+    {"t": "out", "s": "appdb"},
+    {"t": "out", "s": "information_schema"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器 (MySQL 8.0.46)"}
+  ]
+}

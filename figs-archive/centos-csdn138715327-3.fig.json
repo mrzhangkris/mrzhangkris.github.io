@@ -1,0 +1,9 @@
+{
+  "title": "rm 递归删除实测",
+  "lines": [
+    {"t": "cmd", "s": "rm -rf /root/a && ls /root/a"},
+    {"t": "out", "s": "ls: cannot access '/root/a': No such file or directory"},
+    {"t": "note", "s": "报 No such file 即删干净，没有回收站"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "title": "OpenResty 以 HTTP 发布仓库",
+  "lines": [
+    {"t": "cmd", "s": "dnf -y install openresty"},
+    {"t": "out", "s": "openresty-1.31.1.1-1.el9.aarch64"},
+    {"t": "config", "s": "location / { root /data/yum-repo; autoindex on; }"},
+    {"t": "cmd", "s": "/usr/local/openresty/bin/openresty"},
+    {"t": "cmd", "s": "curl -sI http://127.0.0.1:8080/repodata/repomd.xml"},
+    {"t": "out", "s": "HTTP/1.1 200 OK"},
+    {"t": "out", "s": "Server: openresty/1.31.1.1"},
+    {"t": "note", "s": "根路径直指仓库目录，repodata 可按路径下载"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（openresty 官方 yum 源安装）"}
+  ]
+}

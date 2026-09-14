@@ -1,0 +1,9 @@
+{"title": "逃逸审计：白名单命令只以受限用户身份运行", "lines": [
+  {"t": "cmd", "s": "cat /etc/passwd"},
+  {"t": "out", "s": "root:x:0:0:root:/root:/bin/bash"},
+  {"t": "cmd", "s": "cat /etc/shadow"},
+  {"t": "out", "s": "cat: /etc/shadow: Permission denied"},
+  {"t": "note", "s": "cat 读得到全局可读文件，越权文件读不了"},
+  {"t": "note", "s": "要防的是 vim/less 这类能再起子进程的命令"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器"}
+]}

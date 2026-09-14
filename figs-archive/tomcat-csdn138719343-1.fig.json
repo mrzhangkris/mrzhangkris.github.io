@@ -1,0 +1,11 @@
+{"title": "现场一：JAVA_HOME / java 不存在，startup 拒绝", "lines": [
+  {"t": "cmd", "s": "/opt/tomcat/bin/startup.sh"},
+  {"t": "out", "s": "Neither the JAVA_HOME nor the JRE_HOME environment variable is defined"},
+  {"t": "out", "s": "At least one of these environment variable"},
+  {"t": "out", "s": "  is needed to run this program"},
+  {"t": "cmd", "s": "echo $?"},
+  {"t": "out", "s": "1"},
+  {"t": "note", "s": "JAVA_HOME 未设置且 PATH 找不到 java 时，脚本直接拒绝启动"},
+  {"t": "note", "s": "修法：export JAVA_HOME 指向 JDK 根目录，或补装 java"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（Tomcat 10.1.59）"}
+]}

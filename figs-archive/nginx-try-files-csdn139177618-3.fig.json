@@ -1,0 +1,14 @@
+{
+  "title": "=404 兜底 + error_page 自定义错误页",
+  "type": "cmd",
+  "lines": [
+    {"t": "config", "s": "error_page 404 /404.html;"},
+    {"t": "config", "s": "try_files $uri $uri/ =404;"},
+    {"t": "cmd", "s": "curl -s -w ' [%{http_code}]' localhost:8080/nope.html"},
+    {"t": "out", "s": "<h1>PAGE NOT FOUND</h1> [404]"},
+    {"t": "cmd", "s": "curl -s -o /dev/null -w [%{http_code}] localhost:8080/about.html"},
+    {"t": "out", "s": "[200]"},
+    {"t": "note", "s": "# 状态码 404 保留,响应体被 error_page 替换"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 (nginx:alpine 容器)"}
+  ]
+}

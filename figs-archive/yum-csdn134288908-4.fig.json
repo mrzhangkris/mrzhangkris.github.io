@@ -1,0 +1,14 @@
+{
+  "title": "repodata 失步故障复现与修复",
+  "lines": [
+    {"t": "cmd", "s": "rm /data/yum-repo/wget-1.21.1-11.el9_8.aarch64.rpm"},
+    {"t": "note", "s": "删掉包但 repodata 未更新，模拟索引失步"},
+    {"t": "cmd", "s": "dnf --disablerepo=\"*\" --enablerepo=\"local-yum\" install wget"},
+    {"t": "out", "s": "Error: Error downloading packages:"},
+    {"t": "out", "s": "wget-1.21.1-11.el9_8.aarch64: Cannot download, all mirrors…"},
+    {"t": "cmd", "s": "createrepo_c --update /data/yum-repo/"},
+    {"t": "cmd", "s": "dnf --disablerepo=\"*\" --enablerepo=\"local-yum\" install wget"},
+    {"t": "out", "s": "Complete!"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（dnf 4.14）"}
+  ]
+}

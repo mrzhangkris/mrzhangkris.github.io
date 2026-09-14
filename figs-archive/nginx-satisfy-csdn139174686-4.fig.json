@@ -1,7 +1,10 @@
-{"title": "return 短路 access/auth 实测", "lines": [
-  {"t": "config", "s": "location /secret { return 404; }"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost:81/secret"},
-  {"t": "out", "s": "404"},
-  {"t": "note", "s": "无凭证、非白名单也一样：rewrite 阶段即终结，"},
-  {"t": "note", "s": "IP 检查和密码验证压根没执行"}
+{"title": "deny all 写在前面：白名单失效", "lines": [
+  {"t": "config", "s": "deny all;           # 错：先兜底，allow 永远轮不到"},
+  {"t": "config", "s": "allow 127.0.0.1;"},
+  {"t": "cmd", "s": "curl -si localhost:8003/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 401 Unauthorized"},
+  {"t": "cmd", "s": "curl -si -u user:password1 localhost:8003/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "note", "s": "IP 关卡对谁都说'不'：satisfy any 下只剩密码门进人"},
+  {"t": "note", "s": "nginx -t 无任何警告；实测环境：nginx:alpine (1.31.5)"}
 ]}

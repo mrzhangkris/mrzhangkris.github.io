@@ -1,0 +1,10 @@
+{"title": "Rocky 9 安装 Salt：EPEL 源，3005.4", "lines": [
+  {"t": "config", "s": "dnf -y install epel-release"},
+  {"t": "config", "s": "dnf -y install salt-master salt-minion"},
+  {"t": "cmd", "s": "rpm -q salt"},
+  {"t": "out", "s": "salt-3005.4-1.el9.noarch"},
+  {"t": "cmd", "s": "salt-call --local grains.get saltversion"},
+  {"t": "out", "s": "3005.4"},
+  {"t": "note", "s": "EPEL9 直接提供 Salt 3005.4，Python3 运行时"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器 x2（master/minion）"}
+]}

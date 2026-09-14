@@ -1,10 +1,8 @@
-{
-  "title": "?? URL 合并三个 CSS（nginx/1.28.0 + concat 实拍）",
-  "lines": [
-    {"t": "cmd", "s": "curl -s \"localhost/css/??style1.css,style2.css,style3.css\""},
-    {"t": "out", "s": "body { color: red; }"},
-    {"t": "out", "s": "h1 { font-size: 2em; }"},
-    {"t": "out", "s": ".nav { display: flex; }"},
-    {"t": "note", "s": "三个文件拼进一个响应，浏览器只发一次请求"}
-  ]
-}
+{"title": "一条 URL 合并三个 CSS", "lines": [
+  {"t": "cmd", "s": "curl -s \"localhost/css/??style1.css,style2.css,style3.css\""},
+  {"t": "out", "s": "body { color: red; }"},
+  {"t": "out", "s": "h1 { font-size: 2em; }"},
+  {"t": "out", "s": ".box { margin: 0; }"},
+  {"t": "note", "s": "按 URL 里的文件顺序拼成一个响应"},
+  {"t": "note", "s": "实测：Alpine 容器自编译 nginx 1.28.0 + nginx-http-concat"}
+]}

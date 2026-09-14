@@ -1,0 +1,10 @@
+{"title": "修复验证：进程在、端口通、首页 200", "lines": [
+  {"t": "cmd", "s": "/opt/tomcat/bin/startup.sh"},
+  {"t": "out", "s": "Tomcat started."},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}\\n' http://127.0.0.1:8080/"},
+  {"t": "out", "s": "200"},
+  {"t": "cmd", "s": "curl -s http://127.0.0.1:8080/ | grep -o '<title>.*</title>'"},
+  {"t": "out", "s": "<title>Apache Tomcat/10.1.59</title>"},
+  {"t": "note", "s": "每次处理后按这三步确认，才算闭环"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+]}

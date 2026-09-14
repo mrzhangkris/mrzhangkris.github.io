@@ -1,7 +1,11 @@
-{"title": "sub_filter_once 实测", "lines": [
-  {"t": "config", "s": "sub_filter 'old.example.com' 'new.example.com';"},
-  {"t": "out", "s": "默认(once on): 第一处 new, 第二处 old"},
-  {"t": "config", "s": "sub_filter_once off;"},
-  {"t": "out", "s": "off: new.example.com ×2, 全部替换"},
-  {"t": "note", "s": "响应里有两处 old.example.com, nginx/1.31.5 实测"}
+{"title": "默认只换第一处 vs once off", "lines": [
+  {"t": "config", "s": "sub_filter \"old.example.com\" \"new.example.com\";"},
+  {"t": "cmd", "s": "curl -s localhost:8005/page.html"},
+  {"t": "out", "s": "<p><a href=\"http://new.example.com/b\">b</a></p>"},
+  {"t": "out", "s": "<p><a href=\"http://old.example.com/c\">c</a></p>"},
+  {"t": "out", "s": "<p><a href=\"http://old.example.com/d\">d</a></p>"},
+  {"t": "cmd", "s": "curl -s localhost/page.html | grep -c new.example.com"},
+  {"t": "out", "s": "3"},
+  {"t": "note", "s": "默认 on 换完第一处收工；off 全换（含混大小写处）"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

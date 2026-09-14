@@ -1,14 +1,16 @@
 ---
 title: "parted 磁盘分区管理：从查看、创建到调整大小"
 date: 2024-05-20 09:45:20
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Linux]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1496664444929-8c75efb9546f?w=1600&q=80&fm=jpg
 ---
 
-给新盘分区、扩容时改分区大小，parted 是比 fdisk 更顺手的工具：它支持 MBR 和 GPT 两种分区表，fdisk（旧版本）处理不了的大于 2TB 磁盘它直接管，命令形式还适合写进脚本，自动化装机很常用。这篇按日常操作过一遍 parted 的用法，全部命令在 GNU parted 3.5（rockylinux:9 容器）实跑验证，并指出两个容易出事的点：脚本模式缩小分区会被拦、resizepart 不会帮你扩文件系统。
+给新盘分区、扩容时改分区大小，parted 是比 fdisk 更顺手的工具：它支持 MBR 和 GPT 两种分区表，fdisk（旧版本）处理不了的大于 2TB 磁盘它直接管，命令形式还适合写进脚本，自动化装机很常用。这篇按日常操作过一遍 parted 的用法，全部命令在 Rocky Linux 9.3 容器（GNU parted 3.5）里用 loop 盘（稀疏文件模拟的块设备）实跑验证，并指出几个容易出事的点：脚本模式缩小分区会被拦、resizepart 不会帮你扩文件系统、`-s` 配合管道应答会静默失效。
+
+![配图：parted 全流程实测](/images/csdn/figures/parted-csdn139055126.png)
 
 ## 使用场景
 
@@ -27,14 +29,14 @@ cover: https://images.unsplash.com/photo-1496664444929-8c75efb9546f?w=1600&q=80&
 sudo apt-get update
 sudo apt-get install parted
 
-# CentOS/Fedora
-sudo yum install parted
+# Rocky/RHEL 9 系
+sudo dnf install parted
 
 # Arch Linux
 sudo pacman -S parted
 ```
 
-验证点：`parted --version` 输出版本号（实测为 GNU parted 3.5）。
+验证：`parted --version` 输出版本号（Rocky 9.3 镜像仓库实测为 GNU parted 3.5）。
 
 ## 动手前先看磁盘现状
 
@@ -58,9 +60,9 @@ Number  Start   End     Size    File system  Name     Flags
  2      538MB   1000GB  999GB   ext4         primary
 ```
 
-这里能看到磁盘型号、容量、扇区大小、分区表类型（gpt）以及每个分区的起止位置。实测环境用 loop 设备（稀疏文件模拟磁盘）跑的 print 输出：
+这里能看到磁盘型号、容量、扇区大小、分区表类型（gpt）以及每个分区的起止位置。本次实跑用 loop 设备（稀疏文件模拟磁盘）代替物理盘，空白盘的 print 输出：
 
-![配图1](/images/csdn/figures/parted-csdn139055126-1.png)
+![配图1：print 查看盘现状](/images/csdn/figures/parted-csdn139055126-1.png)
 
 ## 创建新分区表
 
@@ -98,18 +100,18 @@ sudo parted /dev/sda align-check optimal 1
 sudo parted /dev/sda resizepart 1 600GiB
 ```
 
-实测 500MiB → 900MiB 扩容：
+实测 500MiB → 900MiB 扩容（print 前后对比在图里）：
 
-![配图2](/images/csdn/figures/parted-csdn139055126-2.png)
+![配图2：resizepart 扩容实测](/images/csdn/figures/parted-csdn139055126-2.png)
 
 两个关键认知：
 
 1. **resizepart 只改分区边界，不动文件系统**——分区扩了之后，里面的文件系统还是旧大小，必须再做一步文件系统层扩容（ext4 用 `resize2fs /dev/sda1`，xfs 用 `xfs_growfs` 挂载点）。漏了这一步，`df` 看到的可用空间纹丝不动，是新手最常困惑的地方。
-2. **缩小分区会被安全拦截**：`-s` 脚本模式下执行缩小操作，parted 会输出 `Warning: Shrinking a partition can cause data loss` 并中止（脚本模式无人应答交互问题），分区不会真的被缩。实测验证：
+2. **缩小分区会被安全拦截**：`-s` 脚本模式下执行缩小操作，parted 会输出 `Warning: Shrinking a partition can cause data loss` 并以退出码 1 中止（无人应答交互问题），分区保持原样。实测验证：
 
-![配图3](/images/csdn/figures/parted-csdn139055126-3.png)
+![配图3：缩小拦截与放行实测](/images/csdn/figures/parted-csdn139055126-3.png)
 
-脚本里确实需要缩小时，用 `---pretend-input-tty` 加管道喂应答（`parted -s ---pretend-input-tty ... resizepart 1 600MiB <<< "Yes"`）——但请先备份，缩小分区是数据丢失高危操作。扩容方向不会问，脚本直接跑。
+脚本里确实需要缩小时，**去掉 `-s`**，用 `---pretend-input-tty` 配管道喂应答（`printf "Yes\n" | parted ---pretend-input-tty /dev/loop8 resizepart 1 300MiB`）。实测有个反直觉的细节：带 `-s` 时即使把 "Yes" 管道喂进去，parted 也直接中止（exit 1）；不带 `-s` 才会走到 `Yes/No?` 提示并完成缩小（print 确认 End 从 944MB 变 315MB）。缩小分区是数据丢失高危操作，先备份再动手。扩容方向不会问，脚本直接跑。
 
 调整大小之前强烈建议先备份数据；对活动分区（正在挂载、承载系统）操作可能导致系统异常，尽量在未挂载状态下进行。
 
@@ -131,9 +133,9 @@ parted 的 mkpart 只做分区表层面的登记，新分区要用 mkfs 系列�
 sudo mkfs.ext4 /dev/sda1
 ```
 
-验证点：`mount /dev/sda1 /mnt && df -h /mnt` 能看到正确容量。
+验证：`mount /dev/sda1 /mnt && df -h /mnt` 能看到正确容量。
 
-> 注：mkfs/resize2fs 环节在笔者的容器环境未实跑（Docker Desktop 的 loop 设备不生成 /dev/loopXp1 分区节点，partscan/partx 均受限），分区表操作（mklabel/mkpart/resizepart/rm/align-check/print）均已实测。物理机上 mkpart 后分区节点即时可用，无此限制。
+> 注：mkfs/resize2fs 环节未实跑（2026-09-14 在 Rocky 9.3 容器复核：`losetup -P`/`partprobe`/`partx -a` 均不为本环境的 loop 设备生成分区节点，受 Docker Desktop 虚拟机内核限制），分区表操作（mklabel/mkpart/resizepart/rm/align-check/print）均已实测。物理机上 mkpart 后分区节点即时可用，无此限制。
 
 ## 注意事项
 
@@ -142,8 +144,10 @@ sudo mkfs.ext4 /dev/sda1
 - **不确定就先看**：对命令结果没把握时，用 `print` 查看当前磁盘状态和分区布局再继续；脚本里用 `parted -l` 或 `print` 先断言目标盘特征（容量、已有分区），防止盘符漂移写错对象——/dev/sda 在多台机器上不是同一块盘。
 - **分区对齐**：起点选 `1MiB` 这类对齐值，建完用 `align-check optimal` 验证，SSD 上不对齐的性能损失很可观。
 - **resizepart ≠ 扩容完成**：分区边界改完还要 resize2fs/xfs_growfs 跟上，文件系统才知道空间变大了。
-- **脚本模式的缩小保护**：`-s` 下缩小分区会被 Warning 拦截中止（实测），别以为脚本跑完就成功了——检查退出码和 print 结果。
+- **脚本模式的缩小保护**：`-s` 下缩小分区会被 Warning 拦截中止（实测退出码 1），别以为脚本跑完就成功了——检查退出码和 print 结果；放行应答的写法见上文，`-s` 必须去掉。
 
-parted 的日常就是 print → mklabel → mkpart → align-check → resizepart 这条链，每步都有明确的验证点。记住它的边界：管分区表不管文件系统、扩容不问缩小必问、脚本跑完要回头 print 确认——磁盘操作没有撤销键，print 就是你唯一的安全网。
+## 小结
+
+parted 的日常就是 print → mklabel → mkpart → align-check → resizepart 这条链，每步都有明确的验证动作。记住它的边界：管分区表不管文件系统、扩容不问缩小必问、`-s` 会把交互问题变成中止、脚本跑完要回头 print 确认——磁盘操作没有撤销键，print 就是你唯一的安全网。
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

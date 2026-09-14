@@ -1,10 +1,10 @@
 ---
 title: "Oracle 网络传输加密：sqlnet.ora 服务端与 JDBC 客户端配置"
 date: 2024-06-03 08:45:00
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Oracle, 网络服务]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1591913139332-f8172ef511da?w=1600&q=80&fm=jpg
 ---
 
@@ -144,6 +144,8 @@ WHERE sid = SYS_CONTEXT('USERENV', 'SID');
 - 加密有少量 CPU 开销，高吞吐场景留意服务端负载变化；先压测再全量。
 - 原生网络加密防的是"链路窃听/篡改"，不防两端本身——客户端内存里的明文、服务端的数据文件加密（TDE）是另外两层，别混为一谈。
 - 本文配置未实跑，参数名与级别语义以所用 Oracle 版本的官方文档为准（不同大版本默认算法有差异）。
+
+## 小结
 
 传输加密这件事，Oracle 原生方案的门槛其实很低：服务端四行参数、客户端四个属性，两端级别和算法对齐即可。真正要花时间的是上线前的兼容面盘点和上线后的 `v$session_connect_info` 验证——配置生效和加密生效，是两件事。
 

@@ -1,10 +1,10 @@
 ---
 title: "Nginx auth_request 模块：把认证交给外部服务"
 date: 2024-05-25 09:00:00
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1462826303086-329426d1aef5?w=1600&q=80&fm=jpg
 ---
 
@@ -18,7 +18,7 @@ cover: https://images.unsplash.com/photo-1462826303086-329426d1aef5?w=1600&q=80&
 
 ## 核心机制一句话
 
-`auth_request /_auth;` 让 Nginx 在 access 阶段向 `/_auth` 发一个**内部子请求**，按子请求的状态码做裁决：2xx 放行，401/403 拒绝，其他状态码也拒绝并原样透传。认证逻辑全部在认证端点里，Nginx 只认状态码。
+`auth_request /_auth;` 让 Nginx 在 access 阶段向 `/_auth` 发一个**内部子请求**，按子请求的状态码做裁决：2xx 放行，401/403 拒绝，其他状态码一律按子请求错误处理、客户端只会看到 500。认证逻辑全部在认证端点里，Nginx 只认状态码。
 
 ## 实例一：放行与拒绝，三种状态码
 
@@ -95,30 +95,24 @@ location /protected/ {
 
 实测现象就是"无凭证也返回 200"——auth_request 压根没被执行。`return`、`rewrite` 属于 rewrite 阶段，跑在 access 阶段的 auth_request 之前；受保护 location 的正常出口应该是静态文件或 `proxy_pass`。
 
-**错法二**：漏掉 `proxy_pass_request_body off;` 时，POST 请求会把请求体一并带进认证子请求：
-
-```nginx
-# 错：认证子请求带着请求体转发
-location = /_auth {
-  internal;
-  proxy_pass http://127.0.0.1:8080/auth;
-}
-```
-
 ![配图3](/images/csdn/figures/nginx-auth-request-csdn139173856-3.png)
 
-带 body 的 POST 实测拿到 405 而不是 401——认证服务收到不认识的 POST，返回了 405，而 error_page 只映射了 401/403，非约定状态码原样漏给了客户端。两条配套指令 `proxy_pass_request_body off` 和 `proxy_set_header Content-Length ""` 就是为关掉子请求请求体而存在的，认证端点也应只声明处理 GET。
+**错法二**：漏掉 `proxy_pass_request_body off;` 和 `proxy_set_header Content-Length "";`。这两条不起眼，但要先说清一个机制：**auth 子请求恒为 GET**（Nginx 子请求机制决定，实测 POST 主请求打过去，认证服务日志里记的也是 `method=GET`）。漏配的后果是：主请求的请求体会随这个 GET 子请求一起转发给认证服务——在认证服务的访问日志里能看到 `Content-Length: 3` 这样带着 body 的 GET。
+
+宽容的 mock 端点（if + return）对此无感，配置"看起来没事"；换真实认证服务就会露馅——严格校验"GET 不应携带 body"、校验 Content-Length 或走签名校验的服务，都会直接给出 4xx，认证莫名失败。两条配套指令就是为掐断这条转发链而存在的：前者不转发请求体，后者把 Content-Length 头清空、保持 HTTP 组帧正确。
+
+![配图4](/images/csdn/figures/nginx-auth-request-csdn139173856-4.png)
 
 ## 注意事项
 
-- **状态码约定必须严格执行**：认证服务 2xx 放行、401/403 拒绝，返回 302/500 等其他值都会被当拒绝处理且状态码透传给客户端，error_page 尽量把分支映射全。
-- **请求体进不了认证服务**：子请求默认应关掉 body，需要按请求体内容做认证的场景，auth_request 不适合直接上，让后端拿到请求后自行调用认证系统。
+- **状态码约定必须严格执行**：认证服务 2xx 放行、401/403 拒绝；返回 302/500 之类的其他值会被 Nginx 当作子请求错误处理，实测客户端统一收到 500 Internal Server Error（不是透传认证服务的原始状态码），排错时容易被这个 500 带偏。认证服务里把未约定的出口一律收敛到 401/403。
+- **请求体进不了认证服务**：子请求恒为 GET，配好关 body 的两条指令后主请求体不会到达认证服务；需要按请求体内容做认证的场景，auth_request 不适合直接上，让后端拿到请求后自行调用认证系统。
 - **认证端点加 internal**：只允许内部子请求访问，避免端点行为被外部探测。
 - **演示配置换真服务**：实例里用 if + return 模拟认证服务只为演示；生产环境换成真实认证系统（SSO、OAuth2 introspection 等），并只监听本机或内网地址。
 
 ## 小结
 
-回到开头的场景：认证逻辑写一份、所有后端共享——auth_request 用一次子请求把这件事变成状态码约定。实跑下来的完整清单：`auth_request` 指向 internal 的子请求端点，端点透传 `X-Original-URI` 做路径级授权，`error_page` 接住 401/403，`proxy_pass_request_body off` 关掉请求体；同时记住两个失效形态——rewrite 阶段的 `return` 会抢在认证之前，漏关请求体会让 POST 客户端看到意外的 405。配好这几点，这套轻量网关认证就能稳定接住流量。
+回到开头的场景：认证逻辑写一份、所有后端共享——auth_request 用一次子请求把这件事变成状态码约定。实跑下来的完整清单：`auth_request` 指向 internal 的子请求端点，端点透传 `X-Original-URI` 做路径级授权，`error_page` 接住 401/403，`proxy_pass_request_body off` 加 `Content-Length ""` 关掉请求体转发；同时记住两个失效形态——rewrite 阶段的 `return` 会抢在认证之前，漏关请求体则把 body 静默转给认证服务，宽容的后端看不出来、严格的直接报错。配好这几点，这套轻量网关认证就能稳定接住流量。
 
 ---
 

@@ -1,10 +1,11 @@
-{"title": "灰度分流：按 cookie 选后端", "lines": [
+{"title": "map 按 cookie 灰度分流实测", "lines": [
   {"t": "config", "s": "map $cookie_version $backend {"},
-  {"t": "config", "s": "  v2 http://127.0.0.1:8081;"},
-  {"t": "config", "s": "  default http://127.0.0.1:8080; }"},
-  {"t": "cmd", "s": "curl -b \"version=v2\" /gray"},
-  {"t": "out", "s": "backend=http://127.0.0.1:8081"},
-  {"t": "cmd", "s": "curl /gray   # 无 cookie"},
-  {"t": "out", "s": "backend=http://127.0.0.1:8080"},
-  {"t": "note", "s": "$cookie_XXX 直接取任意 cookie 做映射源"}
+  {"t": "config", "s": "  v2 \"v2-backend\";  default \"v1-backend\";"},
+  {"t": "config", "s": "}   # 实测用回显标记代替真实 proxy_pass"},
+  {"t": "cmd", "s": "curl -s -H \"Cookie: version=v2\" localhost/"},
+  {"t": "out", "s": "backend=v2-backend"},
+  {"t": "cmd", "s": "curl -s localhost/"},
+  {"t": "out", "s": "backend=v1-backend"},
+  {"t": "note", "s": "灰度名单从改配置 reload 变成发 cookie，运营可控"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

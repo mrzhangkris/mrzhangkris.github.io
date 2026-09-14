@@ -1,0 +1,11 @@
+{"title": "绑定 MAC 命中：两端日志对照", "lines": [
+  {"t": "note", "s": "服务端日志（dhcpd -d）："},
+  {"t": "out", "s": "DHCPDISCOVER from 00:11:22:33:44:55 via eth0"},
+  {"t": "out", "s": "DHCPOFFER on 192.168.254.150 to 00:11:22:33:44:55 via eth0"},
+  {"t": "out", "s": "DHCPACK on 192.168.254.150 to 00:11:22:33:44:55 via eth0"},
+  {"t": "note", "s": "客户端（dhclient -v eth0）："},
+  {"t": "out", "s": "DHCPOFFER of 192.168.254.150 from 192.168.254.2"},
+  {"t": "out", "s": "DHCPACK of 192.168.254.150 from 192.168.254.2"},
+  {"t": "out", "s": "bound to 192.168.254.150 -- renewal in 285 seconds."},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器，服务端与客户端同容器闭环"}
+]}

@@ -1,0 +1,13 @@
+{
+  "title": "403 坑：命中目录不等于有内容",
+  "type": "cmd",
+  "lines": [
+    {"t": "config", "s": "location / { try_files $uri $uri/ /index.html; }"},
+    {"t": "cmd", "s": "curl -s -w ' [%{http_code}]' localhost:8080/report/"},
+    {"t": "out", "s": "[403]"},
+    {"t": "out", "s": "directory index of \".../report/\" is forbidden"},
+    {"t": "note", "s": "# $uri/ 只检查目录存在,命中后 index 找不到文件"},
+    {"t": "note", "s": "# autoindex 默认关闭 → 403;不想要就去掉 $uri/"},
+    {"t": "note", "s": "实测环境：nginx/1.31.5 (nginx:alpine 容器)"}
+  ]
+}

@@ -1,8 +1,12 @@
-{"title": "nr_requests 查看实测（Rocky 9, kernel 5.14）", "lines": [
+{"title": "查看 nr_requests 与邻居参数", "lines": [
   {"t": "cmd", "s": "cat /sys/block/vda/queue/nr_requests"},
-  {"t": "out", "s": "256   # 虚拟盘默认 256"},
-  {"t": "cmd", "s": "cat /sys/block/loop30/queue/nr_requests"},
-  {"t": "out", "s": "128   # loop 盘默认 128，SATA/SAS 常见 128"},
-  {"t": "note", "s": "NVMe 一般 1023/1024"},
-  {"t": "note", "s": "动手前先记下这个基线值"}
+  {"t": "out", "s": "256"},
+  {"t": "cmd", "s": "cat /sys/block/vda/queue/read_ahead_kb"},
+  {"t": "out", "s": "8192"},
+  {"t": "cmd", "s": "losetup -f --show /d1.img"},
+  {"t": "out", "s": "/dev/loop5"},
+  {"t": "cmd", "s": "cat /sys/block/loop5/queue/nr_requests"},
+  {"t": "out", "s": "128"},
+  {"t": "note", "s": "virtio 虚拟盘默认 256、loop 盘 128，各设备独立"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器"}
 ]}

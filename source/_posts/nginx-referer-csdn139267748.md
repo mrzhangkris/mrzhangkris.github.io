@@ -1,10 +1,10 @@
 ---
 title: "Nginx Referer 防盗链实战：valid_referers 四种请求实测"
 date: 2024-05-29 08:45:00
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1697952431907-8542919a16b3?w=1600&q=80&fm=jpg
 ---
 
@@ -49,6 +49,8 @@ server {
 - `valid_referers none blocked yourwebsite.com;` 定义允许的 Referer 列表：`none` 表示允许**不带** Referer 的请求（直接在地址栏输入网址就是这种），`blocked` 表示允许 Referer 头存在但值为空、或被防火墙/代理删掉的请求，最后的域名是合法来源；
 - 匹配失败的请求，`$invalid_referer` 的值为 `1`，`if` 命中后直接 `return 403`。
 
+`valid_referers` 能吃的不止这三样。`server_names` 表示 Referer 里带着本机 `server_name` 的请求一律放行；域名可以带 `*` 通配符（`*.example.com`、`example.*` 都合法），还能带 URI 前缀——`www.example.org/galleries/` 只放行这个路径下跳来的请求；以 `~` 开头可以写正则，正则匹配的是 `http://` 或 `https://` 之后的文本。整套匹配大小写不敏感，检查时 Referer 里的端口会被忽略。位置也有讲究：这条指令只能出现在 `server` 和 `location` 层级（官方文档口径），写进 `http` 层直接无效，排查"配置了却不生效"时别漏了这一层。
+
 配置加载后，四种请求各发一次，看响应码：
 
 ![配图1](/images/csdn/figures/nginx-referer-csdn139267748-1.png)
@@ -61,7 +63,7 @@ server {
 
 ![配图2](/images/csdn/figures/nginx-referer-csdn139267748-2.png)
 
-结果是 200。这就是 `blocked` 的语义：头存在过，但值在中途被剥掉了——企业网关、隐私插件、HTTPS 跳转都会干这事。如果把这种请求判成盗链，从这类环境过来的用户会全体中招。反过来提醒一句：`none` 和 `blocked` 都放行意味着"无来源的请求不设防"，对图片站是合理代价，对付费内容就要掂量了。
+结果是 200。这就是 `blocked` 的语义：头存在过，但值在中途被剥掉了——企业网关、隐私插件、HTTPS 跳转都会干这事。如果把这种请求判成盗链，从这类环境过来的用户会全体中招。它的分量可以实打实称出来：把 `blocked` 从名单里删掉再发同一个空头请求，403——一升一降之间，就是 `blocked` 在兜的那部分正常流量。反过来提醒一句：`none` 和 `blocked` 都放行意味着"无来源的请求不设防"，对图片站是合理代价，对付费内容就要掂量了。
 
 ## 实例三：来源统计，把 Referer 记进日志
 
@@ -88,7 +90,7 @@ http {
 }
 ```
 
-`$http_referer` 和 `$http_user_agent` 分别记录来源页面和浏览器信息；location 里再写一次 `access_log` 会覆盖 http 级别的设置，把这部分流量单独落到一个文件，方便分开统计。实例一的实跑日志里已经能看到这个字段的工作状态——盗链请求被拒的日志行是现成的证据：
+`$http_referer` 和 `$http_user_agent` 分别记录来源页面和浏览器信息；location 里再写一次 `access_log` 会覆盖 http 级别的设置，把这部分流量单独落到一个文件，方便分开统计。盗链请求被拒的日志行是现成的证据（配图用了 `$status "$http_referer"` 的精简格式聚焦来源字段，生产上照实例代码块的完整格式配即可）：
 
 ![配图3](/images/csdn/figures/nginx-referer-csdn139267748-3.png)
 
@@ -117,7 +119,7 @@ deny all;
 
 - `none` 和 `blocked` 是不是要加，取决于业务：允许用户直接打开资源就得加 `none`，前面有会剥 Referer 的代理就得加 `blocked`；都不加，等于只认带合法域名的请求。
 - Referer 可以伪造，防盗链挡的是"顺手挂链接"这种低成本盗用，防不了定向伪造；强校验要走签名 URL（secure_link）或登录态。
-- 服务器块里没写 `server_names` 时，域名直接列在 `valid_referers` 后面即可；来源多的时候再考虑哈希表配置。
+- 域名来源多了以后，先用 `server_names` 放行指向自己的跳转，再用 `*.example.com` 这类通配符覆盖子域；`~` 正则是最后的手段，规则一多就没人维护得动了。
 - 改完用 `nginx -t` 验证，reload 前确认日志目录存在且 Nginx 进程有写权限。
 
 ## 小结

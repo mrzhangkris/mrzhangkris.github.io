@@ -1,9 +1,11 @@
-{"title": "RHEL9 默认无 /bin/rbash，需手动建软链", "lines": [
-  {"t": "cmd", "s": "rpm -q bash; ls /usr/bin/rbash"},
-  {"t": "out", "s": "bash-5.1.8-6.el9_1.aarch64"},
-  {"t": "out", "s": "ls: cannot access '/usr/bin/rbash': No such file"},
-  {"t": "cmd", "s": "ln -s /usr/bin/bash /usr/bin/rbash"},
-  {"t": "cmd", "s": "useradd -m -s /bin/rbash restricted_user"},
-  {"t": "note", "s": "bash 以 argv0=rbash 启动即进入受限模式"},
-  {"t": "note", "s": "实测环境：rockylinux:9"}
+{"title": "RHEL 9 准备 rbash：软链即启用", "lines": [
+  {"t": "cmd", "s": "ls -l /usr/bin/rbash"},
+  {"t": "out", "s": "ls: cannot access '/usr/bin/rbash': No such file or directory"},
+  {"t": "config", "s": "ln -s /usr/bin/bash /usr/bin/rbash"},
+  {"t": "cmd", "s": "readlink /usr/bin/rbash"},
+  {"t": "out", "s": "/usr/bin/bash"},
+  {"t": "cmd", "s": "rbash -c 'cd /tmp'"},
+  {"t": "out", "s": "rbash: line 1: cd: restricted"},
+  {"t": "note", "s": "RHEL 9 不预装 rbash：建软链后受限模式即启用"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (bash 5.1.8)"}
 ]}

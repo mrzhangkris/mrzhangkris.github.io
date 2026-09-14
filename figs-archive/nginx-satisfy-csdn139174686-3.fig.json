@@ -1,9 +1,11 @@
-{"title": "deny all 顺序陷阱实测", "lines": [
-  {"t": "config", "s": "deny all;          # 写在前面"},
-  {"t": "config", "s": "allow 127.0.0.1;   # 永远轮不到"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost"},
-  {"t": "out", "s": "401 (IP 关卡对所有人拒绝)"},
-  {"t": "cmd", "s": "curl -s -u user:password1 localhost"},
-  {"t": "out", "s": "200"},
-  {"t": "note", "s": "白名单形同虚设，satisfy any 只剩密码门"}
+{"title": "非白名单来源：any 与 all 的分水岭", "lines": [
+  {"t": "cmd", "s": "curl -si http://172.31.6.20/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 401 Unauthorized"},
+  {"t": "cmd", "s": "curl -si -u user:password1 http://172.31.6.20/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "note", "s": "satisfy any：来源 172.31.6.10 走密码门，输对即放行"},
+  {"t": "cmd", "s": "curl -si -u user:password1 http://172.31.6.20:8002/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 403 Forbidden"},
+  {"t": "note", "s": "satisfy all：IP 不在名单，密码对也是 403"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)，跨容器来源"}
 ]}

@@ -1,8 +1,10 @@
-{"title": "mkfs.ext4 实测（Rocky 9, e2fsprogs 1.46.5）", "lines": [
-  {"t": "cmd", "s": "truncate -s 100M /tmp/f.img && mkfs.ext4 -F /tmp/f.img"},
-  {"t": "out", "s": "mke2fs 1.46.5 (30-Dec-2021)"},
-  {"t": "out", "s": "Creating filesystem with 102400 1k blocks and 25584 inodes"},
-  {"t": "out", "s": "Filesystem UUID: 8c7c2f21-6078-461b-aef0-1b511e845dc9"},
-  {"t": "note", "s": "对镜像文件执行仅为语法验证"},
-  {"t": "note", "s": "TRIM 支持由文件系统提供，建议挂载加 discard 或定期 fstrim"}
+{"title": "ext4 建卷与 fstrim 实测", "lines": [
+  {"t": "cmd", "s": "truncate -s 2G /d1.img && losetup -f --show /d1.img"},
+  {"t": "out", "s": "/dev/loop0"},
+  {"t": "cmd", "s": "mkfs.ext4 -q /dev/loop0 && mount /dev/loop0 /mnt"},
+  {"t": "cmd", "s": "dd if=/dev/urandom of=/mnt/big bs=1M count=600 status=none"},
+  {"t": "cmd", "s": "rm -f /mnt/big && sync && fstrim -v /mnt"},
+  {"t": "out", "s": "/mnt: 1.9 GiB (2040348672 bytes) trimmed"},
+  {"t": "note", "s": "删文件后 fstrim 把作废块归还给盘，TRIM 生效"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (e2fsprogs 1.46.5，loop 盘)"}
 ]}

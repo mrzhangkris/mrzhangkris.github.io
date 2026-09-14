@@ -1,7 +1,10 @@
-{"title": "weight=2 加权序列实测", "lines": [
-  {"t": "config", "s": "server 127.0.0.1:8082 weight=2;"},
-  {"t": "cmd", "s": "for i in $(seq 10); do curl -s localhost; done"},
-  {"t": "out", "s": "8082 8081 8083 8082 8082 8081 8083 8082 8082 8081"},
-  {"t": "out", "s": "统计: 8082×5 8081×3 8083×2"},
-  {"t": "note", "s": "比例 2:1:1 成立，排列由平滑加权算法错开"}
+{"title": "weight=2：10 次请求的分布", "lines": [
+  {"t": "cmd", "s": "for i in $(seq 10); do curl -so /dev/null localhost; done"},
+  {"t": "cmd", "s": "tail -10 /var/log/nginx/lb.log | awk '{print $2}' | sort | uniq -c"},
+  {"t": "out", "s": "   3 127.0.0.1:8081"},
+  {"t": "out", "s": "   5 127.0.0.1:8082"},
+  {"t": "out", "s": "   2 127.0.0.1:8083"},
+  {"t": "note", "s": "8082 拿 5 次，总比例符合 2:1:1"},
+  {"t": "note", "s": "排列由平滑加权决定，别按固定序列写断言"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)，worker=1"}
 ]}

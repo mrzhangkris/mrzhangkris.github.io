@@ -1,6 +1,8 @@
-{"title": "反向验证：同配置正常后端毫秒级 200", "lines": [
-  {"t": "note", "s": "同一套配置，后端换成秒回 200 的服务"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code} %{time_total}s' 127.0.0.1/"},
-  {"t": "out", "s": "200 0.000892s"},
-  {"t": "note", "s": "504 的唯一变量：后端 2 秒内没吐出响应头"}
+{"title": "反向验证：后端正常应答则毫秒级返回", "lines": [
+  {"t": "config", "s": "proxy_read_timeout 2s;   # 配置原封不动"},
+  {"t": "note", "s": "后端换成正常应答的服务：收到请求立即回 200"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code} %{time_total}s' localhost/"},
+  {"t": "out", "s": "200 0.000682s"},
+  {"t": "note", "s": "同一套配置，唯一变量是后端是否出声"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

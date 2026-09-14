@@ -1,0 +1,13 @@
+{
+  "title": "cp -r 复制目录实测",
+  "lines": [
+    {"t": "cmd", "s": "mkdir -p /root/a/b/c && touch /root/a/b/c/file.txt"},
+    {"t": "cmd", "s": "cp -r /root/a /root/d"},
+    {"t": "cmd", "s": "ls /root/d/b/c"},
+    {"t": "out", "s": "file.txt"},
+    {"t": "cmd", "s": "ls /root/a/b/c"},
+    {"t": "out", "s": "file.txt"},
+    {"t": "note", "s": "复制后 d 与 a 并存，内容一致"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+  ]
+}

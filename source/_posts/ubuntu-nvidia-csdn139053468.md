@@ -1,18 +1,18 @@
 ---
 title: "Ubuntu 安装 NVIDIA 显卡驱动并禁止自动更新"
 date: 2024-05-20 09:18:13
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Linux]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=1600&q=80&fm=jpg
 ---
 
-Ubuntu 上装好 NVIDIA 驱动后，有时系统更新会顺手把驱动也升上去，版本一变就可能带来兼容性或稳定性问题。这篇分两部分：先把 NVIDIA 驱动装好，再用 APT pin 和 apt-mark 两道手段把驱动版本锁死，不让它被自动更新。
+Ubuntu 上装好 NVIDIA 驱动后，系统更新有时会顺手把驱动也升上去，版本一变就可能带来兼容性或稳定性问题。这篇分两部分：先把 NVIDIA 驱动装好，再用 APT pin 和 apt-mark 两道手段把驱动版本锁死。驱动安装与验证需要真实显卡，本文沿原文实测记录（Ubuntu 18.04 + GTX 1050）整理并更新到 Ubuntu 24.04 基线；**版本锁定部分（pin 文件、apt-mark hold）不依赖显卡，已在 Ubuntu 24.04.4 容器中完整实测**，输出均为实测结果。
 
 ## 准备工作
 
-开始之前，确保你的系统已备份，并且有管理员权限（sudo）。先更新系统：
+开始之前，确保系统已备份且有 sudo 权限，然后更新系统：
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -20,30 +20,19 @@ sudo apt update && sudo apt upgrade -y
 
 ## 确定显卡型号
 
-先弄清你的 NVIDIA 显卡型号，以便下载正确的驱动程序：
+先弄清 NVIDIA 显卡型号，以便选择正确驱动分支：
 
 ```bash
 lspci | grep -i nvidia
 ```
 
-输出示例如下：
-
-```text
-01:00.0 VGA compatible controller: NVIDIA Corporation [型号] (rev a1)
-```
-
-## 添加图形驱动 PPA
-
-加入 NVIDIA 图形驱动 PPA，可以获得最新的驱动程序版本：
-
-```bash
-sudo add-apt-repository ppa:graphics-drivers/ppa
-sudo apt update
-```
+输出形如 `01:00.0 VGA compatible controller: NVIDIA Corporation [型号] (rev a1)`。
 
 ## 安装 NVIDIA 驱动
 
-先检测系统推荐的驱动版本：
+### 查看推荐驱动
+
+Ubuntu 官方仓库自带 `ubuntu-drivers` 工具（包含在 ubuntu-drivers-common 包里，24.04 容器实测可直接安装），自动检测显卡并列出可选驱动：
 
 ```bash
 ubuntu-drivers devices
@@ -55,69 +44,86 @@ ubuntu-drivers devices
 driver : nvidia-driver-440 - distro non-free recommended
 ```
 
-安装推荐的驱动（根据实际推荐版本进行替换）：
+24.04 (noble) 官方仓库当前提供的驱动分支实测有 535 / 550 / 570（候选版本分别为 535.309、550.163、570.211），apt 源里还有更老编号的过渡包。装哪个分支以 `ubuntu-drivers devices` 在你机器上的推荐为准。
+
+> 注：本节的 `ubuntu-drivers devices` 输出与驱动安装行为需要真实显卡环境，原文在 Ubuntu 18.04 + GTX 1050 上实测推荐 440 系列；包名检测逻辑同源，未在本机复跑。
+
+### 安装
+
+安装推荐的驱动（把版本号替换成上一步的推荐值）：
 
 ```bash
-sudo apt install nvidia-driver-440
+sudo apt install nvidia-driver-550
 ```
 
-> 注：原文环境为 Ubuntu 18.04 + GTX 1050，推荐驱动 440 系列。2024 年后的卡（RTX 30/40 系列）推荐版本通常是 535 或 550，`ubuntu-drivers devices` 输出以你机器为准。
+验证点：`apt-cache policy nvidia-driver-550` 输出的 `Installed:` 与 Candidate 一致即安装成功，此结果重启前就能看到。
 
-验证点：`apt-cache policy nvidia-driver-440` 输出显示 `Installed: 440.*` 即安装成功，重启前已有结果。
+### 可选：图形驱动 PPA
 
-## 禁止自动更新 NVIDIA 驱动
+需要比官方仓库更新的驱动时，再考虑第三方 PPA；24.04 官方源已带 535-570，普通场景不必加：
 
-为了防止 NVIDIA 驱动在系统更新时被自动更新，需要两道措施。
+```bash
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt update
+```
 
-### 修改 APT 配置文件
+## 禁止自动更新驱动（容器实测）
 
-创建并编辑 `/etc/apt/preferences.d/nvidia` 文件：
+两道措施配合：APT pin 钉版本优先级，apt-mark hold 锁安装动作。以下全部命令与输出在 Ubuntu 24.04.4 容器实测，用 `nvidia-driver-550` 做对象（无需装驱动即可操作）。
+
+### 第一道：APT pin 文件
+
+创建 `/etc/apt/preferences.d/nvidia`：
 
 ```bash
 sudo nano /etc/apt/preferences.d/nvidia
 ```
 
-添加以下内容（确保替换 `nvidia-driver-440` 为实际安装的驱动程序包名）：
+内容（包名与版本模式按实际安装的驱动替换）：
 
 ```text
-Package: nvidia-driver-440
-Pin: version 440.*
+Package: nvidia-driver-550
+Pin: version 550.*
 Pin-Priority: 1001
 ```
 
-这会让 APT 把 nvidia-driver-440 固定到指定版本，不再自动更新。
+Pin-Priority 高于 1000 时，APT 会把匹配版本的优先级压过仓库默认的 500——仓库里出现更新的版本也不会被选为候选。实测效果：pin 一个 `version 1.21.4-1ubuntu4.5`、优先级 1001 后，`apt-cache policy` 的版本表里该版本带 `1001` 标记；删掉 pin 文件后同一行回落为 `500`：
 
-### 锁定包版本
-
-再用 `apt-mark hold` 命令锁定 NVIDIA 驱动包的版本：
-
-```bash
-sudo apt-mark hold nvidia-driver-440
+```text
+Version table:
+     1.21.4-1ubuntu4.5 1001      # 有 pin 时
+     1.21.4-1ubuntu4.5 500       # 删除 pin 后
 ```
 
-确认锁定状态：
+### 第二道：apt-mark 锁定
+
+```bash
+sudo apt-mark hold nvidia-driver-550
+```
+
+实测输出：`nvidia-driver-550 set on hold.`。确认锁定状态：
 
 ```bash
 apt-mark showhold
 ```
 
-## 重启系统
+实测输出：`nvidia-driver-550`。解除锁定用 `apt-mark unhold nvidia-driver-550`，实测输出 `Canceled hold on nvidia-driver-550.`。
 
-安装并配置完成后，重启计算机使更改生效：
+一个实测出的顺手技巧：`apt-mark hold` 对**尚未安装**的包同样生效——先 hold 再安装，后续系统更新就不会动这个包，适合装机脚本里提前锁定。
+
+## 重启与验证
 
 ```bash
 sudo reboot
 ```
 
-## 验证安装
-
-重启后，用 `nvidia-smi` 命令确认驱动安装情况：
+重启后用 `nvidia-smi` 确认驱动安装情况：
 
 ```bash
 nvidia-smi
 ```
 
-输出会包含 GPU 信息、驱动版本等，确认驱动已成功安装：
+正常输出包含 GPU 型号、驱动版本、显存占用等（下为原文 GTX 1050 + 440.82 的实测记录，新卡新驱动格式相同、数值不同）：
 
 ```text
 +-----------------------------------------------------------------------------+
@@ -131,46 +137,39 @@ nvidia-smi
 +-------------------------------+----------------------+----------------------+
 ```
 
+> 注：`nvidia-smi` 输出需要真实显卡，本文未在容器复跑，保留原文实测记录。
+
 ## 常见故障排除
 
 ### 系统无法启动
 
-1. 在启动时按 Shift 进入 GRUB 菜单。
+1. 启动时按 Shift 进入 GRUB 菜单。
 2. 选择 "Advanced options for Ubuntu"。
 3. 选择恢复模式并进入 root 终端。
-4. 卸载 NVIDIA 驱动：
+4. 卸载 NVIDIA 驱动并重启：
 
 ```bash
-sudo apt-get purge nvidia-*
-```
-
-5. 重启系统：
-
-```bash
+sudo apt-get purge 'nvidia-*'
 sudo reboot
 ```
 
 ### 黑屏或低分辨率
 
-1. 用 Ctrl+Alt+F1 切换到 TTY 终端。
-2. 登录并重新安装驱动：
+1. 用 Ctrl+Alt+F1（部分机型 F2-F6）切换到 TTY 终端。
+2. 登录后重装驱动：
 
 ```bash
-sudo apt install --reinstall nvidia-driver-440
+sudo apt install --reinstall nvidia-driver-550
 ```
 
-3. 重启系统：
-
-```bash
-sudo reboot
-```
+3. 重启系统。
 
 ## 注意事项
 
-- 禁止自动更新是两道措施配合：APT pin 把版本钉在 `440.*`，`apt-mark hold` 再锁一层，单独用一道都可能出现例外。
-- pin 文件里的包名和版本号要与实际安装的驱动一致，装的是 440 就写 `440.*`，别照抄示例后忘了改。
-- 驱动版本锁死后，想要升级时先 `apt-mark unhold`，再调整或删除 pin 文件，升级完重新锁上。
-- 驱动装坏导致进不了系统时不用慌：GRUB 恢复模式进 root 终端 `purge nvidia-*` 就能退回开源驱动救急。
-- 黑屏时 Ctrl+Alt+F1 切 TTY 是最快的自救路径，重装驱动后记得重启。
+- **两道措施各管一段**：pin 管候选版本的优先级（仓库出了新版也不选），hold 管 apt 的安装/升级动作（连带着安全更新也不动）。只要一套也大致够用，两套同上最稳。
+- **pin 文件的包名和版本模式要与实际驱动一致**：装的是 550 就写 `550.*`，照抄示例忘改等于白锁。pin 优先级建议 1001（强制钉住）而不是 100 附近（那是弱偏好）。
+- **升级被锁的驱动**：先 `apt-mark unhold`，再删除或放宽 pin 文件，升级完成后重新锁上——顺序反了 apt 会在旧版本和新锁之间打架。
+- **hold 可以提前打**：实测对未安装的包同样有效，装机脚本里先 hold 再装驱动，天然免疫后续自动更新。
+- **进不了系统的自救路径**：GRUB 恢复模式进 root 终端 `apt-get purge 'nvidia-*'` 退回开源驱动救急；黑屏先切 TTY 再重装驱动。此两节为原文实测与通用方法，未在容器复跑。
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

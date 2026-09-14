@@ -1,0 +1,12 @@
+{"title": "盘扩到 100M 后 growpart 拉长分区", "lines": [
+  {"t": "cmd", "s": "truncate -s 100M /tmp/disk.img && losetup -c /dev/loop4"},
+  {"t": "out", "s": "loop4       7:4    0 104857600  0 loop"},
+  {"t": "out", "s": "`-loop4p1 259:0    0  51380224  0 part /mnt/demo"},
+  {"t": "cmd", "s": "growpart /dev/loop4 1"},
+  {"t": "out", "s": "CHANGED: partition=1 start=2048 old: size=100352"},
+  {"t": "out", "s": "  end=102399 new: size=202719 end=204766"},
+  {"t": "out", "s": "loop4       7:4    0  100M  0 loop"},
+  {"t": "out", "s": "`-loop4p1 259:0    0   99M  0 part /mnt/demo"},
+  {"t": "note", "s": "盘 100M、分区 99M——分区拉长到位（lsblk 折行展示）"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（--privileged，环回盘）"}
+]}

@@ -1,0 +1,12 @@
+{"title": "Targeting 实测：通配与节点组", "lines": [
+  {"t": "cmd", "s": "salt \"minion-node?\" test.ping"},
+  {"t": "out", "s": "minion-node2:"},
+  {"t": "out", "s": "    True"},
+  {"t": "cmd", "s": "salt -N web test.ping"},
+  {"t": "out", "s": "master-node1:"},
+  {"t": "out", "s": "    True"},
+  {"t": "out", "s": "minion-node2:"},
+  {"t": "out", "s": "    True"},
+  {"t": "note", "s": "通配符、-L 列表、-E 正则、-G os:Rocky 实测均可用"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 双容器 (Salt 3005.4)"}
+]}

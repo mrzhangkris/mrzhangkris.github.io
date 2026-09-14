@@ -1,9 +1,12 @@
-{"title": "加 -u：每秒实时到达", "lines": [
-  {"t": "cmd", "s": "date +%H:%M:%S; python3 reader.py u   # python3 -u system_time.py"},
-  {"t": "out", "s": "07:23:13"},
-  {"t": "out", "s": "parent got at 07:23:13: 07:23:13"},
-  {"t": "out", "s": "parent got at 07:23:14: 07:23:14"},
-  {"t": "out", "s": "parent got at 07:23:15: 07:23:15"},
-  {"t": "note", "s": "-u 强制子进程 stdout/stderr 无缓冲"},
-  {"t": "note", "s": "每条输出立即写入管道，父进程逐秒读到"}
-]}
+{
+  "title": "方法一：-u 参数，逐秒实时到达",
+  "type": "cmd",
+  "lines": [
+    {"t": "cmd", "s": "python3 parent.py \"python3 -u system_time.py\""},
+    {"t": "out", "s": "父进程 01:24:31 收到 -> 01:24:31"},
+    {"t": "out", "s": "父进程 01:24:32 收到 -> 01:24:32"},
+    {"t": "out", "s": "父进程 01:24:33 收到 -> 01:24:33"},
+    {"t": "note", "s": "# 到达时间与输出时间逐秒对齐,实时"},
+    {"t": "note", "s": "实测环境：debian:12 容器 (Python 3.11.2)"}
+  ]
+}

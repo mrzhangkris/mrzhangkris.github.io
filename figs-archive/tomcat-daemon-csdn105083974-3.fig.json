@@ -1,0 +1,12 @@
+{"title": "daemon 模式启动与停止闭环", "lines": [
+  {"t": "cmd", "s": "bin/daemon.sh --java-home \\"},
+  {"t": "cmd", "s": "  /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-7.el9.aarch64 start"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080"},
+  {"t": "out", "s": "200"},
+  {"t": "cmd", "s": "grep -o \"Server startup in .*\" logs/catalina-daemon.out"},
+  {"t": "out", "s": "Server startup in [278] milliseconds"},
+  {"t": "cmd", "s": "bin/daemon.sh stop"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}\\n' localhost:8080"},
+  {"t": "out", "s": "000"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器，Tomcat 9.0.121"}
+]}

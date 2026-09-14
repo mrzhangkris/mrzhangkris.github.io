@@ -1,0 +1,8 @@
+{"title": "现场三：内存参数超过可用内存，JVM 初始化即退出", "lines": [
+  {"t": "cmd", "s": "ulimit -v 262144"},
+  {"t": "cmd", "s": "java -Xmx2048M -version"},
+  {"t": "out", "s": "Error occurred during initialization of VM"},
+  {"t": "out", "s": "Could not reserve enough space for code cache (245760K)"},
+  {"t": "note", "s": "-Xms/-Xmx 超出机器或容器可用内存时，VM 初始化即失败"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器 (OpenJDK 17.0.20.1, 256MB 限制)"}
+]}

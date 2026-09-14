@@ -1,7 +1,12 @@
-{"title": "轮询序列实测", "lines": [
-  {"t": "config", "s": "upstream backend { server 127.0.0.1:8081;"},
-  {"t": "config", "s": "  server 127.0.0.1:8082; server 127.0.0.1:8083; }"},
-  {"t": "cmd", "s": "for i in $(seq 9); do curl -s localhost; done"},
-  {"t": "out", "s": "8081 8082 8083 8081 8082 8083 8081 8082 8083"},
-  {"t": "note", "s": "nginx/1.31.5 单 worker 实测，严格按序轮换"}
+{"title": "轮询序列：连发 6 次的路由记录", "lines": [
+  {"t": "cmd", "s": "for i in $(seq 6); do curl -so /dev/null localhost; done"},
+  {"t": "cmd", "s": "tail -6 /var/log/nginx/lb.log"},
+  {"t": "out", "s": "200 127.0.0.1:8081"},
+  {"t": "out", "s": "200 127.0.0.1:8082"},
+  {"t": "out", "s": "200 127.0.0.1:8083"},
+  {"t": "out", "s": "200 127.0.0.1:8081"},
+  {"t": "out", "s": "200 127.0.0.1:8082"},
+  {"t": "out", "s": "200 127.0.0.1:8083"},
+  {"t": "note", "s": "严格按序两整轮；worker_processes 1 消除观测偏差"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

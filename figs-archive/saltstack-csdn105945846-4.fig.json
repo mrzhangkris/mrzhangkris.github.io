@@ -1,0 +1,12 @@
+{"title": "mysql Returner：返回值落库实测", "lines": [
+  {"t": "cmd", "s": "salt \"*\" test.ping --return mysql"},
+  {"t": "out", "s": "master-node1:"},
+  {"t": "out", "s": "    True"},
+  {"t": "out", "s": "minion-node2:"},
+  {"t": "out", "s": "    True"},
+  {"t": "config", "s": "SELECT id, fun, success FROM salt_returns;"},
+  {"t": "out", "s": "id            fun         success"},
+  {"t": "out", "s": "minion-node2  test.ping   1"},
+  {"t": "out", "s": "master-node1  test.ping   1"},
+  {"t": "note", "s": "实测：Rocky Linux 9 双容器 + mysql:8.0（el9 装 python3-mysqlclient）"}
+]}

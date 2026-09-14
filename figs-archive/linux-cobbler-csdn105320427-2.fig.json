@@ -1,10 +1,11 @@
-{"title": "cobbler check 复查（CentOS 7, cobbler 2.8）", "lines": [
+{"title": "settings.yaml 关键修改与密码哈希", "lines": [
+  {"t": "cmd", "s": "openssl passwd -1 -salt 'cobblersalt' 'Szn2026Rocky'"},
+  {"t": "out", "s": "$1$cobblers$TA72LoC8U1JkXO9himeGg."},
+  {"t": "config", "s": "server: 172.17.0.6          # 原 127.0.0.1"},
+  {"t": "config", "s": "next_server_v4: 172.17.0.6  # 原 127.0.0.1"},
+  {"t": "config", "s": "manage_dhcp_v4: true        # 原 false，3.x 按 v4/v6 拆分"},
+  {"t": "config", "s": "default_password_crypted: \"$1$cobblers$TA72LoC8U1JkXO9himeGg.\""},
   {"t": "cmd", "s": "systemctl restart cobblerd && cobbler check"},
-  {"t": "out", "s": "1 : SELinux is enabled. ..."},
-  {"t": "out", "s": "2 : enable and start rsyncd.service with systemctl"},
-  {"t": "out", "s": "3 : debmirror package is not installed ..."},
-  {"t": "out", "s": "4 : fencing tools were not found ..."},
-  {"t": "out", "s": "Restart cobblerd and then run 'cobbler sync' to apply changes."},
-  {"t": "note", "s": "处理过的 server/next_server/密码/loaders/tftp 五条已消失"},
-  {"t": "note", "s": "剩下四条属于可选功能，不影响装机"}
+  {"t": "note", "s": "只设旧键 manage_dhcp 不生效，必须写 manage_dhcp_v4"},
+  {"t": "note", "s": "复查从 9 条降到 6 条。实测 Rocky 9.3 容器 Cobbler 3.3.7"}
 ]}

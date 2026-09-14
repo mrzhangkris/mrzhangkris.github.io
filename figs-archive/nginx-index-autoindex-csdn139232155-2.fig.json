@@ -1,9 +1,10 @@
 {"title": "403 现场与 autoindex 开关", "lines": [
-  {"t": "cmd", "s": "rm index.htm && curl -so /dev/null -w '%{http_code}\\n' localhost/"},
-  {"t": "out", "s": "403"},
-  {"t": "note", "s": "默认文件全无 + autoindex off（默认）→ 403"},
-  {"t": "config", "s": "location / {  autoindex on;  }"},
-  {"t": "cmd", "s": "curl -s localhost/"},
-  {"t": "out", "s": "<h1>Index of /</h1><hr><pre>..."},
-  {"t": "note", "s": "开 autoindex 后，同一目录返回文件列表"}
+  {"t": "cmd", "s": "rm /usr/share/nginx/html/index*; curl -si localhost/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 403 Forbidden"},
+  {"t": "note", "s": "目录在、autoindex 默认关：给 403 而不是 404"},
+  {"t": "config", "s": "autoindex on;"},
+  {"t": "out", "s": "<html>"},
+  {"t": "out", "s": "<head><title>Index of /</title></head>"},
+  {"t": "note", "s": "同一目录，开了 autoindex 返回文件列表"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

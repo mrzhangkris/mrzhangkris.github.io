@@ -1,10 +1,10 @@
 ---
 title: "Oracle 密码复杂度策略：用 Profile 加验证函数管住弱密码"
 date: 2024-06-02 09:00:00
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Oracle, 安全]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1597138768744-9f97be8cdd64?w=1600&q=80&fm=jpg
 ---
 
@@ -51,7 +51,7 @@ Profile 只负责"调用哪个函数"，真正的复杂度规则写在函数里�
 ORA-28034: cannot use specified password verification function
 ```
 
-Oracle 官方在 `$ORACLE_HOME/rdbms/admin/utlpwdmg.sql` 里提供了标准模板（11g 起自带 verify_function_11G 等现成函数），自定义时照它的模式来：用 SYS 登录，创建函数，然后才能被 Profile 引用。
+Oracle 官方在 `$ORACLE_HOME/rdbms/admin/utlpwdmg.sql` 里提供了标准模板（11g 起自带 verify_function_11G 现成函数；19c 的该脚本还提供 ora12c_verify_function、ora12c_strong_verify_function 等更强的现成模板），自定义时照它的模式来：用 SYS 登录，创建函数，然后才能被 Profile 引用。
 
 下面的版本要求密码至少 8 位，且同时包含数字、大小写字母和特殊字符：
 
@@ -145,7 +145,7 @@ WHERE username = 'TEST_USER';
 ALTER USER test_user ACCOUNT UNLOCK;
 ```
 
-验证点：弱密码被函数拦截且错误信息能定位到具体规则、强密码通过、错误尝试锁定生效、解锁可用。四项全过，策略才算落地。
+验证标准：弱密码被函数拦截且错误信息能定位到具体规则、强密码正常通过、错误尝试到阈值自动锁定、`ACCOUNT UNLOCK` 能解锁。四项全过，策略才算落地。
 
 ## 实践中的调整
 
@@ -172,6 +172,8 @@ ALTER USER test_user ACCOUNT UNLOCK;
 - 新策略先在测试账号上跑一遍完整闭环（弱密码拒绝、强密码通过、锁定、解锁），确认不会意外锁定业务用户。
 - 特殊账号走例外 Profile，不要为个别需求放松全局策略。
 - 本文 SQL 未实跑，执行计划外的报错以所用 Oracle 版本的官方文档为准。
+
+## 小结
 
 Profile 管参数、SYS 函数管复杂度、`ALTER USER` 管挂载——三步搭起来的密码策略是数据库侧的"硬约束"，比任何制度文档都可靠。记住两个落地细节（函数建在 SYS 下、先函数后 Profile），策略就不会卡在 ORA-28034 上。
 

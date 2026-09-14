@@ -1,10 +1,10 @@
 ---
 title: "Nginx 日志切割：Bash 脚本与 logrotate 两种做法"
 date: 2024-05-13 15:13:45
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667264501379-c1537934c7ab?w=1600&q=80&fm=jpg
 ---
 
@@ -59,10 +59,6 @@ logrotate 是 Linux 上专门管理日志的工具：定期轮转日志、压缩
 
 在 `/etc/logrotate.d` 目录下创建一个名为 `nginx` 的文件：
 
-![配图1](/images/csdn/figures/bash-logrotate-nginx-csdn138804009-1.png)
-
-![配图2](/images/csdn/figures/bash-logrotate-nginx-csdn138804009-2.png)
-
 ```conf
 /apps/openresty/nginx/logs/head/access.log
 /apps/openresty/nginx/logs/domain/access.log
@@ -95,9 +91,11 @@ logrotate 是 Linux 上专门管理日志的工具：定期轮转日志、压缩
 - compress：轮转后使用 gzip 压缩。
 - delaycompress：延迟压缩，上一次轮转的文件要到下一次轮转时才压缩。
 - notifempty：日志文件为空就不轮转。
-- create：设置轮转后新建日志文件的权限和属主。
+- create：设置轮转后新建日志文件的权限和属主。`qhdrsj` 是原文环境里跑 nginx 的用户，落地时换成自己的 worker 用户。
 - sharedscripts：多个日志文件一起轮转时，脚本只执行一次。
 - postrotate / endscript：轮转后执行的动作。这里是给两个 nginx 实例的主进程分别发 USR1 信号，让它们重开日志文件。
+
+还有一个实测才看得到的细节：logrotate 按 `create 640 qhdrsj qhdrsj` 建好新文件后，USR1 触发 nginx 重开日志，主进程会把属主改写成 worker 用户（实测新文件属主变成 `nginx:qhdrsj`，640 权限保留）——属主对不上导致 worker 写不进日志的，先想到这一层。
 
 两个日志文件写在同一个配置里，配合 sharedscripts，USR1 只发一轮，不会重复。
 
@@ -113,7 +111,7 @@ logrotate 是 Linux 上专门管理日志的工具：定期轮转日志、压缩
 
 **错误二：pid 路径想当然**
 
-方案一写死 `/var/run/nginx.pid`，源码安装的 nginx 默认 pid 文件在 `logs/nginx.pid`。路径错了，USR1 发不出去，脚本不报错但新 access.log 一直是空的——现象和"忘了发信号"一模一样。以 `nginx -V` 里的 `--pid-path` 或配置里的 `pid` 指令为准。
+方案一写死 `/var/run/nginx.pid`，源码安装的 nginx 默认 pid 文件在 `logs/nginx.pid`。路径错了，USR1 发不出去，脚本不报错但新 access.log 一直是空的——现象和"忘了发信号"一模一样。以 `nginx -V` 里的 `--pid-path` 或配置里的 `pid` 指令为准。容器里还有个小细节：nginx:alpine 镜像的 pid 实际写在 `/run/nginx.pid`，而 `/var/run` 通常是 `/run` 的符号链接，所以两种写法都能命中——换个环境就不一定，还是以配置为准。
 
 ## 注意事项
 

@@ -1,11 +1,12 @@
-{"title": "lastb 实测（Rocky 9, util-linux）", "lines": [
-  {"t": "note", "s": "记录由 utmpdump -r 构造写入 /var/log/btmp"},
+{"title": "真实失败登录的产生与查看", "lines": [
+  {"t": "cmd", "s": "ssh-keygen -A >/dev/null && /usr/sbin/sshd"},
+  {"t": "cmd", "s": "useradd -m testu && echo 'testu:RealPass123' | chpasswd"},
+  {"t": "cmd", "s": "sshpass -p Wrong1 ssh -o StrictHostKeyChecking=no root@localhost true"},
+  {"t": "out", "s": "Permission denied, please try again."},
+  {"t": "cmd", "s": "sshpass -p abc123 ssh -o StrictHostKeyChecking=no admin@localhost true"},
+  {"t": "out", "s": "Permission denied, please try again."},
   {"t": "cmd", "s": "lastb"},
-  {"t": "out", "s": "ssh:nott root    192.168.0.201  Mon Feb 13 11:38 - 11:38  (00:00)"},
-  {"t": "out", "s": "ssh:nott erdaf   192.168.0.201  Mon Feb 13 11:06 - 11:06  (00:00)"},
-  {"t": "note", "s": "列：用户名 · 终端 · 来源 IP · 起止时间"},
-  {"t": "cmd", "s": "lastb -n 1"},
-  {"t": "out", "s": "（只显示最近 1 条，-1 简写等效）"},
-  {"t": "cmd", "s": "lastb -d"},
-  {"t": "out", "s": "IP 列反解为主机名，无 PTR 记录时仍显示 IP"}
+  {"t": "out", "s": "admin  ssh:notty  ::1  Mon Sep 14 00:30 - 00:30  (00:00)"},
+  {"t": "out", "s": "root   ssh:notty  ::1  Mon Sep 14 00:30 - 00:30  (00:00)"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（openssh 9.9p1，本机自连）"}
 ]}

@@ -1,0 +1,9 @@
+{"title": "return 抢跑：limit_req 形同虚设", "lines": [
+  {"t": "config", "s": "# 错：location 里 limit_req + return 200"},
+  {"t": "cmd", "s": "for i in $(seq 1 10); do curl -s -o /dev/null \\"},
+  {"t": "cmd", "s": "  -w \"%{http_code} \" localhost:8095/bypass/; done"},
+  {"t": "out", "s": "200 200 200 200 200 200 200 200 200 200"},
+  {"t": "note", "s": "全部 200：rewrite 阶段就结束，access 阶段限流没跑"},
+  {"t": "config", "s": "# 对：出口用 proxy_pass/静态文件；限流配 limit_req_status 429;"},
+  {"t": "note", "s": "实测：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

@@ -1,9 +1,11 @@
-{"title": "JDK 安装与版本确认", "lines": [
-  {"t": "cmd", "s": "yum install -y java-11-openjdk.x86_64"},
+{"title": "JDK 安装与版本确认（Rocky Linux 9）", "lines": [
+  {"t": "cmd", "s": "dnf install -y java-11-openjdk.x86_64"},
   {"t": "out", "s": "Complete!"},
   {"t": "cmd", "s": "java --version"},
-  {"t": "out", "s": "openjdk 11.0.6 2020-01-14 LTS"},
-  {"t": "out", "s": "OpenJDK Runtime Environment 18.9"},
-  {"t": "out", "s": "  (build 11.0.6+10-LTS)"},
-  {"t": "note", "s": "no-jdk 版 ES 不含 JDK，必须先装好"}
+  {"t": "out", "s": "openjdk 11.0.25 2024-10-15 LTS"},
+  {"t": "out", "s": "OpenJDK Runtime Environment (Red_Hat-11.0.25.0.9-1)"},
+  {"t": "cmd", "s": "rpm -q java-11-openjdk.x86_64"},
+  {"t": "out", "s": "java-11-openjdk-11.0.25.0.9-7.el9.x86_64"},
+  {"t": "note", "s": "no-jdk 版 ES 不含 JDK，必须先装好"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（linux/amd64）"}
 ]}

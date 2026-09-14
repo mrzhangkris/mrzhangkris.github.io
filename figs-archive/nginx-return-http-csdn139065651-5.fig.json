@@ -1,8 +1,11 @@
-{"title": "重复 return 实测", "lines": [
+{"title": "重复 return：第一条生效且不报错", "lines": [
   {"t": "config", "s": "location /dup {"},
-  {"t": "config", "s": "  return 200 \"first\\n\";"},
-  {"t": "config", "s": "  return 200 \"second\\n\"; }"},
+  {"t": "config", "s": "    return 200 \"first\";"},
+  {"t": "config", "s": "    return 200 \"second\";   # 静默忽略"},
+  {"t": "config", "s": "}"},
+  {"t": "cmd", "s": "nginx -s reload"},
   {"t": "cmd", "s": "curl -s localhost/dup"},
   {"t": "out", "s": "first"},
-  {"t": "note", "s": "reload 不报错，第二个 return 被静默忽略"}
+  {"t": "note", "s": "reload 无任何警告：第二条被静默丢弃"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

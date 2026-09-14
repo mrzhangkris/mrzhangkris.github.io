@@ -1,8 +1,8 @@
-{"title": "sub_filter_types 实测", "lines": [
-  {"t": "cmd", "s": "curl localhost/data.json   # 默认只处理 text/html"},
-  {"t": "out", "s": "{\"url\": \"http://old.example.com\"}   # 原样"},
-  {"t": "config", "s": "sub_filter_types application/json;"},
-  {"t": "cmd", "s": "curl localhost/data.json"},
-  {"t": "out", "s": "{\"url\": \"http://new.example.com\"}  # 生效"},
-  {"t": "note", "s": "要替换 JSON/CSS/JS 必须显式加类型"}
+{"title": "默认只处理 text/html", "lines": [
+  {"t": "cmd", "s": "curl -s localhost:8005/data.json"},
+  {"t": "out", "s": "{\"api\": \"http://old.example.com/v1\"}"},
+  {"t": "cmd", "s": "curl -s localhost/data.json"},
+  {"t": "out", "s": "{\"api\": \"http://new.example.com/v1\"}"},
+  {"t": "note", "s": "默认范围外的 JSON 原样放行；加类型后替换生效"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

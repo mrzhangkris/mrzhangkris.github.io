@@ -3,9 +3,9 @@ title: "Nginx index 与 autoindex 模块：默认首页与目录列表实测"
 date: 2024-05-27 10:44:21
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1562408590-e32931084e23?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 用 Nginx 部署站点时，目录访问绕不开两个问题：用户访问一个目录时先返回哪个文件？目录里没有默认文件时，是给 403、404 还是一份文件列表？前一个问题归 index 模块管，后一个问题归 autoindex 模块管。这两个问题没配好，最常见的结果是访问首页莫名收到 403。这篇把两个模块的指令写法放在一起讲，并用容器实测展示顺序命中、403 现场和列表效果。
@@ -41,7 +41,7 @@ server {
 
 "按顺序"到底怎么个顺序法，实测最直观。往站点根目录放两个文件，各写一行可辨认的内容：
 
-![配图1](/images/csdn/figures/nginx-index-autoindex-csdn139232155-1.png)
+![index 指令顺序命中实测](/images/csdn/figures/nginx-index-autoindex-csdn139232155-1.png)
 
 第一轮两个文件都在，命中的是排在前面的 `index.html`；删掉它再请求，命中 `index.htm`。`try_files $uri $uri/ =404` 里的 `$uri/` 就是触发 index 模块的位置——请求落在目录上时，交给 index 指令继续找默认文件。
 
@@ -51,7 +51,7 @@ server {
 
 把实例一里的文件全删掉，请求同一个目录，看看 Nginx 给什么：
 
-![配图2](/images/csdn/figures/nginx-index-autoindex-csdn139232155-2.png)
+![403 现场与 autoindex 开关实测](/images/csdn/figures/nginx-index-autoindex-csdn139232155-2.png)
 
 第一行输出是绝大多数人第一次碰到 403 的方式：**目录存在、autoindex 关着（默认就是关的），Nginx 拒绝列出内容，返回 403 Forbidden，而不是 404**。404 是"资源不存在"，403 在这里的意思是"目录在，但我不告诉你里面有什么"——语义没错，只是不熟悉的人容易被它吓到。
 
@@ -83,9 +83,9 @@ server {
 
 实测一个混合大小的目录，关注大小列的显示规律：
 
-![配图3](/images/csdn/figures/nginx-index-autoindex-csdn139232155-3.png)
+![autoindex_exact_size off 显示规律实测](/images/csdn/figures/nginx-index-autoindex-csdn139232155-3.png)
 
-规律值得单独说：**off 并不是一律圆整**。实测里 1500 字节的文件仍显示 `1500`，而 2.5MB 的显示 `2M`、488KB 的显示 `488K`——Nginx 的规则是不足 10KB 的文件保持精确字节数，超过后才按 K、M、G 四舍五入（这一条与官方文档"rounded to kilobytes"的表述有出入，是实测配合源码确认的行为）。下载站想让人一眼看出量级，off 合适；做校验和比对，on 更保险。
+规律值得单独说：**off 并不是一律圆整**。实测里 1500 字节的文件仍显示 `1500`，而 2.5MB（2621440 字节）的显示 `3M`、488KB 的显示 `488K`——Nginx 的规则是不足 10KB 的文件保持精确字节数，超过后才按 K、M 四舍五入（2.5MB 圆整成 3M 就是证据；这一行为与官方文档"rounded to kilobytes"的表述有出入，是实测确认的）。下载站想让人一眼看出量级，off 合适；做校验和比对，on 更保险。
 
 ## 两种典型错误写法
 

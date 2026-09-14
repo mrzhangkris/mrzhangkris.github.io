@@ -1,9 +1,12 @@
-{"title": "重定向与 PATH 修改同样被禁", "lines": [
+{"title": "逐项实测：rbash 拦截清单", "lines": [
+  {"t": "cmd", "s": "cd /tmp"},
+  {"t": "out", "s": "-rbash: cd: restricted"},
+  {"t": "cmd", "s": "/bin/ls /"},
+  {"t": "out", "s": "-rbash: /bin/ls: restricted: cannot specify `/' in command names"},
   {"t": "cmd", "s": "echo test > /tmp/out.txt"},
-  {"t": "out", "s": "-rbash: /tmp/out.txt: restricted:"},
-  {"t": "out", "s": "  cannot redirect output"},
+  {"t": "out", "s": "-rbash: /tmp/out.txt: restricted: cannot redirect output"},
   {"t": "cmd", "s": "PATH=/usr/bin:$PATH"},
   {"t": "out", "s": "-rbash: PATH: readonly variable"},
-  {"t": "note", "s": "PATH 在 .bash_profile 里已 readonly，改不动"},
-  {"t": "note", "s": "重定向输出/追写、改 PATH 全部被拦"}
+  {"t": "note", "s": "rm、python3 等白名单外命令一律 command not found"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（受限用户交互登录）"}
 ]}

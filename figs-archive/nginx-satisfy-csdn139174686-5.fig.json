@@ -1,0 +1,9 @@
+{"title": "return 跳过所有访问关卡", "lines": [
+  {"t": "cmd", "s": "curl -si localhost:8004/secret | head -1"},
+  {"t": "out", "s": "HTTP/1.1 404 Not Found"},
+  {"t": "note", "s": "无凭证直接 404：rewrite 阶段 return 先于 access/auth"},
+  {"t": "cmd", "s": "curl -si localhost:8004/ | head -1"},
+  {"t": "out", "s": "HTTP/1.1 401 Unauthorized"},
+  {"t": "note", "s": "对照：同站其他路径照常要求认证"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

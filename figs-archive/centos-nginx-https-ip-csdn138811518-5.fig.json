@@ -1,0 +1,11 @@
+{"title": "if 加 && 组合条件：nginx -t 直接拦下", "lines": [
+  {"t": "config", "s": "if ($host != yourdomain.com && $host != www.yourdomain.com) {"},
+  {"t": "config", "s": "    return 403;"},
+  {"t": "config", "s": "}"},
+  {"t": "cmd", "s": "nginx -t"},
+  {"t": "out", "s": "nginx: [emerg] invalid condition \"$host\" in"},
+  {"t": "out", "s": "    /etc/nginx/conf.d/default.conf:2"},
+  {"t": "out", "s": "nginx: configuration file /etc/nginx/nginx.conf test failed"},
+  {"t": "note", "s": "报错行按原始单行折行展示；if 不支持 && / || 组合条件"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器（nginx/1.31.5）"}
+]}

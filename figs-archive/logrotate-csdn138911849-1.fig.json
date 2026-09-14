@@ -1,10 +1,11 @@
-{"title": "logrotate 轮转实测（nginx:alpine, logrotate）", "lines": [
-  {"t": "cmd", "s": "logrotate -d /etc/logrotate.d/nginx   # 干跑"},
+{"title": "干跑 + 强制轮转 + 请求验证", "lines": [
+  {"t": "cmd", "s": "logrotate -d /etc/logrotate.d/nginx"},
   {"t": "out", "s": "rotating pattern: /var/log/nginx/*.log weekly ..."},
-  {"t": "cmd", "s": "logrotate -f /etc/logrotate.d/nginx   # 强制轮转"},
-  {"t": "cmd", "s": "ls -l /var/log/nginx/"},
-  {"t": "out", "s": "access.log      0    # create 新建，nginx 属主"},
-  {"t": "out", "s": "access.log.1.gz  122  # compress 压缩生效"},
-  {"t": "cmd", "s": "curl -s localhost >/dev/null; ls -l access.log"},
-  {"t": "out", "s": "access.log  90  # reopen 后新日志写进新文件"}
+  {"t": "cmd", "s": "logrotate -f -s /tmp/lr.state /etc/logrotate.d/nginx"},
+  {"t": "out", "s": "-rw-r--r-- 1 nginx nginx    0 access.log"},
+  {"t": "out", "s": "-rw-r--r-- 1 root  root    66 access.log.1.gz"},
+  {"t": "cmd", "s": "curl -s localhost >/dev/null && wc -c /var/log/nginx/access.log"},
+  {"t": "out", "s": "84 /var/log/nginx/access.log"},
+  {"t": "note", "s": "新文件 0 字节属主 nginx；旧日志压缩成 .gz；新请求落新文件"},
+  {"t": "note", "s": "实测环境：nginx:alpine (nginx/1.31.5, logrotate 3.22.0)"}
 ]}

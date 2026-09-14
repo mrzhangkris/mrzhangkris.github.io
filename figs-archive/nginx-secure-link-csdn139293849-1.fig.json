@@ -1,11 +1,12 @@
-{"title": "secure_link 三态实测", "lines": [
-  {"t": "config", "s": "secure_link $arg_md5,$arg_expires;"},
-  {"t": "config", "s": "secure_link_md5 \"$secure_link_expires$uri$remote_addr secret_key\";"},
-  {"t": "cmd", "s": "curl \"localhost/private.zip?md5=$SIG&expires=$EXP\""},
-  {"t": "out", "s": "200 SECRET"},
-  {"t": "cmd", "s": "curl \"...?md5=$SIG&expires=<已过期的exp>\""},
-  {"t": "out", "s": "410 Gone"},
-  {"t": "cmd", "s": "curl \"localhost/private.zip\"  # 无签名"},
-  {"t": "out", "s": "403"},
-  {"t": "note", "s": "签名不符=$secure_link为空→403，过期=\"0\"→410"}
+{"title": "三条主线：200 / 410 / 403", "lines": [
+  {"t": "config", "s": "u=/private.zip?md5=c0_3RFicZ408oP7oD7oQhA&expires=1789349498"},
+  {"t": "cmd", "s": "curl -si \"localhost$u\" | head -1"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
+  {"t": "config", "s": "u=/private.zip?md5=llScs1Bl2cxyCa0lEPn4KQ&expires=1789349138"},
+  {"t": "cmd", "s": "curl -si \"localhost$u\" | head -1"},
+  {"t": "out", "s": "HTTP/1.1 410 Gone"},
+  {"t": "cmd", "s": "curl -si localhost/private.zip | head -1"},
+  {"t": "out", "s": "HTTP/1.1 403 Forbidden"},
+  {"t": "note", "s": "脚本生成签名：有效 200，过期 410，无签名 403"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

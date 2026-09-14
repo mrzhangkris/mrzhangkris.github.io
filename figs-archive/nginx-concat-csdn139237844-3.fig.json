@@ -1,11 +1,11 @@
-{
-  "title": "超限与错误混入的失败形态（实拍）",
-  "lines": [
-    {"t": "cmd", "s": "curl -sw %{http_code} localhost/css/??style1.css,ghost.css"},
-    {"t": "out", "s": "404"},
-    {"t": "cmd", "s": "curl -sw %{http_code} \"localhost/css/??style1.css,style2.css,style3.css\""},
-    {"t": "out", "s": "400  (concat_max_files 2)"},
-    {"t": "out", "s": "error.log: client sent too many concat filenames"},
-    {"t": "note", "s": "类型不在 concat_types：400 且不写 error.log"}
-  ]
-}
+{"title": "404 与两种 400 的边界", "lines": [
+  {"t": "cmd", "s": "curl -sw \"%{http_code}\" localhost/css/??style1.css,missing.css"},
+  {"t": "out", "s": "404"},
+  {"t": "cmd", "s": "curl -sw \"%{http_code}\" ??style1.css,style2.css,style3.css,style1.css"},
+  {"t": "out", "s": "400"},
+  {"t": "out", "s": "error.log: client sent too many concat filenames"},
+  {"t": "cmd", "s": "curl -sw \"%{http_code}\" ...css/??style1.css,notes.txt"},
+  {"t": "out", "s": "400（error.log 无新增）"},
+  {"t": "note", "s": "类型不在 concat_types 静默 400；去 mime.types 全静默"},
+  {"t": "note", "s": "实测：Alpine 容器自编译 nginx 1.28.0"}
+]}

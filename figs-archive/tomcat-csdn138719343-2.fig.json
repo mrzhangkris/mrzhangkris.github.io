@@ -1,0 +1,11 @@
+{"title": "现场二：8080 被占——startup 说 started，进程却死了", "lines": [
+  {"t": "cmd", "s": "/opt/tomcat2/bin/startup.sh"},
+  {"t": "out", "s": "Tomcat started."},
+  {"t": "cmd", "s": "ps -ef | grep catalina.home=/opt/tomcat2 | grep -v grep | wc -l"},
+  {"t": "out", "s": "0"},
+  {"t": "cmd", "s": "grep -h BindException /opt/tomcat2/logs/catalina.out | head -1"},
+  {"t": "out", "s": "java.net.BindException: Address already in use"},
+  {"t": "note", "s": "SEVERE: Failed to initialize Connector[http-nio-8080] 即端口被占"},
+  {"t": "note", "s": "startup 报 started 只是脚本壳，存活要靠进程和日志确认"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
+]}

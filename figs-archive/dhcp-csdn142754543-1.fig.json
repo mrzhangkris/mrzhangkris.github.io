@@ -1,9 +1,9 @@
 {"title": "安装 DHCP 服务端并确认版本", "lines": [
-  {"t": "cmd", "s": "yum install -y dhcp"},
+  {"t": "cmd", "s": "dnf install -y dhcp-server"},
   {"t": "out", "s": "Complete!"},
-  {"t": "cmd", "s": "rpm -q dhcp"},
-  {"t": "out", "s": "dhcp-4.2.5-83.el7.centos.2"},
+  {"t": "cmd", "s": "rpm -q dhcp-server"},
+  {"t": "out", "s": "dhcp-server-4.4.2-20.b1.el9.rocky.0.1.aarch64"},
   {"t": "cmd", "s": "dhcpd --version 2>&1 | head -1"},
-  {"t": "out", "s": "isc-dhcpd-4.2.5"},
-  {"t": "note", "s": "实测环境：centos:7 容器（vault 源，aarch64）"}
+  {"t": "out", "s": "isc-dhcpd-4.4.2b1"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（dnf，aarch64）"}
 ]}

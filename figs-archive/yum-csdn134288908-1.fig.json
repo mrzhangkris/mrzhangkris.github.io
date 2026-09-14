@@ -1,0 +1,14 @@
+{
+  "title": "Rocky Linux 9 建仓库：createrepo_c",
+  "lines": [
+    {"t": "cmd", "s": "dnf -y install createrepo_c"},
+    {"t": "out", "s": "createrepo_c-0.20.1-4.el9.aarch64"},
+    {"t": "cmd", "s": "dnf download --resolve tree wget"},
+    {"t": "note", "s": "--resolve 连依赖一起下载，统一放入仓库目录"},
+    {"t": "cmd", "s": "createrepo_c -d /data/yum-repo/"},
+    {"t": "out", "s": "Pool started (with 5 workers)"},
+    {"t": "out", "s": "Pool finished"},
+    {"t": "note", "s": "repodata/ 生成 7 个文件：哈希名 primary/filelists/other 加 repomd.xml"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（dnf 4.14，createrepo_c 0.20.1）"}
+  ]
+}

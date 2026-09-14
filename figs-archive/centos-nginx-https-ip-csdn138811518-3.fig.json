@@ -1,0 +1,8 @@
+{"title": "IP 直连 443：握手阶段被拒", "lines": [
+  {"t": "cmd", "s": "curl -k -o /dev/null https://127.0.0.1/"},
+  {"t": "out", "s": "curl: (35) TLS connect error: error:0A000458:SSL"},
+  {"t": "out", "s": "    routines::tlsv1 unrecognized name"},
+  {"t": "note", "s": "输出按原始单行折行；握手即拒，无 HTTP 状态码"},
+  {"t": "note", "s": "default_server + ssl_reject_handshake 的作用点"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器（nginx/1.31.5）"}
+]}

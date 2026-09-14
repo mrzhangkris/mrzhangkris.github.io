@@ -1,9 +1,12 @@
-{"title": "rmf 别名实测：嵌套拦截坑与修正", "lines": [
-  {"t": "note", "s": "写法一（原文）：alias rmf='rm -i'"},
-  {"t": "out", "s": "can not use rm command -i /tmp/a.txt"},
-  {"t": "note", "s": "rmf 展开成 rm -i，rm 又被 alias 拦截——连保险删除也被拦"},
-  {"t": "note", "s": "写法二（修正）：alias rmf='/bin/rm -i'"},
-  {"t": "out", "s": "rm: remove regular empty file '/tmp/a.txt'? y"},
-  {"t": "out", "s": "ls: cannot access '/tmp/a.txt': No such file or directory"},
-  {"t": "note", "s": "绝对路径绕过 alias，交互确认后正常删除"}
+{"title": "rmf 嵌套拦截坑与修正写法", "lines": [
+  {"t": "config", "s": "alias rmf=\"rm -i\"        # 坑：展开后 rm 又被拦"},
+  {"t": "cmd", "s": "echo y | rmf f2.txt"},
+  {"t": "out", "s": "can not use rm command -i f2.txt"},
+  {"t": "out", "s": "after rmf: f2.txt"},
+  {"t": "config", "s": "alias rmf='/bin/rm -i'   # 修正：绝对路径绕过 alias"},
+  {"t": "cmd", "s": "echo y | rmf f3.txt"},
+  {"t": "out", "s": "rm: remove regular file 'f3.txt'? y"},
+  {"t": "out", "s": "after rmf: ls: cannot access 'f3.txt': No such file..."},
+  {"t": "note", "s": "alias 展开递归：rmf → rm -i → echo 提示，确认删除失效"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (bash 5.1.8)"}
 ]}

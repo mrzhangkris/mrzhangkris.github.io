@@ -1,12 +1,11 @@
-{"title": "启动前三道语法检查全部通过", "lines": [
+{"title": "启动前语法检查全部通过", "lines": [
   {"t": "cmd", "s": "named-checkconf /etc/named.conf"},
   {"t": "out", "s": "(无输出，退出码 0 = 主配置 OK)"},
-  {"t": "cmd", "s": "named-checkzone example.com \\"},
-  {"t": "cmd", "s": "  /var/named/example.com.zone"},
+  {"t": "cmd", "s": "named-checkzone example.com /var/named/example.com.zone"},
   {"t": "out", "s": "zone example.com/IN: loaded serial 2023101001"},
   {"t": "out", "s": "OK"},
-  {"t": "cmd", "s": "named-checkzone 254.168.192.in-addr.arpa \\"},
-  {"t": "cmd", "s": "  /var/named/192.168.254.zone"},
-  {"t": "out", "s": "zone 254.168.192.in-addr.arpa/IN: loaded"},
-  {"t": "out", "s": "  serial 2023101001  OK"}
+  {"t": "cmd", "s": "named-checkzone 254.168.192.in-addr.arpa /var/named/192.168.254.zone"},
+  {"t": "out", "s": "zone 254.168.192.in-addr.arpa/IN: loaded serial 2023101001"},
+  {"t": "out", "s": "OK"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器，BIND 9.16.23"}
 ]}

@@ -1,10 +1,10 @@
 {"title": "启动前语法检查：host 段的全局告警", "lines": [
   {"t": "cmd", "s": "dhcpd -t -cf /etc/dhcp/dhcpd.conf"},
-  {"t": "out", "s": "Internet Systems Consortium DHCP Server 4.2.5"},
+  {"t": "out", "s": "Internet Systems Consortium DHCP Server 4.4.2b1"},
   {"t": "out", "s": "WARNING: Host declarations are global."},
-  {"t": "out", "s": "  They are not limited to the scope you"},
-  {"t": "out", "s": "  declared them in."},
+  {"t": "out", "s": "  They are not limited to the scope you declared them in."},
   {"t": "cmd", "s": "echo $?"},
   {"t": "out", "s": "0"},
-  {"t": "note", "s": "退出码 0 = 语法正确；告警另有所指，见正文"}
+  {"t": "note", "s": "退出码 0 = 语法正确；告警另有所指，见正文"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器"}
 ]}

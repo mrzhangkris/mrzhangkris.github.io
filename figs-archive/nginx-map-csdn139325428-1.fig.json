@@ -1,10 +1,11 @@
-{"title": "静态映射：按 URI 查表", "lines": [
-  {"t": "config", "s": "map $uri $redirect_url {"},
-  {"t": "config", "s": "  /old-page /new-page;  /about /about-us;"},
+{"title": "map 静态查表实测（301 换回显）", "lines": [
+  {"t": "config", "s": "map $uri $redirect_url { /old-page /new-page; /about /about-us;"},
   {"t": "config", "s": "  default /not-found; }"},
-  {"t": "cmd", "s": "curl -s localhost/old-page"},
-  {"t": "out", "s": "uri=/old-page -> redirect_url=/new-page"},
-  {"t": "cmd", "s": "curl -s localhost/other-page"},
-  {"t": "out", "s": "uri=/other-page -> redirect_url=/not-found"},
-  {"t": "note", "s": "命中表项走表项，没命中走 default"}
+  {"t": "note", "s": "return 301 换成回显，避免真实跳转干扰观察"},
+  {"t": "cmd", "s": "for u in old-page about nope; do curl -s localhost/$u; echo; done"},
+  {"t": "out", "s": "redirect=/new-page"},
+  {"t": "out", "s": "redirect=/about-us"},
+  {"t": "out", "s": "redirect=/not-found"},
+  {"t": "note", "s": "重定向表就是 map 块里三行，加规则即加一行"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

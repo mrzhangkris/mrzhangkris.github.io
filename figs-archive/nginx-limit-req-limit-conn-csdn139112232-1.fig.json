@@ -1,8 +1,8 @@
-{"title": "burst=5 nodelay：10 连发，放行 6 个拒绝 4 个", "lines": [
-  {"t": "config", "s": "limit_req zone=one burst=5 nodelay;  # rate=1r/s"},
-  {"t": "cmd", "s": "for i in $(seq 1 10); do \\"},
-  {"t": "cmd", "s": "  curl -s -o /dev/null -w \"%{http_code} \" /api/; done"},
+{"title": "limit_req burst=5 nodelay：10 连发实测", "lines": [
+  {"t": "config", "s": "limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;"},
+  {"t": "config", "s": "limit_req zone=one burst=5 nodelay;"},
+  {"t": "cmd", "s": "for i in $(seq 10); do curl -sw \"%{http_code} \" localhost/; done"},
   {"t": "out", "s": "200 200 200 200 200 200 503 503 503 503"},
-  {"t": "note", "s": "1(当前)+5(burst)=6 个立即放行，第 7 个起 503"},
-  {"t": "note", "s": "实测环境：nginx/1.31.5"}
+  {"t": "note", "s": "1 个当前令牌 + 5 个 burst：前 6 个放行，第 7 个起拒绝"},
+  {"t": "note", "s": "实测环境：nginx/1.31.5（docker nginx:alpine 容器）"}
 ]}

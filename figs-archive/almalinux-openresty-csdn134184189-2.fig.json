@@ -1,11 +1,12 @@
 {
-  "title": "启动与版本验证",
+  "title": "启动与验证：curl 返回 200",
   "lines": [
-    {"t": "note", "s": "启动后验证（RockyLinux 9 容器实测）"},
-    {"t": "cmd", "s": "/apps/openresty/nginx/sbin/nginx -v"},
-    {"t": "out", "s": "nginx version: openresty/1.21.4.2"},
-    {"t": "cmd", "s": "curl -I -s -m 10 http://localhost | grep HTTP | awk '{print $2}'"},
+    {"t": "cmd", "s": "cd /apps/openresty/nginx/sbin"},
+    {"t": "cmd", "s": "./nginx -c /apps/openresty/nginx/conf/online/nginx.conf"},
+    {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\\n\" http://127.0.0.1/"},
     {"t": "out", "s": "200"},
-    {"t": "note", "s": "reload / quit 实测均正常返回"}
+    {"t": "cmd", "s": "./nginx -c /apps/openresty/nginx/conf/online/nginx.conf -s reload"},
+    {"t": "note", "s": "reload 无报错、退出码 0 即重载成功"},
+    {"t": "note", "s": "实测环境：AlmaLinux 9.8 容器，OpenResty 1.31.1.1"}
   ]
 }

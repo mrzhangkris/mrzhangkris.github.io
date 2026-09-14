@@ -1,0 +1,9 @@
+{"title": "忘了加 -y 的坑与签名校验（实测）", "lines": [
+  {"t": "cmd", "s": "dnf install --downloadonly --downloaddir=/tmp/d2 wget"},
+  {"t": "out", "s": "Is this ok [y/N]: Operation aborted."},
+  {"t": "note", "s": "脚本/容器等非交互环境没加 -y，事务直接放弃"},
+  {"t": "cmd", "s": "rpm -K /tmp/dl/*.rpm"},
+  {"t": "out", "s": "/tmp/dl/wget-1.21.1-11.el9_8.aarch64.rpm:"},
+  {"t": "out", "s": "    digests signatures OK"},
+  {"t": "note", "s": "安装前核一遍 GPG 签名；实测环境：Rocky Linux 9 容器"}
+]}

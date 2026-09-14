@@ -3,9 +3,9 @@ title: "Nginx proxy_cache 实战：HIT、MISS、BYPASS 各是什么意思"
 date: 2024-05-13 16:03:41
 categories: [技术]
 tags: [Nginx]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1617839625591-e5a789593135?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
 接口慢，第一反应是扩后端，但很多响应其实压根不变——列表页、配置项、公开详情，十次请求九次内容一样。Nginx 的 proxy_cache 模块把这些上游响应缓存到本地磁盘，命中后直接返回，后端少扛一次是一次。
@@ -34,6 +34,8 @@ location / {
 ```
 
 `proxy_cache_path` 里的关键参数：`keys_zone` 定义缓存键的共享内存区（必填，`my_cache:10m` 即区名加 10MB）；`max_size` 控制磁盘占用上限；`inactive` 定义多久没被访问就清除。`proxy_cache_valid` 按状态码定 TTL——错误页给短时间，避免后端一抖，404 被放大缓存十分钟。
+
+几个默认值值得记住。`proxy_cache_key` 不写时默认是 `$scheme$proxy_host$request_uri`——键里只有 URI，没有用户要素，实例五会看到这样省事的代价。`inactive` 不写默认 10 分钟，比多数业务的 TTL 短，冷门内容会被提前清走。`keys_zone` 的容量按官方文档口径，1MB 大约存 8000 个缓存键，10MB 的区足够十万级条目；真正的大头是磁盘上的响应体，交给 `max_size` 和 `inactive` 一起管。`levels=1:2` 是给缓存目录做两级散列子目录，几十万个缓存文件摊开存，避免单目录被文件数量拖垮。
 
 ## 实例一：最小可用配置，看懂 MISS 和 HIT
 
@@ -120,6 +122,9 @@ alice 首次请求 MISS 属于正常，但 bob 的首次请求直接 HIT——�
 - **缓存键必须含区分用户的要素**。Cookie、Token 之类放进 `proxy_cache_key`，否则用户间串缓存（已实测）；反过来，纯公开内容别乱加 Cookie，键越散命中率越低。
 - **bypass 与 no_cache 成对出现、列表一致**。只 bypass 不 no_cache，敏感响应照样落盘；只 no_cache 不 bypass，请求还是会命中旧缓存。
 - **后端缓存头优先于 `proxy_cache_valid`**。上游响应带 `Cache-Control`、`Expires` 或 `X-Accel-Expires` 时，Nginx 以它为准，`proxy_cache_valid` 只在响应没有任何缓存头时生效（此条来自官方文档，本文实验的 backend 未发缓存头，未单独实跑）。
+- **带 `Set-Cookie` 的响应不会进缓存**。Nginx 默认对上游响应头做安全处理：响应带 `Set-Cookie` 时不写缓存，防止会话串号。公开内容如果命中率莫名偏低，先抓包看后端是不是在发这个头（官方文档行为，本文 backend 为纯静态响应，未单独实跑）。
+- **后端抖动时让过期缓存兜底**。`proxy_cache_use_stale error timeout http_500 http_502 http_503 http_504;` 让上游故障时先回已过期的缓存而不是错误页，配 `proxy_cache_background_update on;` 还能一边回旧内容一边在后台刷新（此组来自官方文档，本文实验未覆盖故障场景，未实跑）。
+- **缓存清不干净，想想 cache loader**。Nginx 启动约一分钟后，cache loader 进程会把磁盘上已有的缓存元数据载回内存区。本次实验就踩过：重启服务以为缓存已清，`/` 却直接 HIT——旧条目是被 loader 从磁盘载回来的。要彻底重来，得停服务、清空缓存目录、再启动。
 - **404 给短 TTL**。`proxy_cache_valid 404 1m;` 让错误页一分钟内不再反复打到后端，又不至于把故障钉死在缓存里。
 - **调试期挂上 `add_header X-Proxy-Cache $upstream_cache_status;`**，HIT/MISS/BYPASS 一眼可辨，比翻日志快得多。
 

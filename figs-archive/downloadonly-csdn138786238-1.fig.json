@@ -1,11 +1,10 @@
-{"title": "dnf 原生 --downloadonly（RHEL 9，无需插件）", "lines": [
-  {"t": "cmd", "s": "dnf install --downloadonly \\"},
-  {"t": "cmd", "s": "  --downloaddir=/tmp/dl wget"},
-  {"t": "out", "s": "Total download size: 882 k"},
-  {"t": "out", "s": "DNF will only download packages for the"},
-  {"t": "out", "s": "  transaction."},
-  {"t": "out", "s": "Exiting on user Command"},
-  {"t": "cmd", "s": "ls /tmp/dl/"},
-  {"t": "out", "s": "wget-1.21.3-3.el9.x86_64.rpm"},
-  {"t": "note", "s": "实测环境：rockylinux:9（RHEL 9 同源）"}
+{"title": "预下载全系统更新（Rocky Linux 9 实测）", "lines": [
+  {"t": "cmd", "s": "dnf update --downloadonly --downloaddir=/tmp/u -y"},
+  {"t": "out", "s": "Total download size: 60 M"},
+  {"t": "out", "s": "DNF will only download packages for the transaction."},
+  {"t": "out", "s": "Complete!"},
+  {"t": "cmd", "s": "ls /tmp/u | wc -l"},
+  {"t": "out", "s": "114"},
+  {"t": "note", "s": "只下载不安装，114 个 rpm 落在指定目录"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（dnf 4.14.0，aarch64）"}
 ]}

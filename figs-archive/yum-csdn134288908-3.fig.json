@@ -1,0 +1,14 @@
+{
+  "title": "客户端配置与安装验证",
+  "lines": [
+    {"t": "config", "s": "[local-yum]  baseurl=http://127.0.0.1:8080  gpgcheck=0"},
+    {"t": "cmd", "s": "dnf --disablerepo=\"*\" --enablerepo=\"local-yum\" makecache"},
+    {"t": "cmd", "s": "dnf --disablerepo=\"*\" --enablerepo=\"local-yum\" install tree"},
+    {"t": "out", "s": "Installed:  tree-1.8.0-10.el9.aarch64"},
+    {"t": "out", "s": "Complete!"},
+    {"t": "cmd", "s": "dnf --disablerepo=\"*\" repolist"},
+    {"t": "out", "s": "local-yum                Local YUM Repo"},
+    {"t": "note", "s": "公网源全部禁用，只留 local-yum，安装照样闭环"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器（dnf 4.14）"}
+  ]
+}

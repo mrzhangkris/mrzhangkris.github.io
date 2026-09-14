@@ -1,14 +1,12 @@
 {
-  "title": "python subprocess realtime output",
+  "title": "第三条路：PYTHONUNBUFFERED=1 环境变量",
   "type": "cmd",
   "lines": [
-    {"t": "note", "s": "问题: 子进程输出被缓冲, 父进程读不到"},
-    {"t": "cmd", "s": "res = subprocess.Popen(["},
-    {"t": "cmd", "s": "  \"/usr/bin/python3 -u /root/system_time.py\"],"},
-    {"t": "cmd", "s": "  shell=True, stdout=subprocess.PIPE,"},
-    {"t": "cmd", "s": "  stderr=subprocess.PIPE)"},
-    {"t": "note", "s": "或子进程侧 print(..., flush=True)"},
-    {"t": "cmd", "s": "while res.poll() is None:"},
-    {"t": "cmd", "s": "  print(res.stdout.readline())"}
+    {"t": "cmd", "s": "PYTHONUNBUFFERED=1 python3 parent.py \"python3 system_time.py\""},
+    {"t": "out", "s": "父进程 01:24:35 收到 -> 01:24:35"},
+    {"t": "out", "s": "父进程 01:24:36 收到 -> 01:24:36"},
+    {"t": "out", "s": "父进程 01:24:37 收到 -> 01:24:37"},
+    {"t": "note", "s": "# 不改命令行参数、不改子进程代码,env 注入等效 -u"},
+    {"t": "note", "s": "实测环境：debian:12 容器 (Python 3.11.2)"}
   ]
 }

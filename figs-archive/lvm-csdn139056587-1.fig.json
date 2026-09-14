@@ -1,11 +1,12 @@
-{"title": "LVM 建卷三步实测（Rocky 9, lvm2 2.03）", "lines": [
-  {"t": "cmd", "s": "pvcreate /dev/loop20 /dev/loop21"},
-  {"t": "out", "s": "Physical volume \"/dev/loop20\" successfully created."},
-  {"t": "out", "s": "Physical volume \"/dev/loop21\" successfully created."},
-  {"t": "cmd", "s": "vgcreate my_volume_group /dev/loop20 /dev/loop21"},
+{"title": "建卷三步实测：PV → VG → LV", "lines": [
+  {"t": "cmd", "s": "pvcreate /dev/loop5 /dev/loop6"},
+  {"t": "out", "s": "Physical volume \"/dev/loop5\" successfully created."},
+  {"t": "cmd", "s": "vgcreate my_volume_group /dev/loop5 /dev/loop6"},
   {"t": "out", "s": "Volume group \"my_volume_group\" successfully created"},
-  {"t": "cmd", "s": "lvcreate -L 30M -n my_logical_volume my_volume_group"},
+  {"t": "cmd", "s": "lvcreate -Z n -W n -L 30M -n my_logical_volume my_volume_group"},
+  {"t": "out", "s": "Rounding up size to full physical extent 32.00 MiB"},
   {"t": "out", "s": "Logical volume \"my_logical_volume\" created."},
-  {"t": "cmd", "s": "lvs my_volume_group -o lv_name,lv_size"},
-  {"t": "out", "s": "my_logical_volume  32.00m   # 30M 被取整到 PE 边界 32M"}
+  {"t": "cmd", "s": "lvs -o lv_name,lv_size my_volume_group"},
+  {"t": "out", "s": "my_logical_volume 32.00m"},
+  {"t": "note", "s": "要 30M 落到 32M：LV 按 4M PE 边界向上取整。实测 Rocky 9.3"}
 ]}

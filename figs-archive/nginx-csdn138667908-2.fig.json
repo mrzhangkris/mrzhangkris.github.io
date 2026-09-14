@@ -1,11 +1,11 @@
-{
-  "title": "QUIT 后旧 master 退场，服务不中断（实拍）",
-  "lines": [
-    {"t": "cmd", "s": "kill -WINCH 8   # 旧 worker 优雅退出(code 0)"},
-    {"t": "cmd", "s": "kill -QUIT 8; sleep 2; ps -o pid,ppid,args | grep master"},
-    {"t": "out", "s": "30  1 nginx: master process /usr/sbin/nginx"},
-    {"t": "cmd", "s": "wget -qO- http://127.0.0.1/ | head -1"},
-    {"t": "out", "s": "<!DOCTYPE html>"},
-    {"t": "note", "s": "新 master 被 init 收养，流量全程未断"}
-  ]
-}
+{"title": "WINCH 收 worker，QUIT 收 master，升级闭环", "lines": [
+  {"t": "cmd", "s": "kill -WINCH 2729"},
+  {"t": "out", "s": "error.log: worker process 2730 exited with code 0"},
+  {"t": "cmd", "s": "curl -s localhost:8090/ | head -1"},
+  {"t": "out", "s": "<h1>hot upgrade demo</h1>"},
+  {"t": "cmd", "s": "kill -QUIT 2729"},
+  {"t": "cmd", "s": "ls /srv/nginx1/logs | grep pid"},
+  {"t": "out", "s": "nginx.pid"},
+  {"t": "note", "s": ".oldbin 消失，旧 master 已退场，仅剩 1.30.4 新 master"},
+  {"t": "note", "s": "实测：nginx:1.28-alpine 容器，1.28.3 -> 1.30.4 实升"}
+]}

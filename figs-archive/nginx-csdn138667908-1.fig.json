@@ -1,11 +1,11 @@
-{
-  "title": "USR2 后新旧 master 并存（nginx/1.28.3 实拍）",
-  "lines": [
-    {"t": "cmd", "s": "kill -USR2 8; sleep 2; ps -o pid,ppid,args | grep master"},
-    {"t": "out", "s": " 8  1 nginx: master process /usr/sbin/nginx"},
-    {"t": "out", "s": "30  8 nginx: master process /usr/sbin/nginx"},
-    {"t": "cmd", "s": "ls /var/run/nginx.pid*"},
-    {"t": "out", "s": "/var/run/nginx.pid  /var/run/nginx.pid.oldbin"},
-    {"t": "note", "s": "旧 pid 改名 .oldbin，新 master 接管 nginx.pid"}
-  ]
-}
+{"title": "USR2 后双 master 并存，pid 文件换名", "lines": [
+  {"t": "cmd", "s": "kill -USR2 2729"},
+  {"t": "cmd", "s": "ps | grep \"nginx: master\" | grep srv"},
+  {"t": "out", "s": "2729 nginx: master process /usr/sbin/nginx -p /srv/nginx1 ..."},
+  {"t": "out", "s": "2752 nginx: master process /usr/sbin/nginx -p /srv/nginx1 ..."},
+  {"t": "cmd", "s": "ls /srv/nginx1/logs | grep pid"},
+  {"t": "out", "s": "nginx.pid"},
+  {"t": "out", "s": "nginx.pid.oldbin"},
+  {"t": "note", "s": "新 master(2752) 接管 nginx.pid，旧 pid 改名 .oldbin"},
+  {"t": "note", "s": "实测：nginx:1.28-alpine 容器，1.28.3 -> 1.30.4 实升"}
+]}

@@ -1,7 +1,12 @@
-{"title": "alias 丢尾斜杠实测", "lines": [
-  {"t": "config", "s": "location /images/ { alias /data/uploads; }"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w \"%{http_code}\" localhost/images/logo.png"},
-  {"t": "out", "s": "404"},
-  {"t": "out", "s": "open() \"/data/uploadslogo.png\" failed"},
-  {"t": "note", "s": "剩余部分直接粘在 alias 值后，error_log 一眼定位"}
+{"title": "尾斜杠错位实测：粘连与双斜杠", "lines": [
+  {"t": "config", "s": "location /images/ { alias /data/uploads; }  # 少了尾斜杠"},
+  {"t": "cmd", "s": "curl -si localhost/images/logo.png | head -1"},
+  {"t": "out", "s": "HTTP/1.1 404 Not Found"},
+  {"t": "out", "s": "open() \"/data/uploadslogo.png\" failed (2: No such file or directory)"},
+  {"t": "note", "s": "logo.png 被直接粘在 alias 值后，分隔符丢失"},
+  {"t": "config", "s": "location /images { alias /data/uploads/; }  # 反向错位"},
+  {"t": "cmd", "s": "curl -s localhost/images/logo.png"},
+  {"t": "out", "s": "UPLOAD"},
+  {"t": "note", "s": "拼出 //logo.png 被文件系统容忍：能跑不等于对"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

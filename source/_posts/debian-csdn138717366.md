@@ -3,12 +3,12 @@ title: "Debian 常用命令速查：apt-get、dpkg 与文件操作"
 date: 2024-05-11 15:22:09
 categories: [技术]
 tags: [Linux]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?w=1600&q=80&fm=jpg
-updated: 2026-09-11
+updated: 2026-09-14
 ---
 
-Debian 及其派生系统（Ubuntu 等）上干活，有几组命令天天要碰：装软件用 apt-get 和 dpkg，看文件用 ls，切目录用 cd 和 pwd，复制移动用 cp 和 mv。这篇按功能分类做成速查表，新机器上手或换环境时翻一下就能用。文中输出均在 debian:stable 容器（Debian 13.6，apt 3.0.3，dpkg 1.22.22）实测。
+Debian 及其派生系统（Ubuntu 等）上干活，有几组命令天天要碰：装软件用 apt-get 和 dpkg，看文件用 ls，切目录用 cd 和 pwd，复制移动用 cp 和 mv。这篇按功能分类做成速查表，新机器上手或换环境时翻一下就能用。文中输出均在 debian:12 容器（Debian 12.15，apt 2.6.1，dpkg 1.21.23）实测。
 
 ## apt-get：软件源包管理
 
@@ -34,7 +34,7 @@ apt-get 是 Debian 系的包管理命令行工具，负责安装、更新和移�
 | `-q` | 静默模式，减少进度输出 |
 | `--no-install-recommends` | 不装推荐包，只要硬依赖 |
 
-实跑验证（`-s` 模拟安装 wget，autoremove 空转）：
+实跑验证（新容器不刷索引直接装包会报错，update 之后 `-s` 模拟安装 wget）：
 
 ![配图1](/images/csdn/figures/debian-csdn138717366-1.png)
 

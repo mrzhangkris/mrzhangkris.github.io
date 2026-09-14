@@ -1,9 +1,12 @@
 {
-  "title": "limit_req 限速实测",
+  "title": "limit_req 限速实测：连发 5 个请求",
   "lines": [
-    {"t": "note", "s": "rate=1r/s burst=3 nodelay，连发 5 个请求（实测）"},
-    {"t": "cmd", "s": "seq 5 | xargs curl -so /dev/null -w \"%{http_code} \" localhost/rate/"},
+    {"t": "note", "s": "rate=1r/s burst=3 nodelay（配置见正文）"},
+    {"t": "cmd", "s": "for i in 1 2 3 4 5; do curl -so /dev/null \\"},
+    {"t": "out", "s": "-w \"%{http_code} \" -u $u $url; done"},
     {"t": "out", "s": "200 200 200 200 503"},
-    {"t": "note", "s": "burst 配额耗尽，第 5 发直接 503"}
+    {"t": "note", "s": "burst 配额耗尽，第 5 发直接 503"},
+    {"t": "note", "s": "error.log: limiting requests, excess: 3.981 by zone \"one\""},
+    {"t": "note", "s": "实测环境：nginx/1.31.5（nginx:alpine 容器）"}
   ]
 }

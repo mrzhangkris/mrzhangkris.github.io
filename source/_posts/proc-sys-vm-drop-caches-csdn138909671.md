@@ -1,16 +1,16 @@
 ---
 title: "/proc/sys/vm/drop_caches 最佳实践：手动释放内核缓存"
 date: 2024-05-18 10:00:00
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Linux]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1575318633968-0383e7d07ca0?w=1600&q=80&fm=jpg
 ---
 
 Linux 会把空闲内存拿来做文件缓存，`free` 里内存"占满"很多时候只是缓存在工作，并不是真的不够用——available 那一列才是应用真正能拿到的量。所以 `/proc/sys/vm/drop_caches` 不该天天清，但性能测试前要个干净基线、维护窗口想从干净状态开始时，它是标准工具：不用重启，往这个特殊文件里写个数字就能让内核释放对应类型的缓存。
 
-这篇按场景讲清三个值各自清什么、怎么验证真的清了、以及那个几乎人人踩过的 `sudo echo` 重定向坑。全部命令在 rockylinux:9 容器实测。
+这篇按场景讲清三个值各自清什么、怎么验证真的清了、以及那个几乎人人踩过的 `sudo echo` 重定向坑。全部命令在 Rocky Linux 9.3 特权容器实测（内核为 Docker Desktop VM 的 7.0.12-linuxkit，drop_caches 作用于该内核）。
 
 ## 它能清什么
 
@@ -22,7 +22,7 @@ Linux 会把空闲内存拿来做文件缓存，`free` 里内存"占满"很多�
 | `2` | 目录项（dentries）+ inode 缓存 | 文件系统元数据，/proc/meminfo 的 Slab 可回收部分 |
 | `3` | 以上全部 | 最彻底 |
 
-这个写入是**只写不回读**的：文件读出来永远是 0，写进去触发一次清理动作，内核不保存这个值（它不是持久配置，是一次性命令）。
+它是一次性命令，不是持久配置：写入只触发一次清理动作，内核不保存这个值，缓存随后照常回填。别把它写进 sysctl.conf 之类的持久化配置——那样既无意义，也可能在每次重启后莫名清一次缓存。（补充一个内核差异：该文件在部分内核里干脆不可读，实测容器内 `cat` 它直接 Permission denied，写权限正常——属正常现象，别当成故障。）
 
 ## 场景一：性能测试前清干净基线
 
@@ -62,13 +62,13 @@ echo 3 | sudo tee /proc/sys/vm/drop_caches
 
 **怎么确认真的清了**——别只看命令没报错，对比清理前后的 buff/cache。实测：造一个 200MB 文件读进缓存，sync 后 echo 1：
 
-![配图1](/images/csdn/figures/proc-sys-vm-drop-caches-csdn138909671-1.png)
+![配图1：echo 1 前后对比](/images/csdn/figures/proc-sys-vm-drop-caches-csdn138909671-1.png)
 
-buff/cache 从 647MB 降到 244MB，约 400MB 页面缓存被释放，available 相应上升——这就是 echo 1 的效果。再测 echo 3 对 Slab（dentry/inode）的作用：
+buff/cache 从 2962MB 降到 372MB——注意释放的不只是那 200MB 文件，而是该内核此刻的全部页面缓存（容器与宿主机共享内核，这一写影响的是整个 VM）。available 相应上升。再测 echo 3 对 Slab（dentry/inode）的作用：
 
-![配图2](/images/csdn/figures/proc-sys-vm-drop-caches-csdn138909671-2.png)
+![配图2：echo 3 前后对比](/images/csdn/figures/proc-sys-vm-drop-caches-csdn138909671-2.png)
 
-echo 3 同时压低了页面缓存（buff/cache）和可回收 Slab，这就是它比 echo 1 更彻底的地方。
+echo 3 同时压低了页面缓存（579→246MB）和可回收 Slab（271584→135456 kB，dentry/inode 减半），这就是它比 echo 1 更彻底的地方。
 
 验证方法记牢：清理前后各跑一次 `free -m`（看 buff/cache）和 `grep Slab /proc/meminfo`（看元数据缓存），数字降了才是真清了。
 
@@ -81,7 +81,9 @@ sudo echo 3 > /proc/sys/vm/drop_caches
 # bash: /proc/sys/vm/drop_caches: Permission denied
 ```
 
-为什么失败：`>` 重定向由**当前 shell** 执行，不是由 sudo 启动的进程执行。sudo 只提升了 `echo` 的权限（echo 写 stdout，根本不需要 root），而真正打开 `/proc/sys/vm/drop_caches` 这个文件做重定向的，还是你那个普通用户的 shell——权限不够，Permission denied。
+为什么失败：`>` 重定向由**当前 shell** 执行，不是由 sudo 启动的进程执行。sudo 只提升了 `echo` 的权限（echo 写 stdout，根本不需要 root），而真正打开 `/proc/sys/vm/drop_caches` 这个文件做重定向的，还是你那个普通用户的 shell——权限不够，Permission denied。实测复现（以非 root 用户执行同样的重定向）：
+
+![配图3：重定向坑实测](/images/csdn/figures/proc-sys-vm-drop-caches-csdn138909671.png)
 
 正确做法是让"写文件"这个动作本身以 root 身份执行，三种都行：
 

@@ -1,11 +1,12 @@
-{"title": "单 IP 白名单实测（nginx/1.31.5 容器）", "lines": [
-  {"t": "config", "s": "allow 127.0.0.1;   # 名单里有本机"},
+{"title": "单 IP 白名单实测", "lines": [
+  {"t": "note", "s": "实测环境：nginx/1.31.5 容器，请求从本机环回 127.0.0.1 发起"},
+  {"t": "config", "s": "allow 127.0.0.1;"},
   {"t": "config", "s": "deny all;"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} 127.0.0.1/"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' localhost/"},
   {"t": "out", "s": "200"},
-  {"t": "config", "s": "allow 192.168.1.1;  # 名单里没有本机"},
+  {"t": "config", "s": "allow 192.168.1.1;   # 名单里没有本机"},
   {"t": "config", "s": "deny all;"},
-  {"t": "cmd", "s": "curl -s -o /dev/null -w %{http_code} 127.0.0.1/"},
+  {"t": "cmd", "s": "curl -s -o /dev/null -w '%{http_code}' localhost/"},
   {"t": "out", "s": "403"},
-  {"t": "note", "s": "日志 access forbidden by rule，死在 IP 规则上"}
+  {"t": "note", "s": "403 即 allow/deny 拒绝时的标准响应"}
 ]}

@@ -1,11 +1,12 @@
-{"title": "LVM 基础流程实测（Rocky 9, lvm2 2.03）", "lines": [
-  {"t": "cmd", "s": "pvcreate /dev/loop20 /dev/loop21"},
-  {"t": "out", "s": "Physical volume \"/dev/loop20\" successfully created."},
-  {"t": "out", "s": "Physical volume \"/dev/loop21\" successfully created."},
-  {"t": "cmd", "s": "vgcreate vg0 /dev/loop20 /dev/loop21"},
-  {"t": "out", "s": "Volume group \"vg0\" successfully created"},
-  {"t": "cmd", "s": "lvcreate -L 100M -n data vg0; lvcreate -L 40M -n cache vg0"},
-  {"t": "out", "s": "Logical volume \"data\" created."},
-  {"t": "out", "s": "Logical volume \"cache\" created."},
-  {"t": "note", "s": "lvconvert 绑定依赖 dm-cache 模块，容器内核未含，未跑通"}
+{"title": "atime 实测：relatime 对比 noatime", "lines": [
+  {"t": "cmd", "s": "touch -a -d '2 days ago' /mnt/f.txt; stat -c %x /mnt/f.txt"},
+  {"t": "out", "s": "2026-09-12 00:20:08.543308419 +0000"},
+  {"t": "cmd", "s": "cat /mnt/f.txt > /dev/null; stat -c %x /mnt/f.txt"},
+  {"t": "out", "s": "2026-09-14 00:20:08.543757002 +0000"},
+  {"t": "note", "s": "relatime（Rocky 9 默认）：读文件把 atime 从 9-12 刷到 9-14"},
+  {"t": "cmd", "s": "umount /mnt && mount -o noatime /dev/loop0 /mnt"},
+  {"t": "cmd", "s": "touch -a -d '2 days ago' /mnt/f.txt; cat /mnt/f.txt > /dev/null"},
+  {"t": "cmd", "s": "stat -c %x /mnt/f.txt"},
+  {"t": "out", "s": "2026-09-12 00:20:08.551809710 +0000"},
+  {"t": "note", "s": "noatime 下同样操作 atime 纹丝不动。实测 Rocky 9.3 容器"}
 ]}

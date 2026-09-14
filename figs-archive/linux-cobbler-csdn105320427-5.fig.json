@@ -1,0 +1,12 @@
+{"title": "distro/profile/system 与 PXE 制品", "lines": [
+  {"t": "cmd", "s": "cobbler list | grep -v '^$' | head -6"},
+  {"t": "out", "s": "distros:"},
+  {"t": "out", "s": "   rocky9-demo"},
+  {"t": "out", "s": "profiles:"},
+  {"t": "out", "s": "   rocky9-demo"},
+  {"t": "out", "s": "systems:"},
+  {"t": "out", "s": "   node1"},
+  {"t": "cmd", "s": "ls /var/lib/tftpboot/pxelinux.cfg/"},
+  {"t": "out", "s": "01-52-54-00-11-22-33  default"},
+  {"t": "note", "s": "MAC 绑定生成专属 PXE 配置；images/ 下内核已就位"}
+]}

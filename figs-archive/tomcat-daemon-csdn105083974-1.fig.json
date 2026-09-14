@@ -1,0 +1,10 @@
+{"title": "Rocky Linux 9 上准备编译环境", "lines": [
+  {"t": "cmd", "s": "dnf install -y java-11-openjdk-devel gcc make wget tar gzip"},
+  {"t": "cmd", "s": "java -version"},
+  {"t": "out", "s": "openjdk version \"11.0.25\" 2024-10-15 LTS"},
+  {"t": "cmd", "s": "gcc --version | head -1"},
+  {"t": "out", "s": "gcc (GCC) 11.5.0 20240719 (Red Hat 11.5.0-14)"},
+  {"t": "note", "s": "devel 包才带 jsvc 编译所需的 JDK 头文件"},
+  {"t": "note", "s": "JDK 实际路径 /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-7.el9.aarch64"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（aarch64，dnf）"}
+]}

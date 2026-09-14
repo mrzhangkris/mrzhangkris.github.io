@@ -1,10 +1,11 @@
-{"title": "在线扩容实测：lvextend + resize2fs", "lines": [
-  {"t": "cmd", "s": "df -BM /mnt/my_storage | tail -1"},
-  {"t": "out", "s": "size-before: 26M    # 已写入 10M 数据"},
+{"title": "在线扩容：lvextend + resize2fs", "lines": [
   {"t": "cmd", "s": "lvextend -L 50M /dev/my_volume_group/my_logical_volume"},
-  {"t": "out", "s": "Logical volume ... successfully resized."},
-  {"t": "cmd", "s": "resize2fs /dev/my_volume_group/my_logical_volume"},
-  {"t": "cmd", "s": "df -BM /mnt/my_storage | tail -1"},
-  {"t": "out", "s": "size-after: 44M"},
-  {"t": "out", "s": "file-survived       # 挂载未中断，原数据完好"}
+  {"t": "out", "s": "Rounding size to boundary between physical extents: 52.00 MiB."},
+  {"t": "out", "s": "changed from 32.00 MiB (8 extents) to 52.00 MiB (13 extents)"},
+  {"t": "cmd", "s": "resize2fs /dev/mapper/my_volume_group--my_logical_volume"},
+  {"t": "out", "s": "df: 26M total 11M used"},
+  {"t": "out", "s": "df: 44M total 11M used"},
+  {"t": "note", "s": "扩容前 26M → 后 44M，挂载未断，data.bin md5 前后一致"},
+  {"t": "note", "s": "lvextend 只扩容器，文件系统必须 resize2fs 跟上"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (lvm2 2.03.33)"}
 ]}

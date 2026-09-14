@@ -1,7 +1,10 @@
-{"title": "安装 BIND 与版本确认（centos:7）", "lines": [
-  {"t": "cmd", "s": "yum install -y bind bind-utils"},
+{"title": "安装 BIND 并确认版本（Rocky Linux 9）", "lines": [
+  {"t": "cmd", "s": "dnf install -y bind bind-utils"},
+  {"t": "out", "s": "Installed:"},
   {"t": "out", "s": "Complete!"},
   {"t": "cmd", "s": "named -v"},
-  {"t": "out", "s": "BIND 9.11.4-P2-RedHat-9.11.4-26.P2.el7_9.16"},
-  {"t": "out", "s": "(Extended Support Version) <id:7107deb>"}
+  {"t": "out", "s": "BIND 9.16.23-RH (Extended Support Version) <id:fde3b1f>"},
+  {"t": "cmd", "s": "rpm -q bind"},
+  {"t": "out", "s": "bind-9.16.23-40.el9_8.8.aarch64"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 容器（dnf 4.14.0，aarch64）"}
 ]}

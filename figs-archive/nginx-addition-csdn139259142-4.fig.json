@@ -1,11 +1,11 @@
-{
-  "title": "过时指令 addition on 被拒（实拍）",
-  "lines": [
-    {"t": "note", "s": "老教程写法："},
-    {"t": "config", "s": "addition on;"},
-    {"t": "cmd", "s": "nginx -t"},
-    {"t": "out", "s": "nginx: [emerg] unknown directive \"addition\""},
-    {"t": "out", "s": "nginx: configuration file test failed"},
-    {"t": "note", "s": "现行指令只有 add_before_body / add_after_body / addition_types"}
-  ]
-}
+{"title": "过时指令 addition on 会被直接拒绝", "lines": [
+  {"t": "config", "s": "# 错：老教程第一步常写这条（已移除）"},
+  {"t": "config", "s": "addition on;"},
+  {"t": "cmd", "s": "nginx -t"},
+  {"t": "out", "s": "nginx: [emerg] unknown directive \"addition\" in"},
+  {"t": "out", "s": "/etc/nginx/conf.d/default.conf:4"},
+  {"t": "config", "s": "# 对：模块默认开启，直接写 add 指令"},
+  {"t": "config", "s": "add_before_body /banner.html;"},
+  {"t": "config", "s": "add_after_body /footer.html;"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

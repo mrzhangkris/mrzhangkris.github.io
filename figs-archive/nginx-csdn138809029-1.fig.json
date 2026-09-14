@@ -1,12 +1,12 @@
-{
-  "title": "七层轮询：默认 round-robin 交替分发（实拍）",
-  "lines": [
-    {"t": "config", "s": "upstream myapp1 { server 127.0.0.1:8081; server 127.0.0.1:8082; }"},
-    {"t": "cmd", "s": "for i in $(seq 1 6); do curl -s localhost/; done"},
-    {"t": "out", "s": "APP-ONE"},
-    {"t": "out", "s": "APP-TWO  (交替出现，共 3+3)"},
-    {"t": "out", "s": "APP-ONE"},
-    {"t": "out", "s": "APP-TWO"},
-    {"t": "note", "s": "按请求轮询分发到两台后端"}
-  ]
-}
+{"title": "七层轮询：两后端交替", "lines": [
+  {"t": "config", "s": "upstream myapp1 { server 127.0.0.1:8081; server 127.0.0.1:8082; }"},
+  {"t": "cmd", "s": "for i in $(seq 1 6); do curl -s localhost:8097/; done"},
+  {"t": "out", "s": "APP-ONE"},
+  {"t": "out", "s": "APP-TWO"},
+  {"t": "out", "s": "APP-ONE"},
+  {"t": "out", "s": "APP-TWO"},
+  {"t": "out", "s": "APP-ONE"},
+  {"t": "out", "s": "APP-TWO"},
+  {"t": "note", "s": "默认 round-robin 按请求交替分发"},
+  {"t": "note", "s": "实测：nginx:1.28-alpine 容器（nginx/1.28.3，--with-stream）"}
+]}

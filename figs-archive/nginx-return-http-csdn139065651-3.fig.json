@@ -1,10 +1,10 @@
-{"title": "return 200 文本实测", "lines": [
-  {"t": "config", "s": "location /ok { return 200 \"ok\\n\"; }"},
-  {"t": "cmd", "s": "curl -sI localhost/ok | grep Content-Type"},
+{"title": "/ok 与 /text：Content-Type 差异", "lines": [
+  {"t": "cmd", "s": "curl -si localhost/ok | grep -E 'HTTP/|Content-Type'"},
+  {"t": "out", "s": "HTTP/1.1 200 OK"},
   {"t": "out", "s": "Content-Type: application/octet-stream"},
-  {"t": "config", "s": "location /text { default_type text/plain;"},
-  {"t": "config", "s": "  return 200 \"hello $request_uri\\n\"; }"},
-  {"t": "cmd", "s": "curl -s localhost/text"},
-  {"t": "out", "s": "hello /text"},
-  {"t": "note", "s": "不指定类型默认 octet-stream，浏览器会当文件下载"}
+  {"t": "note", "s": "默认按二进制流处理，浏览器会弹下载"},
+  {"t": "cmd", "s": "curl -si 'localhost/text?foo=bar' | grep -E 'HTTP/|Content-Type'"},
+  {"t": "out", "s": "Content-Type: text/plain"},
+  {"t": "note", "s": "default_type text/plain 生效，变量正常展开"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}

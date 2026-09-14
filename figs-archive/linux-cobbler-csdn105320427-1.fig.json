@@ -1,8 +1,12 @@
-{"title": "openssl passwd 实测（Rocky 9, OpenSSL 3.0.7）", "lines": [
-  {"t": "cmd", "s": "openssl passwd -1 -salt 'cobbler' 'cobbler'"},
-  {"t": "out", "s": "$1$cobbler$M6SE55xZodWc9.vAKLJs6."},
-  {"t": "note", "s": "输出与本文 2020 年 CentOS 7 环境的记录完全一致"},
-  {"t": "note", "s": "salt+密码相同则哈希相同，可放心用新系统生成"},
-  {"t": "cmd", "s": "openssl version"},
-  {"t": "out", "s": "OpenSSL 3.0.7 1 Nov 2022"}
+{"title": "Cobbler 3.3.7 部署与首查（长行截断显示）", "lines": [
+  {"t": "cmd", "s": "dnf install -y epel-release"},
+  {"t": "cmd", "s": "dnf install -y cobbler dhcp-server tftp-server pykickstart httpd"},
+  {"t": "cmd", "s": "systemctl start cobblerd"},
+  {"t": "cmd", "s": "cobbler check"},
+  {"t": "out", "s": "1: The 'server' field in /etc/cobbler/settings.yaml must be set to"},
+  {"t": "out", "s": "2: For PXE to be functional, the 'next_server_v4' field in /etc/co"},
+  {"t": "out", "s": "3: For PXE to be functional, the 'next_server_v6' field in /etc/co"},
+  {"t": "out", "s": "8: The default password used by the sample templates for newly ins"},
+  {"t": "note", "s": "首查共 9 条；其余为可选功能。长行按 cut -c1-66 截断"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 (Cobbler 3.3.7, EPEL9)"}
 ]}

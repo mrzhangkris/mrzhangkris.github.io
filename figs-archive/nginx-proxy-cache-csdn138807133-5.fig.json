@@ -1,12 +1,10 @@
-{
-  "title": "错误写法：缓存键不含 Cookie 导致串缓存",
-  "lines": [
-    {"t": "config", "s": "proxy_cache_key \"$request_method$request_uri\";"},
-    {"t": "note", "s": "键里没有用户要素"},
-    {"t": "cmd", "s": "curl -si -H 'Cookie: user=alice' localhost/ | grep X-Proxy-Cache"},
-    {"t": "out", "s": "X-Proxy-Cache: MISS"},
-    {"t": "cmd", "s": "curl -si -H 'Cookie: user=bob' localhost/ | grep X-Proxy-Cache"},
-    {"t": "out", "s": "X-Proxy-Cache: HIT"},
-    {"t": "note", "s": "bob 首次请求直接命中 alice 的缓存（实测）"}
-  ]
-}
+{"title": "缓存键无用户要素：串缓存现场", "lines": [
+  {"t": "note", "s": "缓存键简化为 $request_method$request_uri，无用户要素"},
+  {"t": "cmd", "s": "curl -sD - -H 'Cookie: alice' http://localhost/item2 | grep X-Proxy"},
+  {"t": "out", "s": "X-Proxy-Cache: MISS"},
+  {"t": "note", "s": "alice 首次请求 MISS，属于正常回源"},
+  {"t": "cmd", "s": "curl -sD - -H 'Cookie: bob' http://localhost/item2 | grep X-Proxy"},
+  {"t": "out", "s": "X-Proxy-Cache: HIT"},
+  {"t": "note", "s": "bob 首次请求直接 HIT：读到的是 alice 的缓存"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
+]}

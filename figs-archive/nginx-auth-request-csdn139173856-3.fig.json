@@ -1,11 +1,7 @@
-{
-  "title": "漏关请求体：POST 拿到意外的 405（实拍）",
-  "lines": [
-    {"t": "note", "s": "漏配 proxy_pass_request_body off 时："},
-    {"t": "cmd", "s": "curl -H \"Authorization: ...\" -d payload localhost/protected/data.txt"},
-    {"t": "out", "s": "405 Not Allowed"},
-    {"t": "cmd", "s": "curl -H \"Authorization: ...\" localhost/protected/data.txt"},
-    {"t": "out", "s": "SECRET DATA [200]"},
-    {"t": "note", "s": "认证服务收到 POST 返回 405，未映射原样漏给客户端"}
-  ]
-}
+{"title": "错法一：return 抢在 auth_request 之前", "lines": [
+  {"t": "config", "s": "location /protected/ { auth_request /_auth; return 200 \"OK\"; }"},
+  {"t": "cmd", "s": "curl -s -w \"|%{http_code}\" localhost/protected/data.txt"},
+  {"t": "out", "s": "OK|200"},
+  {"t": "note", "s": "无凭证也 200：认证压根没被执行"},
+  {"t": "note", "s": "实测环境：nginx:1.28-alpine 容器（nginx/1.28.3）"}
+]}

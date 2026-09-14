@@ -1,12 +1,11 @@
-{
-  "title": "concat_unique 两种行为对比（实拍）",
-  "lines": [
-    {"t": "note", "s": "默认 unique=on，css+js 混合被拒："},
-    {"t": "cmd", "s": "curl -s \"localhost/css/??style1.css,app.js\""},
-    {"t": "out", "s": "400 Bad Request"},
-    {"t": "note", "s": "配 concat_unique off 后："},
-    {"t": "config", "s": "concat_unique off;"},
-    {"t": "cmd", "s": "curl -s \"localhost/css/??style1.css,app.js\""},
-    {"t": "out", "s": "body { color: red; } / console.log(1)"}
-  ]
-}
+{"title": "concat_unique on/off 混类型对比", "lines": [
+  {"t": "config", "s": "# 默认 concat_unique on，css+js 混合："},
+  {"t": "cmd", "s": "curl -sw \"%{http_code}\" localhost/css/??style1.css,app2.js"},
+  {"t": "out", "s": "400"},
+  {"t": "config", "s": "# concat_unique off; 后同一请求："},
+  {"t": "cmd", "s": "curl -s localhost/css/??style1.css,app2.js"},
+  {"t": "out", "s": "body { color: red; }"},
+  {"t": "out", "s": "console.log(\"js1\");"},
+  {"t": "note", "s": "跨目录 ../ 始终 400，unique off 也不放行"},
+  {"t": "note", "s": "实测：Alpine 容器自编译 nginx 1.28.0"}
+]}

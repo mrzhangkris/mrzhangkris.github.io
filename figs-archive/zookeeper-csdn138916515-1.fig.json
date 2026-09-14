@@ -1,0 +1,12 @@
+{
+  "title": "Rocky Linux 9 环境准备与 ZK 部署",
+  "lines": [
+    {"t": "cmd", "s": "dnf -y install java-11-openjdk"},
+    {"t": "out", "s": "openjdk version \"11.0.25\" 2024-10-15 LTS"},
+    {"t": "cmd", "s": "tar -xzf apache-zookeeper-3.8.6-bin.tar.gz -C /opt"},
+    {"t": "cmd", "s": "mv /opt/apache-zookeeper-3.8.6-bin /opt/zookeeper"},
+    {"t": "cmd", "s": "cp conf/zoo_sample.cfg conf/zoo.cfg"},
+    {"t": "note", "s": "三台节点同样操作，二进制包解压即用无需编译"},
+    {"t": "note", "s": "实测环境：Rocky Linux 9.3 容器 + OpenJDK 11.0.25 + ZK 3.8.6"}
+  ]
+}

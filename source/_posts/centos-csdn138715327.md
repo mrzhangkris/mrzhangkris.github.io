@@ -1,14 +1,14 @@
 ---
-title: "CentOS 常用命令：ls、cd、mkdir、rm、cp"
+title: "Linux 常用命令：ls、cd、mkdir、rm、cp（Rocky Linux 9 实测）"
 date: 2024-05-11 14:41:31
-updated: 2026-09-11
+updated: 2026-09-14
 categories: [技术]
 tags: [Linux]
-copyright_author: 司南
+copyright_author: 干将
 cover: https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=1600&q=80&fm=jpg
 ---
 
-刚接手一台 CentOS 机器，日常操作翻来覆去就那几条：看目录、切目录、建目录、删东西、复制。这篇文章把这五条最基础的命令各配一个真实输出示例，跑一遍就有体感了。
+刚接手一台 Linux 机器，日常操作翻来覆去就那几条：看目录、切目录、建目录、删东西、复制。这篇文章把这五条最基础的命令各配一个真实输出示例——全部在 Rocky Linux 9 容器里实跑截取，CentOS 7 上用法完全一致。
 
 ## ls：列出目录内容
 
@@ -22,81 +22,39 @@ ls 用于显示目录里的文件和子目录。常用参数：
 
 查看当前目录所有文件（含隐藏文件）的详细列表：
 
-![配图1](/images/csdn/figures/centos-csdn138715327-1.png)
-
 ```bash
 ls -la
 ```
 
-输出：
+实测输出（root 家目录，节选）：
 
-```bash
-[root@localhost ~]# ls -la
-total 44
-dr-xr-x---.  3 root root   181 May  8 17:29 .
-dr-xr-xr-x. 19 root root   247 May  8 15:17 ..
--rw-------.  1 root root  3812 May 10 17:30 .bash_history
--rw-r--r--.  1 root root    18 Feb 11  2022 .bash_logout
--rw-r--r--.  1 root root   141 Feb 11  2022 .bash_profile
--rw-r--r--.  1 root root   429 Feb 11  2022 .bashrc
--rw-r--r--.  1 root root   100 Feb 11  2022 .cshrc
-drwx------.  2 root root     6 May  8 15:11 .ssh
--rw-r--r--.  1 root root   129 Feb 11  2022 .tcshrc
--rw-------.  1 root root 11233 May  8 15:47 .viminfo
--rw-r--r--.  1 root root   166 May  8 15:23 .wget-hsts
--rw-------.  1 root root   870 May  8 15:13 anaconda-ks.cfg
-```
+![ls 实测](/images/csdn/figures/centos-csdn138715327-1.png)
 
 每行开头的第一个字符说明条目类型：`d` 开头是目录，`-` 开头是普通文件；`.` 和 `..` 分别代表当前目录和上级目录。
 
 ## cd：切换工作目录
 
-cd 改变当前所在的工作目录。切到 /var/log 后用 pwd 确认：
+cd 改变当前所在的工作目录，本身没有输出，切完用 pwd 确认：
 
 ```bash
-cd /var/log
-pwd
+cd /var/log && pwd
 ```
 
-输出：
-
-```bash
-[root@localhost ~]# cd /var/log/
-[root@localhost log]# pwd
-/var/log
-```
-
-注意提示符从 `~` 变成了 `log`，说明当前目录已经切换成功。
+实测输出 `/var/log`（与 mkdir 的实测一并见下图）。提示符里的当前目录名也会跟着变，这是不打 pwd 时的快速确认办法。
 
 ## mkdir：创建新目录
 
 mkdir 用于创建新目录，`-p` 参数可以在上级目录不存在时一并创建：
 
 ```bash
-mkdir -p ./a/b/c
+mkdir -p /root/a/b/c
 ```
 
-用 ls -R 检查创建结果：
+用 ls -R 递归检查创建结果，实测整条路径一次建齐：
 
-```bash
-ls -R ./a
-```
+![cd 与 mkdir 实测](/images/csdn/figures/centos-csdn138715327-2.png)
 
-输出：
-
-```bash
-[root@localhost ~]# mkdir -p ./a/b/c
-[root@localhost ~]# ls -R ./a
-./a:
-b
-
-./a/b:
-c
-
-./a/b/c:
-```
-
-不带 -p 直接 `mkdir ./a/b/c` 会因为 ./a、./a/b 不存在而报错，`-p` 把整条路径补齐了。
+不带 `-p` 直接 `mkdir /root/a/b/c` 会因为 /root/a、/root/a/b 不存在而报错，`-p` 把整条路径补齐了。
 
 ## rm：删除文件和目录
 
@@ -107,27 +65,9 @@ rm 用于删除文件或目录。两个参数要记牢：
 | -r | 递归删除目录及其内容 |
 | -f | 强制删除，忽略不存在的文件，过程中不提示 |
 
-先确认 a 目录的结构，然后递归删除并验证：
+递归删除并验证，实测报 `No such file or directory` 恰恰说明删干净了：
 
-```bash
-[root@localhost ~]# ll
-total 4
-drwxr-xr-x. 3 root root  15 May 11 14:01 a
--rw-------. 1 root root 870 May  8 15:13 anaconda-ks.cfg
-[root@localhost ~]# ls -R ./a
-./a:
-b
-
-./a/b:
-c
-
-./a/b/c:
-[root@localhost ~]# rm -rf a
-[root@localhost ~]# ls -R ./a
-ls: cannot access './a': No such file or directory
-```
-
-`No such file or directory` 正说明目录已经删干净了。
+![rm 实测](/images/csdn/figures/centos-csdn138715327-3.png)
 
 ## cp：复制文件或目录
 
@@ -139,35 +79,11 @@ cp 用于复制文件或目录，常用参数：
 | -i | 覆盖文件前提示 |
 | -u | 仅当源文件比目标文件新、或目标文件不存在时才复制 |
 
-把目录 a 复制为 d：
+先造一个带文件的目录再复制，分别检查两边，实测复制成功且原目录还在：
 
-```bash
-cp -r a d
-```
+![cp 实测](/images/csdn/figures/centos-csdn138715327-4.png)
 
-分别查看两个目录，确认复制成功且原目录还在：
-
-```bash
-[root@localhost ~]# cp -r a d
-[root@localhost ~]# ls -R ./d
-./d:
-b
-
-./d/b:
-c
-
-./d/b/c:
-[root@localhost ~]# ls -R ./a
-./a:
-b
-
-./a/b:
-c
-
-./a/b/c:
-```
-
-复制目录必须带 `-r`，否则 cp 只会报错"略过目录"。
+复制目录必须带 `-r`：实测不带时 GNU cp 报 `cp: -r not specified; omitting directory`，目录被整体跳过。验证内容一致，可以 `diff -r a d`，无输出即两边完全相同。
 
 ## 注意事项
 
@@ -178,6 +94,6 @@ c
 
 五条命令一张卡，贴在手边就够用：
 
-![配图1](/images/csdn/figures/centos-csdn138715327-1.png)
+![速查卡](/images/csdn/figures/centos-csdn138715327.png)
 
 > 本文由作者 2020-2024 年间的 CSDN 博客文章重构而来，原发布于 CSDN。

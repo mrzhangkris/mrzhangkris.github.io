@@ -1,0 +1,9 @@
+{"title": "认证后的 PKI 目录（master 机节选）", "lines": [
+  {"t": "cmd", "s": "find /etc/salt/pki -mindepth 1 | sort"},
+  {"t": "out", "s": "/etc/salt/pki/master/minions/master-node1"},
+  {"t": "out", "s": "/etc/salt/pki/master/minions/minion-node2"},
+  {"t": "out", "s": "/etc/salt/pki/minion/minion_master.pub"},
+  {"t": "note", "s": "两个 Minion 公钥已从 minions_pre 移入 minions"},
+  {"t": "note", "s": "minion 侧新增 minion_master.pub（master 公钥）"},
+  {"t": "note", "s": "实测环境：Rocky Linux 9 双容器"}
+]}

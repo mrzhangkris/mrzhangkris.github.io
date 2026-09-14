@@ -1,7 +1,8 @@
-{"title": "alias 替换实测", "lines": [
+{"title": "alias：匹配前缀被替换", "lines": [
   {"t": "config", "s": "location /images/ { alias /data/uploads/; }"},
-  {"t": "cmd", "s": "curl -s localhost:81/images/logo.png"},
+  {"t": "cmd", "s": "curl -s localhost/images/logo.png"},
   {"t": "out", "s": "UPLOAD"},
-  {"t": "note", "s": "前缀 /images/ 被替换为 /data/uploads/，实际读 /data/uploads/logo.png"},
-  {"t": "note", "s": "html/images 下同名的 LOGO 被遮蔽，取不到"}
+  {"t": "note", "s": "同一路径拿到另一份文件：/images/ 前缀被替换"},
+  {"t": "note", "s": "实际读取 /data/uploads/logo.png，URL 不暴露真实目录"},
+  {"t": "note", "s": "实测环境：nginx:alpine 容器 (nginx/1.31.5)"}
 ]}
