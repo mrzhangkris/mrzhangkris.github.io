@@ -1091,6 +1091,7 @@ inject:
   head:
     - <link rel="stylesheet" href="/css/custom.css">
   bottom:
+    - <script defer src="/js/blog-ask.js"></script>
     # - <script src="xxxx"></script>
     - |
       <script>
