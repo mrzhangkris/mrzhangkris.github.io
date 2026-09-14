@@ -1,0 +1,44 @@
+/* 渐识同款视觉打磨 · 干将 2026-09 */
+/* 1. 卡片统一圆角 + hover 上浮 */
+#recent-posts > .recent-post-item,
+.layout > div:first-child:not(.recent-post-item),
+#aside-content .card-widget {
+  border-radius: 14px;
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+#recent-posts > .recent-post-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(44, 107, 237, .18);
+}
+#aside-content .card-widget:hover {
+  box-shadow: 0 8px 24px rgba(44, 107, 237, .12);
+}
+
+/* 2. 文章正文图片圆角与阴影 */
+#article-container img {
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .10);
+}
+
+/* 3. 文章标题前的主题色分隔（beautify 图标之外的结构感） */
+#article-container h1, #article-container h2 {
+  padding-bottom: .3em;
+  border-bottom: 1px solid rgba(44, 107, 237, .14);
+}
+
+/* 4. 彩色标签胶囊圆角 */
+#aside-content .card-tag-cloud a {
+  border-radius: 8px;
+}
+
+/* 5. 页脚与顶部横幅字距微调 */
+#footer { letter-spacing: .3px; }
+#zhulong-banner { letter-spacing: 1px; }
+
+/* 6. 暗色模式下的阴影收敛（阴影在暗底上改用描边感） */
+[data-theme="dark"] #recent-posts > .recent-post-item:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .5);
+}
+[data-theme="dark"] #article-container img {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .45);
+}
