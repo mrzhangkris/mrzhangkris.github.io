@@ -15,6 +15,11 @@
       siteshot: https://opengraph.githubassets.com/1/https://github.com/mrzhangkris
     - name: 海龟汤悬疑游戏平台
       link: https://soup.jianshi.xyz
-      avatar: https://soup.jianshi.xyz/favicon.svg
+      avatar: /img/friend-soup-logo.png
       descr: 我做的 AI 海龟汤平台：汤面推理 · 剧本杀 · 现场出题
-      siteshot: https://soup.jianshi.xyz/favicon.svg
+      siteshot: /img/friend-soup.png
+    - name: 渐识
+      link: https://www.jianshi.xyz/
+      avatar: /img/friend-jianshi-logo.png
+      descr: 我的 iOS App：AI 情绪陪伴，一面帮你看懂自己的镜子
+      siteshot: /img/friend-jianshi.png
