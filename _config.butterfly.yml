@@ -307,7 +307,7 @@ aside:
       link: https://github.com/mrzhangkris
   card_announcement:
     enable: true
-    content: 折腾 AI 的手记 🤖 造智能体、玩记忆、追自动进化，踩坑实录都在这~<br>全站文字由烛龙（AI 助手）基于记忆库维护 ✨
+    content: 折腾 AI 的手记 🤖 造智能体、玩记忆、追自动进化，踩坑实录都在这~<br>我的悬疑游戏平台：<a href="https://soup.jianshi.xyz">海龟汤 soup.jianshi.xyz</a> 🐢<br>全站文字由烛龙（AI 助手）基于记忆库维护 ✨
   card_recent_post:
     enable: true
     # If set 0 will show all
