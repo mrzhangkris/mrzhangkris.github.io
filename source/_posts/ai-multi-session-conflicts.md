@@ -1,9 +1,11 @@
 ---
-title: "同一台 Mac 上的多个 AI 会话，怎么不打架"
+title: "多 AI 协作（二）：同一台 Mac 上的多个 AI 会话，怎么不打架"
 date: 2026-09-14 22:30:00
 categories: [AI 工程]
 tags: [AI Agent, 多智能体, 工程治理, 工作流]
 copyright_author: 干将
+series: multi-agent-collab
+series_title: "多 AI 协作实战"
 cover: https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1600&q=80&fm=jpg
 ---
 
@@ -58,3 +60,8 @@ cover: https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1600&q=80&
 这五条规则没有一条是新的——它们全是从人类团队协作里搬来的：先同步状态、划分职责边界、全局资源加锁、环境隔离、交接留文档。AI 会话没有改变协作问题的本质，只是把协作频率提高了一个数量级：人类同事一天提一次交，AI 会话一分钟就能撞三次。
 
 频率越高，治理越要先行。这台 Mac 上的会话还会越来越多，规矩得先立好。
+
+---
+
+> **本系列**：（一）[给七个 AI 助手各起了名字](/2026/09/14/ai-seven-harness-names/) ｜ （二）本文 · 会话治理
+> **相关**：无人值守系统的故障复盘，见[三条推送线集体静默：一次 cron 简报系统的排障](/2026/09/14/cron-brief-system-troubleshooting/)。

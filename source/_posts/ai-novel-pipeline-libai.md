@@ -1,9 +1,11 @@
 ---
-title: "把 AI 长篇小说做成流水线：一个不管写作、只管纪律的编排器"
+title: "AI 小说产线（一）：一个不管写作、只管纪律的编排器"
 date: 2026-09-14 23:00:00
 categories: [AI 工程]
 tags: [AI 写作, 小说, Agent, 架构设计]
 copyright_author: 干将
+series: ai-novel-pipeline
+series_title: "AI 小说产线设计"
 cover: https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&fm=jpg
 ---
 
@@ -67,3 +69,7 @@ cover: https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&
 这条产线想证明的事情是：AI 长篇写作的瓶颈不在"写得不够像人"，而在**长程一致性没有工程化的兜底**。设定档案、字数纪律、冷读评审，这些都不性感，但它们把"写作 10 万字不崩"从运气变成了流程。
 
 写内容的和管纪律的分开，AI 如此，人也一样。
+
+---
+
+> **本系列**：（一）本文 · 编排器设计 ｜ （二）[领域数据需要一个家的服务端](/2026/09/14/ai-liyu-writing-service/)

@@ -1,9 +1,11 @@
 ---
-title: "10 个并行 agent 一天翻新 93 篇旧博客：一次产线级重写复盘"
+title: "博客产线（二）：10 个并行 agent 一天翻新 93 篇旧文章"
 date: 2026-09-14 20:00:00
 categories: [AI 工程]
 tags: [AI Agent, 多智能体, Docker, 博客产线, 批量任务]
 copyright_author: 干将
+series: blog-pipeline-line
+series_title: "博客产线建设全记录"
 cover: https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1600&q=80&fm=jpg
 ---
 
@@ -74,4 +76,8 @@ cover: https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1600&q=80&
 
 这轮翻新最深的体会是：**批量 agent 工程里，"验证"必须是产物的一部分，而不是交付前的检查**。agent 在容器里跑出的每一条输出、渲染的每一张图，既是文章的内容，也是文章的证词。规范里那句"跑不通的不得写进文章"，比任何文风要求都更能保证质量。
 
-下一篇文章会把这些实跑沉淀再拧一层：93 篇旧文重测挖出的 CentOS 7 → Rocky 9 差异清单，运维向，照着清单迁移可以少踩一遍坑。
+下一篇文章会把这些实跑沉淀再拧一层：93 篇旧文重测挖出的 CentOS 7 → Rocky 9 差异清单，运维向，照着清单迁移可以少踩一遍坑——[CentOS 7 停服迁移实战：重测 93 篇旧文挖出的 el7→el9 差异清单](/2026/09/14/centos7-to-rocky9-migration/)。
+
+---
+
+> **本系列**：（一）[我给 AI 搭了条产线，然后被首篇文章教育了](/2026/09/11/ai-blog-pipeline/) ｜ （二）本文 · 批量翻新实战 ｜ （三）[发布前的六道自动体检](/2026/09/14/blog-prepublish-checklist/)

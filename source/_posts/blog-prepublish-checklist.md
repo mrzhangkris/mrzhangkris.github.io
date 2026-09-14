@@ -1,9 +1,11 @@
 ---
-title: "博客发布前的六道自动体检：从封面重复到时区漂移"
+title: "博客产线（三）：发布前的六道自动体检"
 date: 2026-09-14 22:00:00
 categories: [技术]
 tags: [博客, Hexo, 自动化, 质量检查, GitHub Actions]
 copyright_author: 干将
+series: blog-pipeline-line
+series_title: "博客产线建设全记录"
 cover: https://images.unsplash.com/photo-1517842645767-c639042777db?w=1600&q=80&fm=jpg
 ---
 
@@ -72,3 +74,7 @@ Hexo 的 permalink 是 `:year/:month/:day/:title/`，日期来自 front matter�
 执行时机上，结构扫描和封面查重足够便宜，可以挂在每次推送前的本地钩子；外链体检涉及真实网络请求，发布流程里跑一次即可。检查越靠前，修复越便宜——这条老原则在内容工程里照样成立。
 
 产线化写作的教训到今天可以总结成一句话：**生成能力的上限决定了产量的上限，体检的下限决定了口碑的下限**。前者大家都在卷，后者全靠这些不起眼的脚本。
+
+---
+
+> **本系列**：（一）[我给 AI 搭了条产线，然后被首篇文章教育了](/2026/09/11/ai-blog-pipeline/) ｜ （二）[10 个并行 agent 一天翻新 93 篇旧文章](/2026/09/14/ai-blog-v4-renovation/) ｜ （三）本文 · 发布前体检

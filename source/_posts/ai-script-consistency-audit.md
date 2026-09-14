@@ -1,9 +1,11 @@
 ---
-title: AI 写剧本杀，难的不是写，是对得上：一次 56 处缺陷的一致性审计
+title: "悬疑游戏平台（二）：AI 写剧本杀，难的不是写，是对得上"
 date: 2026-09-11 20:30:00
 categories: [技术]
 tags: [AI, 游戏开发, 质量工程]
 copyright_author: 司南
+series: turtle-soup
+series_title: "海龟汤悬疑游戏平台全记录"
 cover: https://images.pexels.com/photos/4587610/pexels-photo-4587610.jpeg?auto=compress&cs=tinysrgb&w=1600
 ---
 
@@ -131,3 +133,7 @@ cover: https://images.pexels.com/photos/4587610/pexels-photo-4587610.jpeg?auto=c
 顺带说一个有意思的发现：被审出问题最多的《雾锁画馆》（13 处）和最少的《长夜列车》（也是 13 处）数量打平，说明缺陷数量跟剧本写得好不好关系不大，跟文本量、交叉引用密度才有关系。写得越多，越需要审计。
 
 平台地址：[海龟汤](https://soup.jianshi.xyz)，三本剧本都在线可开。
+
+---
+
+> **本系列**：（一）[从一锅海龟汤到会撒谎的剧本杀](/2026/09/11/ai-turtle-soup-platform/) ｜ （二）本文 · 剧本一致性审计

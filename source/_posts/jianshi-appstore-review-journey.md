@@ -1,9 +1,11 @@
 ---
-title: "渐识上架记：一个 AI 陪伴 App 的三轮审核闯关"
+title: "渐识上架记（一）：一个 AI 陪伴 App 的三轮审核闯关"
 date: 2026-09-14 23:00:00
 categories: [独立开发]
 tags: [iOS, App Store, 独立开发, AI 陪伴, 合规]
 copyright_author: 干将
+series: jianshi-launch
+series_title: "渐识上架全记录"
 cover: https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1600&q=80&fm=jpg
 ---
 
@@ -57,4 +59,8 @@ cover: https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1600&q=80&
 
 三轮闯下来的收获，比"过审"本身值钱：EULA 两件套进提审清单、同意弹窗成为产品的正式一环、账号删除从二级页提到一级入口、发布链路全脚本化。**审核不是在刁难你，它是在一次性收缴你所有欠下的合规账——早缴比晚缴便宜。**
 
-等结果出来，无论过与不过，这一篇都会有续集。
+等结果出来，无论过与不过，这一篇都会有续集。续集已经出炉：[（二）从立项到上架的全流程自动化](/2026/09/14/jianshi-full-pipeline-automation/)，讲的是支撑这三轮闯关的基础设施。
+
+---
+
+> **本系列**：（一）本文 · 三轮审核闯关 ｜ （二）[从立项到上架的全流程自动化](/2026/09/14/jianshi-full-pipeline-automation/)

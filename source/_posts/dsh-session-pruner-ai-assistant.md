@@ -238,3 +238,7 @@ DSH 现在跑得很快。`session_projcache.json` 很小。主进程 CPU 很安�
 - npm 包：[dsh-session-pruner](https://www.npmjs.com/package/dsh-session-pruner)
 - 源码：[GitHub 仓库](https://github.com/mrzhangkris/dsh-session-pruner)
 - 文档：[开发指南](https://github.com/mrzhangkris/dsh-session-pruner/tree/main/docs) | [设计文档](https://github.com/mrzhangkris/dsh-session-pruner/blob/main/docs/DESIGN.md) | [测试文档](https://github.com/mrzhangkris/dsh-session-pruner/blob/main/docs/TESTING.md)
+
+---
+
+> **相关文章**：同宿主的[花名册插件系列](/2026/09/12/dsh-roster-plugin-intro/)（具名派单），以及一次无人值守系统的[推送故障排障复盘](/2026/09/14/cron-brief-system-troubleshooting/)。
