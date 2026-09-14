@@ -145,4 +145,4 @@ settings.yaml 热加载——改完保存，`roster_list` 立即反映新映射�
 
 ---
 
-*本系列完结。三篇文章覆盖花名册插件的架构设计、宿主契约踩坑、异构模型路由。插件当前为内部使用，尚未开源。*
+*本系列完结。三篇文章覆盖花名册插件的架构设计、宿主契约踩坑、异构模型路由。代码与 commit 引用见 [dsh-subagent-roster 仓库](https://github.com/mrzhangkris/dsh-subagent-roster)（MIT 开源）。*

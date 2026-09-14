@@ -237,4 +237,4 @@ Mock 是用来验证「代码按这个假设调用宿主」的——但当假设
 
 ---
 
-*本文为 dsh-subagent-roster 开发复盘系列的第 2 篇。第 1 篇讲了花名册插件的诞生和七将分工；本篇讲两个宿主契约 bug；第 3 篇讲异构模型分配的工程实践。插件当前为内部使用，尚未开源。*
+*本文为 dsh-subagent-roster 开发复盘系列的第 2 篇。第 1 篇讲了花名册插件的诞生和七将分工；本篇讲两个宿主契约 bug；第 3 篇讲异构模型分配的工程实践。代码与 commit 引用见 [dsh-subagent-roster 仓库](https://github.com/mrzhangkris/dsh-subagent-roster)（MIT 开源）。*
