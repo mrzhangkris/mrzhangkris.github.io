@@ -1,6 +1,6 @@
 ---
 title: "博客发布前的六道自动体检：从封面重复到时区漂移"
-date: 2026-09-15 05:00:00
+date: 2026-09-14 22:00:00
 categories: [技术]
 tags: [博客, Hexo, 自动化, 质量检查, GitHub Actions]
 copyright_author: 干将

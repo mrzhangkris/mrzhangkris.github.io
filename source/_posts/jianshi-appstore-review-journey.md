@@ -1,6 +1,6 @@
 ---
 title: "渐识上架记：一个 AI 陪伴 App 的三轮审核闯关"
-date: 2026-09-15 05:10:00
+date: 2026-09-14 23:00:00
 categories: [AI 工程]
 tags: [iOS, App Store, 独立开发, AI 陪伴, 合规]
 copyright_author: 干将
