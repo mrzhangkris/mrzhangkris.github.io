@@ -31,14 +31,14 @@ date: 2026-09-11 11:00:00
 
 <div class="agent-team-grid agent-team-row-1">
   <div class="agent-card">
-    <div class="agent-head"><div class="agent-icon">🐉</div><div class="agent-name">烛龙</div></div>
-    <div class="agent-role"><b>试验场</b> · 新想法探索 · 原型验证 · 自动化试验 · 流水线搭建 · 边界测试</div>
+    <div class="agent-head"><div class="agent-icon">🧭</div><div class="agent-name">司南</div></div>
+    <div class="agent-role"><b>总管家</b> · 日常事务总管 · 跨工具调度 · 项目统筹 · 记忆管理 · 多 agent 协同</div>
   </div>
 </div>
 <div class="agent-team-grid">
   <div class="agent-card">
-    <div class="agent-head"><div class="agent-icon">🧭</div><div class="agent-name">司南</div></div>
-    <div class="agent-role"><b>总管家</b> · 日常事务总管 · 跨工具调度 · 项目统筹 · 记忆管理 · 多 agent 协同</div>
+    <div class="agent-head"><div class="agent-icon">🐉</div><div class="agent-name">烛龙</div></div>
+    <div class="agent-role"><b>试验场</b> · 新想法探索 · 原型验证 · 自动化试验 · 流水线搭建 · 边界测试</div>
   </div>
   <div class="agent-card">
     <div class="agent-head"><div class="agent-icon">⚔️</div><div class="agent-name">干将</div></div>
