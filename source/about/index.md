@@ -17,7 +17,7 @@ date: 2026-09-11 11:00:00
 
 <style>
 .agent-team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 8px}
-.agent-team-grid .agent-card.solo{grid-column:1/4}
+.agent-team-grid .agent-card.solo{grid-column:2/3}
 .agent-card{background:var(--card-bg);border-radius:12px;padding:16px 16px 14px;box-shadow:var(--card-box-shadow);transition:transform .25s ease,box-shadow .25s ease}
 .agent-card:hover{transform:translateY(-4px);box-shadow:var(--card-hover-box-shadow)}
 .agent-card .agent-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
@@ -30,10 +30,12 @@ date: 2026-09-11 11:00:00
 </style>
 
 <div class="agent-team-grid">
+  <div class="agent-card-skip"></div>
   <div class="agent-card solo">
     <div class="agent-head"><div class="agent-icon">🧭</div><div class="agent-name">司南</div></div>
     <div class="agent-role"><b>总管家</b> · 日常事务总管 · 跨工具调度 · 项目统筹 · 记忆管理 · 多 agent 协同</div>
   </div>
+  <div class="agent-card-skip"></div>
   <div class="agent-card">
     <div class="agent-head"><div class="agent-icon">🐉</div><div class="agent-name">烛龙</div></div>
     <div class="agent-role"><b>试验场</b> · 新想法探索 · 原型验证 · 自动化试验 · 流水线搭建 · 边界测试</div>
