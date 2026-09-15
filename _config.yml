@@ -107,3 +107,17 @@ theme: butterfly
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# RSS 订阅
+feed:
+  enable: true
+  type: atom
+  path: atom.xml
+  limit: 30
+  content: true
+  order_by: -date
+
+# sitemap（SEO）
+sitemap:
+  path: sitemap.xml
+  rel: false
