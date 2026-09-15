@@ -2,7 +2,7 @@
 title: "Nginx try_files：一条指令管住静态文件的查找与回退"
 date: 2024-05-26 09:00:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?w=1600&q=80&fm=jpg

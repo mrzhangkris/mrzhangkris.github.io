@@ -2,7 +2,7 @@
 title: "SaltStack 远程执行：Targeting、常用模块与 Returner"
 date: 2020-05-06 10:55:52
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, SaltStack]
 tags: [SaltStack]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667984390553-7f439e6ae401?w=1600&q=80&fm=jpg

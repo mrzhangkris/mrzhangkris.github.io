@@ -2,7 +2,7 @@
 title: "Oracle 只读视图与同义词：建视图、授权、回收的完整流程"
 date: 2024-06-02 09:15:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Oracle]
 tags: [Oracle]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1752742111841-f490c48aa668?w=1600&q=80&fm=jpg

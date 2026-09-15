@@ -2,7 +2,7 @@
 title: "用 Nginx split_clients 模块做 A/B 测试与灰度发布"
 date: 2024-05-30 15:21:07
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1496181133206-80ce9b88a851?w=1600&q=80&fm=jpg

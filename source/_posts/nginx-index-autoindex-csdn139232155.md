@@ -1,7 +1,7 @@
 ---
 title: "Nginx index 与 autoindex 模块：默认首页与目录列表实测"
 date: 2024-05-27 10:44:21
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1562408590-e32931084e23?w=1600&q=80&fm=jpg

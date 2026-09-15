@@ -2,7 +2,7 @@
 title: "Oracle 网络传输加密：sqlnet.ora 服务端与 JDBC 客户端配置"
 date: 2024-06-03 08:45:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Oracle]
 tags: [Oracle, 网络服务]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1591913139332-f8172ef511da?w=1600&q=80&fm=jpg

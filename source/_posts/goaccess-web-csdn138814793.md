@@ -1,7 +1,7 @@
 ---
 title: "用 GoAccess 做实时 Web 日志分析：安装、报告与中文环境配置"
 date: 2024-05-15 09:30:00
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1640552435388-a54879e72b28?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "Nginx Concat 模块：安装与合并静态资源"
 date: 2024-05-27 14:41:46
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1506399558188-acca6f8cbf41?w=1600&q=80&fm=jpg

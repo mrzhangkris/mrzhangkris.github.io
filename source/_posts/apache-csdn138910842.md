@@ -2,7 +2,7 @@
 title: "Apache 平滑升级：从 2.4.41 到 2.4.46 的完整流程"
 date: 2024-05-18 10:30:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, 运维]
 tags: [运维]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1535957998253-26ae1ef29506?w=1600&q=80&fm=jpg

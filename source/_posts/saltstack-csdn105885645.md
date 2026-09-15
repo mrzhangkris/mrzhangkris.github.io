@@ -2,7 +2,7 @@
 title: "SaltStack 安装、配置与 Minion 认证（Rocky Linux 9）"
 date: 2020-05-02 01:11:40
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, SaltStack]
 tags: [SaltStack]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1509803874385-db7c23652552?w=1600&q=80&fm=jpg

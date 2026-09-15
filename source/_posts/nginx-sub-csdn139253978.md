@@ -2,7 +2,7 @@
 title: "用 Nginx sub_filter 在响应返回前替换内容"
 date: 2024-05-28 09:23:07
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1483058712412-4245e9b90334?w=1600&q=80&fm=jpg

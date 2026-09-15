@@ -1,7 +1,7 @@
 ---
 title: "YUM/DNF DownloadOnly：只下载不安装，预载软件更新"
 date: 2024-05-13 09:41:44
-categories: [技术]
+categories: [技术, 网络服务]
 tags: [网络服务]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1687038520563-2310e8b06ed2?w=1600&q=80&fm=jpg

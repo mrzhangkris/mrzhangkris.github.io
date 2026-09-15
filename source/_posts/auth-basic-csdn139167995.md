@@ -2,7 +2,7 @@
 title: "Nginx auth_basic 基础认证：配置示例与加固"
 date: 2024-05-24 10:24:22
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, 运维]
 tags: [运维]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?w=1600&q=80&fm=jpg

@@ -1,7 +1,7 @@
 ---
 title: "Nginx 限流实战：limit_req 与 limit_conn 的生效阶段与配置"
 date: 2024-05-22 10:06:41
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1580584126903-c17d41830450?w=1600&q=80&fm=jpg

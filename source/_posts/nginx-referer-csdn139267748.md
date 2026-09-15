@@ -2,7 +2,7 @@
 title: "Nginx Referer 防盗链实战：valid_referers 四种请求实测"
 date: 2024-05-29 08:45:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1697952431907-8542919a16b3?w=1600&q=80&fm=jpg

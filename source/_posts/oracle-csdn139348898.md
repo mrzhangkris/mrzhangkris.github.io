@@ -2,7 +2,7 @@
 title: "Oracle 密码复杂度策略：用 Profile 加验证函数管住弱密码"
 date: 2024-06-02 09:00:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Oracle]
 tags: [Oracle, 安全]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1597138768744-9f97be8cdd64?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "Nginx Round-Robin 负载均衡：默认策略的实测与边界"
 date: 2024-05-31 10:37:01
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx, 网络服务]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=1600&q=80&fm=jpg

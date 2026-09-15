@@ -2,7 +2,7 @@
 title: "编写自动重启 Tomcat 的 Shell 脚本"
 date: 2024-05-17 08:45:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Tomcat]
 tags: [Tomcat]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1570993492881-25240ce854f4?w=1600&q=80&fm=jpg

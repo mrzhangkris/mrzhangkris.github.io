@@ -2,7 +2,7 @@
 title: "Ubuntu 设置中文输入法（Fcitx）"
 date: 2024-05-11 15:32:04
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667984390535-6d03cff0b11a?w=1600&q=80&fm=jpg

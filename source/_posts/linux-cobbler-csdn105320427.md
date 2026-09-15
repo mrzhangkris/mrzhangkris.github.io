@@ -1,7 +1,7 @@
 ---
 title: "Cobbler 自动装机：从部署到 PXE 批量装系统（Rocky Linux 9，附 CentOS 7 差异）"
 date: 2020-04-06 20:59:23
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=1600&q=80&fm=jpg

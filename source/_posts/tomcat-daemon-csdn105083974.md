@@ -2,7 +2,7 @@
 title: "Tomcat 以 daemon 模式启动（jsvc）：Rocky Linux 9 实测"
 date: 2020-03-25 01:04:21
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Tomcat]
 tags: [Tomcat]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1519086588705-c935fdedcc14?w=1600&q=80&fm=jpg

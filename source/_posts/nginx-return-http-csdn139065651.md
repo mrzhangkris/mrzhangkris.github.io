@@ -2,7 +2,7 @@
 title: "Nginx return 指令：不惊动后端，直接把话回了"
 date: 2024-05-20 15:01:40
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1651340550839-3b295d930048?w=1600&q=80&fm=jpg

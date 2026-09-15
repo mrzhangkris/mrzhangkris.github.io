@@ -1,7 +1,7 @@
 ---
 title: "Elasticsearch 7.6.1 安装：tar 包手动部署并指定 JDK"
 date: 2020-03-29 10:05:30
-categories: [技术]
+categories: [技术, Elasticsearch]
 tags: [Elasticsearch]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1762163516269-3c143e04175c?w=1600&q=80&fm=jpg

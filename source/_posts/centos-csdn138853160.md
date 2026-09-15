@@ -2,7 +2,7 @@
 title: "Rocky Linux 9 查看网卡速率：ethtool、ifconfig、nmcli 三种方法"
 date: 2024-05-16 09:07:41
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1600&q=80&fm=jpg

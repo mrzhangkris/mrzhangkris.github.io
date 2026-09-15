@@ -2,7 +2,7 @@
 title: "Rocky Linux 9 安装 MySQL 8.0（附 CentOS 7 / MySQL 5.7 差异）"
 date: 2024-05-17 09:22:53
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, MySQL]
 tags: [MySQL]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1529078155058-5d716f45d604?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "Rocky Linux 9 配置静态 IP 与多网卡路由策略（附 CentOS 7 差异）"
 date: 2024-05-16 08:30:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?w=1600&q=80&fm=jpg

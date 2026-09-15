@@ -2,7 +2,7 @@
 title: "用 rbash（受限 Shell）限制用户的命令执行环境"
 date: 2024-05-20 09:15:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1510519138101-570d1dca3d66?w=1600&q=80&fm=jpg

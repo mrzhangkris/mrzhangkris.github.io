@@ -1,7 +1,7 @@
 ---
 title: "Linux 磁盘 I/O 性能优化：调整请求队列长度 nr_requests"
 date: 2024-05-15 17:01:14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1675495277087-10598bf7bcd1?w=1600&q=80&fm=jpg

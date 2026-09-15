@@ -2,7 +2,7 @@
 title: "Nginx Rewrite 模块入门：重写、重定向与防循环"
 date: 2024-05-21 10:09:19
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, 运维]
 tags: [运维]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1630233313373-a03df7d139c9?w=1600&q=80&fm=jpg

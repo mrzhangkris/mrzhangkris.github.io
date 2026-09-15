@@ -1,7 +1,7 @@
 ---
 title: "Nginx mirror 模块：流量镜像使用指南"
 date: 2024-05-26 09:15:00
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1515630278258-407f66498911?w=1600&q=80&fm=jpg

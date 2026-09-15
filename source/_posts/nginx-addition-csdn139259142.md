@@ -2,7 +2,7 @@
 title: "Nginx addition 模块：把子请求内容拼进主响应"
 date: 2024-05-28 10:20:58
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1680992046626-418f7e910589?w=1600&q=80&fm=jpg

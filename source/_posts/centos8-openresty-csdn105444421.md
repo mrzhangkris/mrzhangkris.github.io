@@ -2,7 +2,7 @@
 title: "源码安装 OpenResty 1.19.3.1（链接自编 OpenSSL）：RHEL 8/9 适用，Rocky 9 实测"
 date: 2020-04-10 23:09:21
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1564457461758-8ff96e439e83?w=1600&q=80&fm=jpg

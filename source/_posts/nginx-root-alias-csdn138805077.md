@@ -2,7 +2,7 @@
 title: "Nginx root 与 alias：一个是追加，一个是替换"
 date: 2024-05-13 15:27:15
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?w=1600&q=80&fm=jpg

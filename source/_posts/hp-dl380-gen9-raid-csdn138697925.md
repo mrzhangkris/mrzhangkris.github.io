@@ -1,7 +1,7 @@
 ---
 title: "HP DL380 Gen9 做 RAID：SSA 建阵列与设启动盘操作流程"
 date: 2024-05-11 09:08:16
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1650600538903-ec09f670c391?w=1600&q=80&fm=jpg

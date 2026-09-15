@@ -1,7 +1,7 @@
 ---
 title: "Debian 常用命令速查：apt-get、dpkg 与文件操作"
 date: 2024-05-11 15:22:09
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?w=1600&q=80&fm=jpg

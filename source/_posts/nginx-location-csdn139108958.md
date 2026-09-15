@@ -1,7 +1,7 @@
 ---
 title: "Nginx location 匹配规则实测：优先级、正则顺序与嵌套"
 date: 2024-05-22 09:37:37
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80&fm=jpg

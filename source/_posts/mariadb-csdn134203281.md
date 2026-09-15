@@ -1,7 +1,7 @@
 ---
 title: "MariaDB 安装与远程访问配置：Rocky 9 实测，附 CentOS 7.6 差异"
 date: 2023-11-03 14:54:52
-categories: [技术]
+categories: [技术, MySQL]
 tags: [MySQL]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "源码编译 OpenSSH 9.5p1 与 OpenSSL 3.1.4：Rocky Linux 9 实测（附 CentOS 7 流程差异）"
 date: 2023-11-02 19:31:59
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1608742213509-815b97c30b36?w=1600&q=80&fm=jpg

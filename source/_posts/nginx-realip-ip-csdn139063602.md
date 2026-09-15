@@ -2,7 +2,7 @@
 title: "Nginx realip 实战：把被代理藏起来的真实客户端 IP 还原出来"
 date: 2024-05-20 14:01:42
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1600&q=80&fm=jpg

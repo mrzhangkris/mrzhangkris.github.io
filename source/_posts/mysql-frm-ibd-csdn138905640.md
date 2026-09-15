@@ -1,7 +1,7 @@
 ---
 title: "MySQL 利用 frm 和 ibd 文件恢复表数据：DISCARD/IMPORT 实测"
 date: 2024-05-15 14:51:08
-categories: [技术]
+categories: [技术, MySQL]
 tags: [MySQL]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667372283496-893f0b1e7c16?w=1600&q=80&fm=jpg

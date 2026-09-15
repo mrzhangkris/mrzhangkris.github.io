@@ -2,7 +2,7 @@
 title: "Nginx satisfy 指令：多重访问控制的组合判断"
 date: 2024-05-25 09:15:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667670778881-537035257bd8?w=1600&q=80&fm=jpg

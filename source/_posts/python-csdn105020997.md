@@ -2,7 +2,7 @@
 title: "Python 实时读取子进程输出：-u 参数与 flush=True"
 date: 2020-03-22 11:46:08
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Python]
 tags: [Python]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1605436247078-f0ef43ee8d5c?w=1600&q=80&fm=jpg

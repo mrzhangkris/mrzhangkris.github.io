@@ -2,7 +2,7 @@
 title: "Nginx 日志切割：Bash 脚本与 logrotate 两种做法"
 date: 2024-05-13 15:13:45
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667264501379-c1537934c7ab?w=1600&q=80&fm=jpg

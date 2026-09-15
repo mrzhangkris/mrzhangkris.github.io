@@ -2,7 +2,7 @@
 title: "Ubuntu 安装 NVIDIA 显卡驱动并禁止自动更新"
 date: 2024-05-20 09:18:13
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=1600&q=80&fm=jpg

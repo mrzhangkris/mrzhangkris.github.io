@@ -2,7 +2,7 @@
 title: "reposync：把 YUM 镜像源同步到本地"
 date: 2020-04-10 23:10:19
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, 运维]
 tags: [运维]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1569428034239-f9565e32e224?w=1600&q=80&fm=jpg

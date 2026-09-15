@@ -2,7 +2,7 @@
 title: "Rocky Linux 9 搭建 BIND DNS：正向与反向解析配置（附 CentOS 7 差异）"
 date: 2024-05-19 09:30:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, 网络服务]
 tags: [网络服务]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1518181835702-6eef8b4b2113?w=1600&q=80&fm=jpg

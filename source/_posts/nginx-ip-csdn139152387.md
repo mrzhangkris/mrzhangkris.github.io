@@ -1,7 +1,7 @@
 ---
 title: "Nginx 限制 IP 访问：allow 与 deny"
 date: 2024-05-23 16:58:55
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1592659762303-90081d34b277?w=1600&q=80&fm=jpg

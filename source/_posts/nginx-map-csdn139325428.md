@@ -1,7 +1,7 @@
 ---
 title: "Nginx map 模块实战：用变量映射替代 if 分支"
 date: 2024-05-30 15:19:33
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1640955785023-1854685dae05?w=1600&q=80&fm=jpg

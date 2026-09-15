@@ -2,7 +2,7 @@
 title: "Linux 常用命令：ls、cd、mkdir、rm、cp（Rocky Linux 9 实测）"
 date: 2024-05-11 14:41:31
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=1600&q=80&fm=jpg

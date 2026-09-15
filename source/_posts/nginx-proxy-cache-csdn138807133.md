@@ -1,7 +1,7 @@
 ---
 title: "Nginx proxy_cache 实战：HIT、MISS、BYPASS 各是什么意思"
 date: 2024-05-13 16:03:41
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1617839625591-e5a789593135?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "Nginx 配置 HTTPS 并禁止 IP 访问：default_server 拒绝握手"
 date: 2024-05-14 08:30:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600&q=80&fm=jpg

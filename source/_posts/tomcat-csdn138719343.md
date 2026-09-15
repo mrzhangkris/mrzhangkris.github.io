@@ -2,7 +2,7 @@
 title: "Tomcat 启动闪退排查与解决"
 date: 2024-05-11 16:00:13
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Tomcat]
 tags: [Tomcat]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1515965885361-f1e0095517ea?w=1600&q=80&fm=jpg

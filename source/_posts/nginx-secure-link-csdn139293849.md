@@ -2,7 +2,7 @@
 title: "用 Nginx secure_link 模块实现防盗链和临时链接"
 date: 2024-05-29 13:55:08
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx, 安全]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1557701197-2f99da0922dd?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "在 AlmaLinux 9.8 上源码安装 OpenResty 1.31.1.1"
 date: 2023-11-02 16:01:33
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1695668548342-c0c1ad479aee?w=1600&q=80&fm=jpg

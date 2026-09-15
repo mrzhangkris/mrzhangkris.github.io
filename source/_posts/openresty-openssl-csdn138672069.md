@@ -2,7 +2,7 @@
 title: "编译 OpenResty 找不到 OpenSSL：根因与三种解法"
 date: 2024-05-10 16:40:43
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Nginx]
 tags: [Nginx]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1611677806845-363fccca2c51?w=1600&q=80&fm=jpg

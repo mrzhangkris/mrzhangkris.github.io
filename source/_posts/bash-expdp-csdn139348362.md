@@ -2,7 +2,7 @@
 title: "用 Bash 脚本 + expdp 实现 Oracle 定时备份与异地传输"
 date: 2024-06-01 09:15:00
 updated: 2026-09-14
-categories: [技术]
+categories: [技术, Oracle]
 tags: [Oracle]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1561233835-f937539b95b9?w=1600&q=80&fm=jpg
