@@ -60,6 +60,7 @@ social:
   # fas fa-envelope: mailto:xxxxxx@gmail.com || Email || '#4a7dbe'
   fab fa-github: https://github.com/mrzhangkris || Github || '#24292e'
   fas fa-envelope: mailto:pendll@qq.com || Email || '#4a7dbe'
+  fas fa-rss: /atom.xml || RSS || '#f26522'
 
 # --------------------------------------
 # Image Settings
@@ -1090,6 +1091,7 @@ css_prefix: true
 inject:
   head:
     - <link rel="stylesheet" href="/css/custom.css">
+    - <link rel="alternate" type="application/atom+xml" title="张鹏的博客" href="/atom.xml">
   bottom:
     - <script defer src="/js/blog-ask.js"></script>
     # - <script src="xxxx"></script>
