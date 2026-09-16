@@ -7,6 +7,7 @@
   3. 正文中文残留率: 非代码区每千词 > 8 个中文字符 → FAIL
   4. 图片路径以 / 开头（绝对路径，走主站）
   5. 代码块围栏配对完整
+  6. 文件名必须与主站 source/_posts/ 的中文源同名（语言切换器按同名镜像 URL）
 退出码: 有 FAIL 则 1
 """
 import sys, re, io
@@ -14,6 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 POSTS = ROOT / "source" / "_posts"
+ZH_POSTS = ROOT.parent / "source" / "_posts"
 HAN = re.compile(r"[\u4e00-\u9fff]")
 FENCE = re.compile(r"^\s*(```|~~~)")
 
@@ -30,6 +32,8 @@ def strip_code(text: str):
 
 def check(path: Path):
     raw = path.read_text(encoding="utf-8")
+    if not (ZH_POSTS / path.name).exists():
+        return [f"FAIL: 主站无同名中文源 {path.name}（语言切换器按同名镜像 URL）"]
     m = re.match(r"^---\n(.*?)\n---\n", raw, re.S)
     if not m:
         return ["FAIL: 无 front matter"]
