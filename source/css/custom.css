@@ -44,14 +44,16 @@
 }
 
 /* 8. 暗色模式边框可见性适配（黑底上亮色系边框会隐形） */
-/* 卡片：暗色下加微弱描边，让卡片与 #0d0d0d 背景分离 */
+/* 黑夜有光被卡片遮挡：静止时边缘就自带一圈微光——贴边亮线 + 上缘漏光 + 弱环境光，
+   像卡片背后有光源、被卡片本体挡住只从边缘漏出；鼠标移上去光变强（同构三层，强度升级）。 */
 [data-theme="dark"] #recent-posts .recent-post-item,
 [data-theme="dark"] #aside-content .card-widget {
   border: 1px solid rgba(255, 255, 255, .10);
+  box-shadow:
+    0 0 0 1px rgba(160, 190, 255, .16),
+    0 -4px 10px -4px rgba(140, 170, 255, .12),
+    0 2px 16px rgba(130, 160, 255, .05);
 }
-/* 黑夜有光被卡片遮挡：光从卡片背后四周透出，边缘形成亮圈，上缘漏光更多（光源在后上方的错觉）。
-   三层光：贴边的亮细圈（像光从缝里漏出）+ 向外扩散的柔光（12px）+ 大范围极弱的环境光（36px，只在上半部）。
-   边框线本身不变亮——亮的是边框之外的「漏光」。 */
 [data-theme="dark"] #recent-posts .recent-post-item:hover,
 [data-theme="dark"] #aside-content .card-widget:hover {
   box-shadow:
@@ -64,6 +66,54 @@
 [data-theme="dark"] #article-container h1,
 [data-theme="dark"] #article-container h2 {
   border-bottom-color: rgba(108, 152, 255, .35);
+}
+
+/* 8.5 射线：一道光弧沿卡片边缘游走（conic-gradient 旋转 + mask 环形镂空）。
+   静止时极慢巡游（12s/圈，微亮），hover 加速变亮（4s/圈）——像光被卡片挡住、
+   只从边缘缝隙里射出来，且在缓缓移动。不支持 @property 的浏览器光弧静止无害。 */
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+[data-theme="dark"] #recent-posts .recent-post-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: 15px;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 0deg,
+    rgba(160, 190, 255, .55) 40deg,
+    rgba(200, 220, 255, .85) 55deg,
+    rgba(160, 190, 255, .55) 70deg,
+    transparent 110deg,
+    transparent 360deg
+  );
+  -webkit-mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
+  -webkit-mask-clip: content-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
+  mask-clip: content-box, border-box;
+  mask-composite: exclude;
+  opacity: .55;
+  animation: beam-travel 12s linear infinite;
+  transition: opacity .55s ease;
+}
+[data-theme="dark"] #recent-posts .recent-post-item:hover::before {
+  opacity: 1;
+  animation-duration: 4s;
+}
+@keyframes beam-travel {
+  to { --beam-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="dark"] #recent-posts .recent-post-item::before {
+    animation: none;
+  }
 }
 
 /* 9. 暗色巡查修复（全站对比度扫描 2026-09-16） */
