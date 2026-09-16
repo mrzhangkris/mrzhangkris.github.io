@@ -55,6 +55,22 @@
   border-bottom-color: rgba(108, 152, 255, .35);
 }
 
+/* 9. 暗色巡查修复（全站对比度扫描 2026-09-16） */
+/* 侧栏标签云：主题按白底生成的内联深色彩色文字，黑底上 1.6~3.0 对比度不可读；
+   用 filter 提亮+降饱和，保留彩色云观感，不影响页面标签胶囊（那些是背景色方案，本身可读） */
+[data-theme="dark"] #aside-content .card-tag-cloud a {
+  filter: brightness(2.2) saturate(.65);
+}
+/* X(Twitter) 分享按钮：黑边黑图标在黑底隐形 */
+[data-theme="dark"] .social-share-icon.icon-x {
+  border-color: rgba(255, 255, 255, .45);
+  color: rgba(255, 255, 255, .78);
+}
+/* 说说发布输入框：边框 #1f1f1f 在 #0d0d0d 上仅 1.18 对比度 */
+[data-theme="dark"] .shuoshuo-page-input {
+  border-color: #3a3b4a;
+}
+
 /* 7. 站内 AI 问答悬浮窗（左下角，避开主题右下角按钮组） */
 #blog-ask-root { --ba-blue: #2c6bed; }
 #blog-ask-btn {
