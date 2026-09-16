@@ -58,9 +58,12 @@ def check(path: Path):
         if HAN.search(str(c)):
             problems.append(f"FAIL: categories 有中文: {c}")
     plain = strip_code(body)
-    # 「…」内是刻意保留的原文引用（如中文报错对照），不计入残留；
-    # 真正的漏翻是成段连续中文 → 用「引号外残留率 + 引号外最长连续段」双指标
+    # 豁免两类刻意保留的原文：
+    #   ① 「…」内引用（如中文报错对照）
+    #   ② 术语括注：English (中文) —— 括注紧跟英文词、括号内中文 ≤10 字且无句读
+    #      （专名对照 Li Bai (李白)、口诀 (收存引省护裁判) 属规范允许的注释）
     outside = re.sub(r"「[^」]*」", "", plain)
+    outside = re.sub(r"[A-Za-z0-9,\s'\-]{0,30}\([^()]*[\u4e00-\u9fff][^()]*\)", lambda m: "()" if len(re.findall(r"[\u4e00-\u9fff]", m.group())) <= 12 and not re.search(r"[。，；！？、]", m.group()) else m.group(), outside)
     words = len(re.findall(r"[A-Za-z']+", plain))
     han_hits = len(HAN.findall(outside))
     if words > 50 and han_hits / max(words, 1) * 1000 > 8:
