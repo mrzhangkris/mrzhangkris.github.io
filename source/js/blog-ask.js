@@ -1,25 +1,55 @@
 /* 站内 AI 问答悬浮窗 · 干将
  * 依赖：无；挂载点：body 末尾注入。接口：jianshi 后端 /jianshi/api/blog/ask
+ * 双语：路径以 /en 开头自动切英文 UI（后端按提问语言回答）；来源链接智能转英文站路径
  */
 (function () {
   if (document.getElementById('blog-ask-root')) return;
 
   var ASK_URL = 'https://www.jianshi.xyz/jianshi/api/blog/ask';
+  var isEN = location.pathname.indexOf('/en/') === 0 || location.pathname === '/en';
+
+  var T = isEN ? {
+    btnLabel: 'Ask Ganjiang',
+    btnAria: 'On-site Q&A',
+    headTitle: '🤖 Ganjiang · Blog Q&A',
+    closeAria: 'Close',
+    welcome: "Hi, I'm Ganjiang, the blog assistant. Ask me anything about the articles on this site — answers come with sources.",
+    placeholder: 'Ask about this blog… (within 200 chars)',
+    send: 'Send',
+    loading: 'Searching the blog…',
+    errService: 'Service temporarily unavailable, please try again later',
+    errNetwork: 'Network error, please try again later',
+    sourcesLabel: 'Sources: ',
+    tip: 'Answers are AI-generated based on site articles — use your own judgment.',
+  } : {
+    btnLabel: '问干将',
+    btnAria: '站内问答',
+    headTitle: '🤖 干将 · 站内问答',
+    closeAria: '关闭',
+    welcome: '你好，我是博客助手「干将」。关于站内文章的问题都可以问我，回答会附上出处。',
+    placeholder: '问点站内的事…（200 字内）',
+    send: '发送',
+    loading: '翻站内文章中…',
+    errService: '服务暂时不可用，稍后再试',
+    errNetwork: '网络异常，稍后再试',
+    sourcesLabel: '来源：',
+    tip: '回答由 AI 生成，依据站内文章内容，请注意甄别。',
+  };
 
   var root = document.createElement('div');
   root.id = 'blog-ask-root';
   root.innerHTML =
-    '<button id="blog-ask-btn" type="button" aria-label="站内问答">🤖<span>问干将</span></button>' +
+    '<button id="blog-ask-btn" type="button" aria-label="' + T.btnAria + '">🤖<span>' + T.btnLabel + '</span></button>' +
     '<div id="blog-ask-panel" hidden>' +
-    '  <div class="ba-head"><b>🤖 干将 · 站内问答</b><button id="blog-ask-close" type="button" aria-label="关闭">✕</button></div>' +
+    '  <div class="ba-head"><b>' + T.headTitle + '</b><button id="blog-ask-close" type="button" aria-label="' + T.closeAria + '">✕</button></div>' +
     '  <div class="ba-msgs" id="blog-ask-msgs">' +
-    '    <div class="ba-msg ba-ai">你好，我是博客助手「干将」。关于站内文章的问题都可以问我，回答会附上出处。</div>' +
+    '    <div class="ba-msg ba-ai">' + T.welcome + '</div>' +
     '  </div>' +
     '  <form id="blog-ask-form">' +
-    '    <input id="blog-ask-input" type="text" maxlength="200" placeholder="问点站内的事…（200 字内）" autocomplete="off" />' +
-    '    <button type="submit">发送</button>' +
+    '    <input id="blog-ask-input" type="text" maxlength="200" placeholder="' + T.placeholder + '" autocomplete="off" />' +
+    '    <button type="submit">' + T.send + '</button>' +
     '  </form>' +
-    '  <div class="ba-tip">回答由 AI 生成，依据站内文章内容，请注意甄别。</div>' +
+    '  <div class="ba-tip">' + T.tip + '</div>' +
     '</div>';
   document.body.appendChild(root);
 
@@ -54,13 +84,21 @@
   function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
+  /* 英文站：来源 URL 从中文站路径转英文站路径（124/124 一一对应） */
+  function toEnUrl(url) {
+    if (!isEN || !url) return url;
+    if (url.indexOf('://') !== -1) {
+      return url.replace('mrzhangkris.github.io/', 'mrzhangkris.github.io/en/');
+    }
+    return url.charAt(0) === '/' ? '/en' + url : url;
+  }
   /* 把回答里的【n】编号替换为来源链接 */
   function linkify(answer, sources) {
     var html = esc(answer);
     (sources || []).forEach(function (s, i) {
       var tag = '【' + (i + 1) + '】';
       if (html.indexOf(tag) !== -1) {
-        html = html.split(tag).join('<a href="' + s.url + '" target="_blank" rel="noopener">' + tag + '</a>');
+        html = html.split(tag).join('<a href="' + toEnUrl(s.url) + '" target="_blank" rel="noopener">' + tag + '</a>');
       }
     });
     return html;
@@ -74,7 +112,7 @@
     busy = true;
     input.value = '';
     addMsg('ba-user', esc(q));
-    var loading = addMsg('ba-ai ba-loading', '翻站内文章中…');
+    var loading = addMsg('ba-ai ba-loading', T.loading);
 
     fetch(ASK_URL, {
       method: 'POST',
@@ -88,21 +126,21 @@
       })
       .then(function (res) {
         if (!res.ok) {
-          loading.innerHTML = '⚠️ ' + esc(res.data.detail || '服务暂时不可用，稍后再试');
+          loading.innerHTML = '⚠️ ' + esc(res.data.detail || T.errService);
           return;
         }
         var html = linkify(res.data.answer || '', res.data.sources);
         if (res.data.sources && res.data.sources.length) {
-          html += '<div class="ba-sources">来源：';
+          html += '<div class="ba-sources">' + T.sourcesLabel;
           res.data.sources.forEach(function (s) {
-            html += '<a href="' + s.url + '" target="_blank" rel="noopener">' + esc(s.title) + '</a>';
+            html += '<a href="' + toEnUrl(s.url) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a>';
           });
           html += '</div>';
         }
         loading.innerHTML = html;
       })
       .catch(function () {
-        loading.innerHTML = '⚠️ 网络异常，稍后再试';
+        loading.innerHTML = '⚠️ ' + T.errNetwork;
       })
       .finally(function () {
         busy = false;

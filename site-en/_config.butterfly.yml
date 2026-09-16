@@ -1092,6 +1092,7 @@ inject:
     - <link rel="stylesheet" href="/css/custom.css">
     - <link rel="alternate" type="application/atom+xml" title="Zhang Peng's Blog (EN)" href="/en/atom.xml">
   bottom:
+    - <script defer src="/js/blog-ask.js"></script>
     - |
       <script>
       (function() {
