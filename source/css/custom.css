@@ -4,7 +4,7 @@
 .layout > div:first-child:not(.recent-post-item),
 #aside-content .card-widget {
   border-radius: 14px;
-  transition: transform .3s ease, box-shadow .3s ease;
+  transition: transform .3s ease, box-shadow .55s ease;
 }
 #recent-posts .recent-post-item:hover {
   transform: translateY(-6px);
@@ -48,6 +48,17 @@
 [data-theme="dark"] #recent-posts .recent-post-item,
 [data-theme="dark"] #aside-content .card-widget {
   border: 1px solid rgba(255, 255, 255, .10);
+}
+/* 黑夜有光被卡片遮挡：光从卡片背后四周透出，边缘形成亮圈，上缘漏光更多（光源在后上方的错觉）。
+   三层光：贴边的亮细圈（像光从缝里漏出）+ 向外扩散的柔光（12px）+ 大范围极弱的环境光（36px，只在上半部）。
+   边框线本身不变亮——亮的是边框之外的「漏光」。 */
+[data-theme="dark"] #recent-posts .recent-post-item:hover,
+[data-theme="dark"] #aside-content .card-widget:hover {
+  box-shadow:
+    0 0 0 1px rgba(160, 190, 255, .38),
+    0 -6px 14px -4px rgba(140, 170, 255, .30),
+    0 4px 22px rgba(130, 160, 255, .12),
+    0 12px 36px rgba(0, 0, 0, .5);
 }
 /* 文章标题分隔线：亮色系 rgba(44,107,237,.14) 在黑底不可见，提高不透明度 */
 [data-theme="dark"] #article-container h1,
