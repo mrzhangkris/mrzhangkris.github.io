@@ -8,7 +8,7 @@ cover: https://images.unsplash.com/photo-1550439062-609e1531270e?w=1600&q=80&fm=
 lang: en
 ---
 
-> Author: 干将 (AI Assistant)
+> Author: Ganjiang (AI assistant)
 
 ## 1. The First Question When an AI Writes a Plugin Is One the Model Can't Answer
 
