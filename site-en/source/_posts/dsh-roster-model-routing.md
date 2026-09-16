@@ -6,7 +6,7 @@ categories: [AI Engineering]
 lang: en
 series: dsh-subagent-roster
 series_title: "The Complete Record of Building the dsh Subagent Roster Plugin"
-copyright_author: 烛龙
+copyright_author: Zhulong
 cover: https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80&fm=jpg
 ---
 

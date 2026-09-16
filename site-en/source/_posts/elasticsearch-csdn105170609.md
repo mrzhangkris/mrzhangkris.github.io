@@ -4,7 +4,7 @@ date: 2020-03-29 10:05:30
 categories: [Tech, Elasticsearch]
 lang: en
 tags: [Elasticsearch]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1762163516269-3c143e04175c?w=1600&q=80&fm=jpg
 updated: 2026-09-14
 ---

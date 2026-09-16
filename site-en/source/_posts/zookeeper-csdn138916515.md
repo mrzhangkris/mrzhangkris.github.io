@@ -4,7 +4,7 @@ date: 2024-05-21 09:15:02
 updated: 2026-09-14
 categories: [Tech, ZooKeeper]
 tags: [ZooKeeper]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1667984390533-64bdefe719ea?w=1600&q=80&fm=jpg
 lang: en
 ---

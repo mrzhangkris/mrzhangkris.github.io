@@ -5,7 +5,7 @@ updated: 2026-09-14
 lang: en
 categories: [Tech, Oracle]
 tags: [Oracle]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1752742111841-f490c48aa668?w=1600&q=80&fm=jpg
 ---
 

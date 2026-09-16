@@ -27,6 +27,7 @@ menu:
   分类: /categories/ || fas fa-folder
   标签: /tags/ || fas fa-tags
   关于: /about/ || fas fa-user
+  English: 'https://mrzhangkris.github.io/en/ || fas fa-language'
   更多||fas fa-ellipsis:
     友链: /link/ || fas fa-link
     画廊: /gallery/ || fas fa-images
@@ -1096,44 +1097,6 @@ inject:
   bottom:
     - <script defer src="/js/blog-ask.js"></script>
     # - <script src="xxxx"></script>
-    - |
-      <script>
-      (function() {
-        var s = document.createElement('div');
-        s.id = 'lang-switch';
-        s.innerHTML = '<a id="lang-switch-link" href="#" aria-label="Switch language"></a>';
-        document.body.appendChild(s);
-        var l = document.getElementById('lang-switch-link');
-        var path = location.pathname;
-        var en = path.indexOf('/en/') === 0 || path === '/en';
-        if (!en) {
-          // 中文 → 英文：镜像路径；无对应文章则回英文首页
-          l.href = path === '/' ? '/en/' : ('/en' + path);
-          l.textContent = 'EN';
-        } else {
-          // 英文 → 中文：去掉 /en 前缀（文章路径与中文一致）
-          var rest = path.replace(/^\/en\/?/, '/');
-          l.href = rest;
-          l.textContent = '中文';
-        }
-        // 请求目标页，404 时回落到目标站首页（客户端检测：fetch no-cors 不可读状态，
-        // 改用导航级兜底——点击时不拦截，目标页自身的 404 页承担回落提示）
-      })();
-      </script>
-      <style>
-      #lang-switch { position: fixed; right: 16px; top: 14px; z-index: 1002; }
-      #lang-switch a {
-        display: inline-block; padding: 4px 12px; font-size: 13px; font-weight: 600;
-        color: #fff; text-decoration: none; border-radius: 999px;
-        background: rgba(0, 0, 0, .28); border: 1px solid rgba(255, 255, 255, .35);
-        backdrop-filter: blur(4px); letter-spacing: .5px;
-        transition: background .25s ease, box-shadow .25s ease;
-      }
-      #lang-switch a:hover { background: rgba(44, 107, 237, .55); box-shadow: 0 0 12px rgba(44, 107, 237, .4); }
-      [data-theme="dark"] #lang-switch a { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .2); }
-      [data-theme="dark"] #lang-switch a:hover { background: rgba(108, 152, 255, .3); border-color: rgba(160, 190, 255, .5); }
-      @media (max-width: 768px) { #lang-switch { right: 12px; top: 10px; } #lang-switch a { padding: 3px 10px; font-size: 12px; } }
-      </style>
     - |
       <script>
       (function() {

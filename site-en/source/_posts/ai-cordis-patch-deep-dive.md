@@ -4,7 +4,7 @@ date: 2026-09-15 23:10:00
 lang: en
 categories: [AI Engineering]
 tags: [dsh, Plugin Development, Architecture Design, Deep Dive]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&q=80&fm=jpg
 ---
 

@@ -3,7 +3,7 @@ title: "AI Writing's Copyright and Legal Boundaries: A Panorama for Individual C
 date: 2026-09-15 23:20:00
 categories: [AI Engineering]
 tags: [AI Writing, Copyright, Compliance, Opinion]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80&fm=jpg
 lang: en
 ---

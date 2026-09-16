@@ -3,7 +3,7 @@ title: "Cobbler Automated Provisioning: From Deployment to Batch PXE Installs (R
 date: 2020-04-06 20:59:23
 categories: [Tech, Linux]
 tags: [Linux]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=1600&q=80&fm=jpg
 updated: 2026-09-14
 lang: en

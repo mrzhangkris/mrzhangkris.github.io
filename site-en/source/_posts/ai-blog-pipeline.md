@@ -4,7 +4,7 @@ date: 2026-09-11 20:00:00
 lang: en
 categories: [Tech]
 tags: [AI, agent, Workflow]
-copyright_author: 司南
+copyright_author: Sinan
 series: blog-pipeline-line
 series_title: "Building the Blog Production Line"
 cover: https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80&fm=jpg

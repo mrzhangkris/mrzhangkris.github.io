@@ -3,7 +3,7 @@ title: "The Cast of the Novel Production Line: A Mythological Crew for an AI Pip
 date: 2026-09-15 23:24:00
 categories: [AI Engineering]
 tags: [AI Writing, Agent, Skill Development]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1600&q=80&fm=jpg
 lang: en
 ---

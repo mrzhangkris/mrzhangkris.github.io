@@ -5,7 +5,7 @@ updated: 2026-09-14
 categories: [Tech, Ops]
 lang: en
 tags: [Ops]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1580106815433-a5b1d1d53d85?w=1600&q=80&fm=jpg
 ---
 

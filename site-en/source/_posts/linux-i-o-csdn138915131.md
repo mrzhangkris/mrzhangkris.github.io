@@ -3,7 +3,7 @@ title: "Linux Disk I/O Tuning: Adjusting the Request Queue Length nr_requests"
 date: 2024-05-15 17:01:14
 categories: [Tech, Linux]
 tags: [Linux]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1675495277087-10598bf7bcd1?w=1600&q=80&fm=jpg
 updated: 2026-09-14
 lang: en

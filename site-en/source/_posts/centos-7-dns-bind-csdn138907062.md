@@ -5,7 +5,7 @@ updated: 2026-09-14
 lang: en
 categories: [Tech, Network Services]
 tags: [Network Services]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1518181835702-6eef8b4b2113?w=1600&q=80&fm=jpg
 ---
 

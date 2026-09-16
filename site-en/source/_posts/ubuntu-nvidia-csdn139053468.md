@@ -5,7 +5,7 @@ lang: en
 updated: 2026-09-14
 categories: [Tech, Linux]
 tags: [Linux]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=1600&q=80&fm=jpg
 ---
 

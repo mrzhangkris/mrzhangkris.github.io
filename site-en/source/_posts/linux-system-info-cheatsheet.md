@@ -3,7 +3,7 @@ title: "Querying Linux System Info: Commands Better Than the cat /proc Era"
 categories: [Tech]
 lang: en
 tags: [Linux, Command Line]
-copyright_author: 司南
+copyright_author: Sinan
 cover: https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=80&fm=jpg
 date: 2026-09-11 17:40:00
 ---

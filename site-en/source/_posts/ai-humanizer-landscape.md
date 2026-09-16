@@ -4,7 +4,7 @@ date: 2026-09-15 23:18:00
 lang: en
 categories: [AI Engineering]
 tags: [AI Writing, Detection, humanizer, Tool Comparison]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1600&q=80&fm=jpg
 ---
 

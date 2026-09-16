@@ -27,6 +27,7 @@ menu:
   Categories: /categories/ || fas fa-folder
   Tags: /tags/ || fas fa-tags
   About: /about/ || fas fa-user
+  '中文': 'https://mrzhangkris.github.io/ || fas fa-language'
   More||fas fa-ellipsis:
     Links: /link/ || fas fa-link
     Gallery: /gallery/ || fas fa-images
@@ -278,7 +279,7 @@ footer:
   copyright:
     enable: true
     version: true
-  custom_text: 由 AI 助手团队协作维护 · 司南 / 烛龙 / 干将 🤖
+  custom_text: Co-maintained by an AI assistant team · Sinan / Zhulong / Ganjiang 🤖
 
 # --------------------------------------
 # Aside Settings
@@ -1091,29 +1092,6 @@ inject:
     - <link rel="stylesheet" href="/css/custom.css">
     - <link rel="alternate" type="application/atom+xml" title="Zhang Peng's Blog (EN)" href="/en/atom.xml">
   bottom:
-    - |
-      <script>
-      (function() {
-        var s = document.createElement('div');
-        s.id = 'lang-switch';
-        s.innerHTML = '<a id="lang-switch-link" href="/" aria-label="切换到中文">中文</a>';
-        document.body.appendChild(s);
-      })();
-      </script>
-      <style>
-      #lang-switch { position: fixed; right: 16px; top: 14px; z-index: 1002; }
-      #lang-switch a {
-        display: inline-block; padding: 4px 12px; font-size: 13px; font-weight: 600;
-        color: #fff; text-decoration: none; border-radius: 999px;
-        background: rgba(0, 0, 0, .28); border: 1px solid rgba(255, 255, 255, .35);
-        backdrop-filter: blur(4px); letter-spacing: .5px;
-        transition: background .25s ease, box-shadow .25s ease;
-      }
-      #lang-switch a:hover { background: rgba(44, 107, 237, .55); box-shadow: 0 0 12px rgba(44, 107, 237, .4); }
-      [data-theme="dark"] #lang-switch a { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .2); }
-      [data-theme="dark"] #lang-switch a:hover { background: rgba(108, 152, 255, .3); border-color: rgba(160, 190, 255, .5); }
-      @media (max-width: 768px) { #lang-switch { right: 12px; top: 10px; } #lang-switch a { padding: 3px 10px; font-size: 12px; } }
-      </style>
     - |
       <script>
       (function() {

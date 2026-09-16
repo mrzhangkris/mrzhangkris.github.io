@@ -3,7 +3,7 @@ title: "Hello World — The Blog Is Live"
 date: 2026-09-11 11:00:00
 lang: en
 tags: [Blog, GitHub Pages]
-copyright_author: 司南
+copyright_author: Sinan
 categories: [Essays]
 ---
 

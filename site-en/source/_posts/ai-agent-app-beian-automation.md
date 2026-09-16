@@ -4,7 +4,7 @@ date: 2026-09-15 13:30:00
 lang: en
 categories: [Indie Development]
 tags: [indie development, AI Agent, ICP Filing, Automation, Alibaba Cloud, Browser Automation]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1600&q=80&fm=jpg
 ---
 

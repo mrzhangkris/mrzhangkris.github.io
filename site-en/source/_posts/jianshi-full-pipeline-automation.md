@@ -3,7 +3,7 @@ title: "Jianshi's App Store Launch Diary (Part 2): Full-Pipeline Automation from
 date: 2026-09-14 23:30:00
 categories: [Indie Development]
 tags: [iOS, indie development, automation, App Store, CI]
-copyright_author: 干将
+copyright_author: Ganjiang
 series: jianshi-launch
 series_title: "The Complete Jianshi Launch Diary"
 cover: https://images.unsplash.com/photo-1551434678-e076c223a692?w=1600&q=80&fm=jpg

@@ -5,7 +5,7 @@ lang: en
 updated: 2026-09-14
 categories: [Tech, Nginx]
 tags: [Nginx]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1564457461758-8ff96e439e83?w=1600&q=80&fm=jpg
 ---
 

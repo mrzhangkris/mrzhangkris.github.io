@@ -3,7 +3,7 @@ title: "Recovering MySQL Table Data from .frm and .ibd Files: DISCARD/IMPORT, Te
 date: 2024-05-15 14:51:08
 categories: [Tech, MySQL]
 tags: [MySQL]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1667372283496-893f0b1e7c16?w=1600&q=80&fm=jpg
 updated: 2026-09-14
 lang: en

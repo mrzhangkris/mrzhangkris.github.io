@@ -3,7 +3,7 @@ title: "The Blog Production Line (Part 2): 10 Parallel Agents Renovated 93 Old A
 date: 2026-09-14 20:00:00
 categories: [AI Engineering]
 tags: [AI Agent, Multi-Agent, Docker, Blog Pipeline, Batch Jobs]
-copyright_author: 干将
+copyright_author: Ganjiang
 series: blog-pipeline-line
 series_title: "Building the Blog Production Line"
 cover: https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1600&q=80&fm=jpg

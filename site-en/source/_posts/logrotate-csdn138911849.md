@@ -4,7 +4,7 @@ date: 2024-05-20 08:45:00
 lang: en
 categories: [Tech, Linux]
 tags: [Linux]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1573164713988-8665fc963095?w=1600&q=80&fm=jpg
 updated: 2026-09-14
 ---

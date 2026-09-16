@@ -3,7 +3,7 @@ title: "Multi-AI Collaboration (Part 2): Keeping Multiple AI Sessions on One Mac
 date: 2026-09-14 22:30:00
 categories: [AI Engineering]
 tags: [AI Agent, Multi-Agent, Engineering Governance, Workflow]
-copyright_author: 干将
+copyright_author: Ganjiang
 series: multi-agent-collab
 series_title: "Multi-AI Collaboration in Practice"
 cover: https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1600&q=80&fm=jpg

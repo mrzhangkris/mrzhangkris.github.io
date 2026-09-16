@@ -5,7 +5,7 @@ lang: en
 updated: 2026-09-14
 categories: [Tech, Tomcat]
 tags: [Tomcat]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1570993492881-25240ce854f4?w=1600&q=80&fm=jpg
 ---
 

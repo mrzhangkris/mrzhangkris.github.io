@@ -3,7 +3,7 @@ title: "Nginx map Module in Practice: Replacing if Branches with Variable Mappin
 date: 2024-05-30 15:19:33
 categories: [Tech, Nginx]
 tags: [Nginx]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1640955785023-1854685dae05?w=1600&q=80&fm=jpg
 updated: 2026-09-14
 lang: en

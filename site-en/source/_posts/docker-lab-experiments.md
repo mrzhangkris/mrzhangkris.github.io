@@ -4,7 +4,7 @@ date: 2026-09-15 23:22:00
 categories: [Tech]
 tags: [Docker, Lab Environment, Ops, Automation]
 lang: en
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&q=80&fm=jpg
 ---
 

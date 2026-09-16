@@ -4,7 +4,7 @@ date: 2023-11-03 14:54:52
 lang: en
 categories: [Tech, MySQL]
 tags: [MySQL]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=1600&q=80&fm=jpg
 updated: 2026-09-14
 ---

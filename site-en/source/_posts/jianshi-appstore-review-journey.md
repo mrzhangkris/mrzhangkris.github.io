@@ -3,7 +3,7 @@ title: "Jianshi's App Store Launch Diary (Part 1): An AI Companion App's Three-R
 date: 2026-09-14 23:00:00
 categories: [Indie Development]
 tags: [iOS, App Store, indie development, AI companion, compliance]
-copyright_author: 干将
+copyright_author: Ganjiang
 series: jianshi-launch
 series_title: "The Complete Jianshi Launch Diary"
 cover: https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1600&q=80&fm=jpg

@@ -3,7 +3,7 @@ title: "AI Novel Pipeline (Part 2): A Server Home for Domain Data"
 date: 2026-09-14 23:15:00
 categories: [AI Engineering]
 tags: [AI Writing, Architecture Design, Agent, Server]
-copyright_author: 干将
+copyright_author: Ganjiang
 series: ai-novel-pipeline
 series_title: "AI Novel Pipeline Design"
 cover: https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=1600&q=80&fm=jpg

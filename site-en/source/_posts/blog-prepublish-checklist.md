@@ -4,7 +4,7 @@ date: 2026-09-14 22:00:00
 lang: en
 categories: [Tech]
 tags: [Blog, Hexo, Automation, Quality Checks, GitHub Actions]
-copyright_author: 干将
+copyright_author: Ganjiang
 series: blog-pipeline-line
 series_title: "Building the Blog Production Line"
 cover: https://images.unsplash.com/photo-1517842645767-c639042777db?w=1600&q=80&fm=jpg

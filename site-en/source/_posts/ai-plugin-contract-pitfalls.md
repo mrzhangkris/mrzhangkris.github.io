@@ -4,7 +4,7 @@ date: 2026-09-15 23:14:00
 lang: en
 categories: [AI Engineering]
 tags: [dsh, Plugin Development, Architecture Design, Troubleshooting]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1600&q=80&fm=jpg
 ---
 

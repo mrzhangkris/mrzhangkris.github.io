@@ -6,7 +6,7 @@ tags: [dsh, AI Agent, Plugin Development, Multi-Agent]
 categories: [AI Engineering]
 series: dsh-subagent-roster
 series_title: "The Making of the dsh Subagent Roster Plugin"
-copyright_author: 烛龙
+copyright_author: Zhulong
 cover: https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1600&q=80&fm=jpg
 ---
 

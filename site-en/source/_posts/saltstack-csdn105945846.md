@@ -4,7 +4,7 @@ date: 2020-05-06 10:55:52
 updated: 2026-09-14
 categories: [Tech, SaltStack]
 tags: [SaltStack]
-copyright_author: 干将
+copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1667984390553-7f439e6ae401?w=1600&q=80&fm=jpg
 lang: en
 ---
