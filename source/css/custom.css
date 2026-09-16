@@ -1,12 +1,12 @@
 /* 渐识同款视觉打磨 · 干将 2026-09 */
-/* 1. 卡片统一圆角 + hover 上浮 */
-#recent-posts > .recent-post-item,
+/* 1. 卡片统一圆角 + hover 上浮（Butterfly 5 卡片外多一层 .recent-post-items，用后代选择器才能命中） */
+#recent-posts .recent-post-item,
 .layout > div:first-child:not(.recent-post-item),
 #aside-content .card-widget {
   border-radius: 14px;
   transition: transform .3s ease, box-shadow .3s ease;
 }
-#recent-posts > .recent-post-item:hover {
+#recent-posts .recent-post-item:hover {
   transform: translateY(-6px);
   box-shadow: 0 12px 32px rgba(44, 107, 237, .18);
 }
@@ -36,11 +36,23 @@
 #zhulong-banner { letter-spacing: 1px; }
 
 /* 6. 暗色模式下的阴影收敛（阴影在暗底上改用描边感） */
-[data-theme="dark"] #recent-posts > .recent-post-item:hover {
+[data-theme="dark"] #recent-posts .recent-post-item:hover {
   box-shadow: 0 12px 32px rgba(0, 0, 0, .5);
 }
 [data-theme="dark"] #article-container img {
   box-shadow: 0 4px 16px rgba(0, 0, 0, .45);
+}
+
+/* 8. 暗色模式边框可见性适配（黑底上亮色系边框会隐形） */
+/* 卡片：暗色下加微弱描边，让卡片与 #0d0d0d 背景分离 */
+[data-theme="dark"] #recent-posts .recent-post-item,
+[data-theme="dark"] #aside-content .card-widget {
+  border: 1px solid rgba(255, 255, 255, .10);
+}
+/* 文章标题分隔线：亮色系 rgba(44,107,237,.14) 在黑底不可见，提高不透明度 */
+[data-theme="dark"] #article-container h1,
+[data-theme="dark"] #article-container h2 {
+  border-bottom-color: rgba(108, 152, 255, .35);
 }
 
 /* 7. 站内 AI 问答悬浮窗（左下角，避开主题右下角按钮组） */
