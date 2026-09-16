@@ -1,0 +1,11 @@
+/* 英文站极简自定义样式：视觉与主站一致（图片/主样式均走主站绝对路径） */
+@import url("/css/custom.css");
+
+/* About 页标题装饰，与主站观感一致 */
+.about-en h2 {
+  padding-bottom: .3em;
+  border-bottom: 1px solid rgba(44, 107, 237, .14);
+}
+[data-theme="dark"] .about-en h2 {
+  border-bottom-color: rgba(108, 152, 255, .35);
+}

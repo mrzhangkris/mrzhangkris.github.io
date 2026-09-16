@@ -27,19 +27,44 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies
+      # ===== 中文主站 =====
+      - name: Install dependencies (zh)
         run: npm ci
 
-      - name: Build site
+      - name: Build site (zh)
         run: npx hexo generate
 
+      # ===== 英文子站（新语言照抄此段，改 site-xx 与产物目录即可）=====
+      - name: Install pnpm
+        run: npm i -g pnpm@12
+
+      - name: Install dependencies (en)
+        working-directory: site-en
+        run: pnpm install --frozen-lockfile
+
+      - name: Build site (en)
+        working-directory: site-en
+        run: npx hexo generate
+
+      - name: Merge language sites
+        run: |
+          mkdir -p merged
+          cp -R public/. merged/
+          mkdir -p merged/en
+          cp -R site-en/public/. merged/en/
+          # 语言子站的图片/主题资源从主站产物复制（url_for 会把主题配置里的
+          # /img/... 前缀化为 /en/img/...，这里提供对应文件；新语言同样处理）
+          mkdir -p merged/en/img
+          cp -R public/img/. merged/en/img/
+
+      # ===== 部署 =====
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./merged
 
       - name: Deploy to GitHub Pages
         id: deployment

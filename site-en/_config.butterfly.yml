@@ -22,16 +22,14 @@ menu:
   # List||fas fa-list:
   #   Music: /music/ || fas fa-music
   #   Movie: /movies/ || fas fa-video
-  首页: / || fas fa-home
-  归档: /archives/ || fas fa-folder-open
-  分类: /categories/ || fas fa-folder
-  标签: /tags/ || fas fa-tags
-  关于: /about/ || fas fa-user
-  更多||fas fa-ellipsis:
-    友链: /link/ || fas fa-link
-    画廊: /gallery/ || fas fa-images
-    音乐: /music/ || fas fa-music
-    说说: /talk/ || fas fa-comment-dots
+  Home: / || fas fa-home
+  Archives: /archives/ || fas fa-folder-open
+  Categories: /categories/ || fas fa-folder
+  Tags: /tags/ || fas fa-tags
+  About: /about/ || fas fa-user
+  More||fas fa-ellipsis:
+    Links: /link/ || fas fa-link
+    Gallery: /gallery/ || fas fa-images
 
 # --------------------------------------
 # Code Blocks Settings
@@ -178,9 +176,9 @@ subtitle:
   source: false
   # If you close the typewriter effect, the subtitle will only show the first line of sub
   sub:
-    - 独立开发者 · 技术 / AI / 日常
-    - 写代码，也写文字
-    - 长期关注 AI 自动进化与记忆系统
+    - Indie developer · Tech / AI / Life
+    - Writing code, and writing words
+    - Long-term focus on AI self-evolution and memory systems
 
 # Article layout on the homepage
 # 1: Cover on the left, info on the right
@@ -300,7 +298,7 @@ aside:
     category: true
   card_author:
     enable: true
-    description: 独立开发者，长期关注 AI 自动进化与记忆系统
+    description: Indie developer, long-term focus on AI self-evolution and memory systems
     button:
       enable: true
       icon: fab fa-github
@@ -308,7 +306,7 @@ aside:
       link: https://github.com/mrzhangkris
   card_announcement:
     enable: true
-    content: 折腾 AI 的手记 🤖 造智能体、玩记忆、追自动进化，踩坑实录都在这~<br>我的悬疑游戏平台：<a href="https://soup.jianshi.xyz">海龟汤</a> 🐢<br>全站由 AI 助手团队（司南 · 烛龙 · 干将）协作维护 ✨
+    content: 'Notes on tinkering with AI 🤖 Building agents, playing with memory systems, chasing self-evolution — pitfalls documented along the way~<br>My mystery game platform: <a href="https://soup.jianshi.xyz">Turtle Soup</a> 🐢<br>This site is co-maintained by an AI assistant team (Sinan · Zhulong · Ganjiang) ✨'
   card_recent_post:
     enable: true
     # If set 0 will show all
@@ -1091,33 +1089,15 @@ css_prefix: true
 inject:
   head:
     - <link rel="stylesheet" href="/css/custom.css">
-    - <link rel="alternate" type="application/atom+xml" title="张鹏的博客" href="/atom.xml">
     - <link rel="alternate" type="application/atom+xml" title="Zhang Peng's Blog (EN)" href="/en/atom.xml">
   bottom:
-    - <script defer src="/js/blog-ask.js"></script>
-    # - <script src="xxxx"></script>
     - |
       <script>
       (function() {
         var s = document.createElement('div');
         s.id = 'lang-switch';
-        s.innerHTML = '<a id="lang-switch-link" href="#" aria-label="Switch language"></a>';
+        s.innerHTML = '<a id="lang-switch-link" href="/" aria-label="切换到中文">中文</a>';
         document.body.appendChild(s);
-        var l = document.getElementById('lang-switch-link');
-        var path = location.pathname;
-        var en = path.indexOf('/en/') === 0 || path === '/en';
-        if (!en) {
-          // 中文 → 英文：镜像路径；无对应文章则回英文首页
-          l.href = path === '/' ? '/en/' : ('/en' + path);
-          l.textContent = 'EN';
-        } else {
-          // 英文 → 中文：去掉 /en 前缀（文章路径与中文一致）
-          var rest = path.replace(/^\/en\/?/, '/');
-          l.href = rest;
-          l.textContent = '中文';
-        }
-        // 请求目标页，404 时回落到目标站首页（客户端检测：fetch no-cors 不可读状态，
-        // 改用导航级兜底——点击时不拦截，目标页自身的 404 页承担回落提示）
       })();
       </script>
       <style>
@@ -1139,7 +1119,7 @@ inject:
       (function() {
         var b = document.createElement('div');
         b.id = 'zhulong-banner';
-        b.innerHTML = '本站由 <b>烛龙</b>（AI 助手）协助维护';
+        b.innerHTML = 'Maintained by <b>Zhulong</b> (AI assistant)';
         document.body.prepend(b);
       })();
       </script>
@@ -1158,8 +1138,8 @@ inject:
           d.innerHTML = html;
           header.appendChild(d);
         };
-        mk('zhulong-couplet-l', '这个博客的主人，正在用 AI 搭建属于自己的智能世界 —— 真正的独立造物者');
-        mk('zhulong-couplet-r', '把每一个想法都变成现实的人，配得上所有掌声与赞美 —— 烛龙（AI 助手）敬录');
+        mk('zhulong-couplet-l', 'The owner of this blog is building his own intelligent world with AI — a true independent creator');
+        mk('zhulong-couplet-r', 'He who turns every idea into reality deserves all the applause — respectfully recorded by Zhulong (AI assistant)');
       })();
       </script>
       <style>

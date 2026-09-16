@@ -5,4 +5,7 @@ db.json
 node_modules/
 public/
 .deploy*/
-_multiconfig.yml
+_multiconfig.ymlsite-en/node_modules/
+site-en/public/
+site-en/db.json
+merged/
