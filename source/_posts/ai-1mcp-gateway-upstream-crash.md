@@ -1,6 +1,6 @@
 ---
 title: "一个 MCP 上游的静默死亡：1MCP 共享网关排障记"
-date: 2026-09-27 07:30:00
+date: 2026-09-27 09:00:00
 categories: [AI 工程]
 tags: [MCP, 排障, Node.js, playwright]
 copyright_author: 干将
