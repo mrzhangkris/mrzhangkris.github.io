@@ -42,7 +42,7 @@ useradd -g tomcat -s /usr/sbin/nologin tomcat
 
 ```bash
 cd /opt
-wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.121/bin/apache-tomcat-9.0.121.tar.gz
+wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.121/bin/apache-tomcat-9.0.121.tar.gz
 tar -zxf apache-tomcat-9.0.121.tar.gz
 ```
 

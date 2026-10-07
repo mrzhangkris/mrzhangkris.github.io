@@ -33,7 +33,7 @@ java -version
 
 ```bash
 # 本文版本 3.8.6（downloads 站 stable 目录）
-wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.8.6-bin.tar.gz
+wget https://archive.apache.org/dist/zookeeper/zookeeper-3.8.6/apache-zookeeper-3.8.6-bin.tar.gz
 tar -xzf apache-zookeeper-3.8.6-bin.tar.gz -C /opt
 mv /opt/apache-zookeeper-3.8.6-bin /opt/zookeeper
 ```

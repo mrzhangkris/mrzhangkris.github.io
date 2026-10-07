@@ -34,7 +34,7 @@ Download the binary package from the Apache website and extract it to the same d
 
 ```bash
 # this post's version: 3.8.6 (stable directory on the downloads site)
-wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.8.6-bin.tar.gz
+wget https://archive.apache.org/dist/zookeeper/zookeeper-3.8.6/apache-zookeeper-3.8.6-bin.tar.gz
 tar -xzf apache-zookeeper-3.8.6-bin.tar.gz -C /opt
 mv /opt/apache-zookeeper-3.8.6-bin /opt/zookeeper
 ```

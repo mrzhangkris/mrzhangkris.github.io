@@ -15,7 +15,7 @@ cover: https://images.unsplash.com/photo-1608742213509-815b97c30b36?w=1600&q=80&
 | 软件 | 版本 | 下载 |
 | --- | --- | --- |
 | OpenSSH | 9.5p1 | [官方 portable 页](https://www.openssh.com/portable.html)，[阿里云镜像](https://mirrors.aliyun.com/openssh/portable/) |
-| OpenSSL | 3.1.4 | [openssl.org/source](https://www.openssl.org/source/old/3.1/) |
+| OpenSSL | 3.1.4 | [openssl-library.org/source](https://openssl-library.org/source/old/3.1/) |
 
 前置条件清单：
 

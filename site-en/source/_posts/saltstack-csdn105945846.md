@@ -13,7 +13,7 @@ Once SaltStack is installed, the thing you use most day to day is remote executi
 
 Related documentation:
 
-- Remote execution docs: https://docs.saltstack.com/en/latest/topics/tutorials/modules.html
+- Remote execution docs: https://docs.saltproject.io/en/latest/topics/tutorials/modules.html
 - Targeting docs: https://docs.saltproject.io/en/latest/topics/targeting/index.html
 - Execution module docs: https://docs.saltproject.io/en/latest/ref/modules/all/index.html
 - Returner docs: https://docs.saltproject.io/en/latest/ref/returners/all/index.html
