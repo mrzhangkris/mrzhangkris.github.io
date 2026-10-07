@@ -2,7 +2,7 @@
 title: "dsh 花名册插件（三）：七将的模型路由矩阵——异构互补不是冗余"
 date: 2026-09-12 11:00:00
 tags: [dsh, AI Agent, 异构模型, 多智能体, 模型路由]
-categories: [AI 工程]
+categories: [Vibe Coding]
 series: dsh-subagent-roster
 series_title: "dsh 花名册插件开发全记录"
 copyright_author: 烛龙

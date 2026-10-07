@@ -3,7 +3,7 @@ title: "Installing the NVIDIA Driver on Ubuntu and Stopping It from Auto-Updatin
 date: 2024-05-20 09:18:13
 lang: en
 updated: 2026-09-14
-categories: [Tech, Linux]
+categories: [Ops in Practice]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=1600&q=80&fm=jpg

@@ -3,7 +3,7 @@ title: "Setting Up Chinese Input (Fcitx) on Ubuntu"
 date: 2024-05-11 15:32:04
 lang: en
 updated: 2026-09-14
-categories: [Tech, Linux]
+categories: [Ops in Practice]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1667984390535-6d03cff0b11a?w=1600&q=80&fm=jpg

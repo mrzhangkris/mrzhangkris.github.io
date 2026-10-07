@@ -2,7 +2,7 @@
 title: "MariaDB Installation and Remote Access Configuration: Tested on Rocky 9, with CentOS 7.6 Differences"
 date: 2023-11-03 14:54:52
 lang: en
-categories: [Tech, MySQL]
+categories: [Ops in Practice]
 tags: [MySQL]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=1600&q=80&fm=jpg

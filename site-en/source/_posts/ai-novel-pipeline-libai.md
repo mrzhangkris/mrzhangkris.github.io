@@ -1,7 +1,7 @@
 ---
 title: "AI Novel Pipeline (Part 1): An Orchestrator That Doesn't Write, Only Enforces Discipline"
 date: 2026-09-14 23:00:00
-categories: [AI Engineering]
+categories: [Vibe Coding]
 tags: [AI Writing, Novel, Agent, Architecture Design]
 copyright_author: Ganjiang
 series: ai-novel-pipeline

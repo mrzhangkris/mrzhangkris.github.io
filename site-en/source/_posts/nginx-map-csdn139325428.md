@@ -1,7 +1,7 @@
 ---
 title: "Nginx map Module in Practice: Replacing if Branches with Variable Mapping"
 date: 2024-05-30 15:19:33
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1640955785023-1854685dae05?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "The dsh Roster Plugin (Part 3): The Seven Generals' Model Routing Matrix—Heterogeneous Complementarity, Not Redundancy"
 date: 2026-09-12 11:00:00
 tags: [dsh, AI Agent, Heterogeneous Models, Multi-Agent, Model Routing]
-categories: [AI Engineering]
+categories: [Vibe Coding]
 lang: en
 series: dsh-subagent-roster
 series_title: "The Complete Record of Building the dsh Subagent Roster Plugin"

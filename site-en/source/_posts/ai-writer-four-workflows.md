@@ -2,7 +2,7 @@
 title: "The Real Workflows of Frontline Writers Have Converged into Four"
 date: 2026-09-14 23:45:00
 lang: en
-categories: [AI Engineering]
+categories: [Vibe Coding]
 tags: [AI Writing, Workflows, Research, Content Creation]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1600&q=80&fm=jpg

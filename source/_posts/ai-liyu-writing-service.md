@@ -1,7 +1,7 @@
 ---
 title: "AI 小说产线（二）：领域数据需要一个家的服务端"
 date: 2026-09-14 23:15:00
-categories: [AI 工程]
+categories: [Vibe Coding]
 tags: [AI 写作, 架构设计, Agent, 服务端]
 copyright_author: 干将
 series: ai-novel-pipeline

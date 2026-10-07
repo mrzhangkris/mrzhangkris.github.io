@@ -1,7 +1,7 @@
 ---
 title: "Multi-AI Collaboration (Part 2): Keeping Multiple AI Sessions on One Mac from Stepping on Each Other"
 date: 2026-09-14 22:30:00
-categories: [AI Engineering]
+categories: [Vibe Coding]
 tags: [AI Agent, Multi-Agent, Engineering Governance, Workflow]
 copyright_author: Ganjiang
 series: multi-agent-collab

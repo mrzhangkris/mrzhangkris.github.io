@@ -1,7 +1,7 @@
 ---
 title: "渐识上架记（二）：从立项到上架的全流程自动化"
 date: 2026-09-14 23:30:00
-categories: [独立开发]
+categories: [Vibe Coding]
 tags: [iOS, 独立开发, 自动化, App Store, CI]
 copyright_author: 干将
 series: jianshi-launch

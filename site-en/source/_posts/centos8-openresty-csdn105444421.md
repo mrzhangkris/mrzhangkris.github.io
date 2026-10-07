@@ -3,7 +3,7 @@ title: "Installing OpenResty 1.19.3.1 from Source (Linked to a Self-Built OpenSS
 date: 2020-04-10 23:09:21
 lang: en
 updated: 2026-09-14
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1564457461758-8ff96e439e83?w=1600&q=80&fm=jpg

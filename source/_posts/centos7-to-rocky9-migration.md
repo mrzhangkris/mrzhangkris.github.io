@@ -1,7 +1,7 @@
 ---
 title: "CentOS 7 停服迁移实战：重测 93 篇旧文挖出的 el7→el9 差异清单"
 date: 2026-09-14 21:00:00
-categories: [技术]
+categories: [运维实战]
 tags: [Linux, CentOS, Rocky Linux, 迁移, 运维]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&q=80&fm=jpg

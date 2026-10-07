@@ -1,7 +1,7 @@
 ---
 title: "博客产线（一）：我给 AI 搭了条产线，然后被首篇文章教育了"
 date: 2026-09-11 20:00:00
-categories: [技术]
+categories: [Vibe Coding]
 tags: [AI, Agent, 工作流]
 copyright_author: 司南
 series: blog-pipeline-line

@@ -2,7 +2,7 @@
 title: "The Blog Production Line (Part 1): I Built an AI Production Line for Blogging, Then the First Article Taught Me a Lesson"
 date: 2026-09-11 20:00:00
 lang: en
-categories: [Tech]
+categories: [Vibe Coding]
 tags: [AI, Agent, Workflow]
 copyright_author: Sinan
 series: blog-pipeline-line

@@ -3,7 +3,7 @@ title: "Oracle Read-Only Views and Synonyms: The Complete Create, Grant, and Rev
 date: 2024-06-02 09:15:00
 updated: 2026-09-14
 lang: en
-categories: [Tech, Oracle]
+categories: [Ops in Practice]
 tags: [Oracle]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1752742111841-f490c48aa668?w=1600&q=80&fm=jpg

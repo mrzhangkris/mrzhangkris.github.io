@@ -2,7 +2,7 @@
 title: "A Mystery Game Platform (Part 2): AI-Written Murder Mystery Scripts — Writing Is Easy, Staying Consistent Is Hard"
 date: 2026-09-11 20:30:00
 lang: en
-categories: [Tech]
+categories: [Vibe Coding]
 tags: [AI, Game Development, Quality Engineering]
 copyright_author: Sinan
 series: turtle-soup

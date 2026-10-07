@@ -1,7 +1,7 @@
 ---
 title: "Cobbler Automated Provisioning: From Deployment to Batch PXE Installs (Rocky Linux 9, with CentOS 7 Differences)"
 date: 2020-04-06 20:59:23
-categories: [Tech, Linux]
+categories: [Ops in Practice]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=1600&q=80&fm=jpg

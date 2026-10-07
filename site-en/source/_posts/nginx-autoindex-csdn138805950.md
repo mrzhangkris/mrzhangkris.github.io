@@ -3,7 +3,7 @@ title: "Nginx autoindex: Making Directories Directly Browsable in the Browser"
 date: 2024-05-13 15:42:16
 updated: 2026-09-14
 lang: en
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1639066648921-82d4500abf1a?w=1600&q=80&fm=jpg

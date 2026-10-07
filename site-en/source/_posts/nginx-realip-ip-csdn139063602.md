@@ -3,7 +3,7 @@ title: "Nginx realip in Practice: Recovering the Real Client IP Hidden Behind a 
 date: 2024-05-20 14:01:42
 updated: 2026-09-14
 lang: en
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1600&q=80&fm=jpg

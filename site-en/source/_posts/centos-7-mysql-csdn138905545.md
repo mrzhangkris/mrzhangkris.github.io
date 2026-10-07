@@ -3,7 +3,7 @@ title: "Installing MySQL 8.0 on Rocky Linux 9 (with CentOS 7 / MySQL 5.7 Differe
 date: 2024-05-17 09:22:53
 lang: en
 updated: 2026-09-14
-categories: [Tech, MySQL]
+categories: [Ops in Practice]
 tags: [MySQL]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1529078155058-5d716f45d604?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "The Silent Death of an MCP Upstream: A Troubleshooting Log for the 1MCP Shared Gateway"
 date: 2026-09-27 09:00:00
 lang: en
-categories: [AI Engineering]
+categories: [Vibe Coding]
 tags: [MCP, Troubleshooting, Node.js, playwright]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=1600&q=80&fm=jpg

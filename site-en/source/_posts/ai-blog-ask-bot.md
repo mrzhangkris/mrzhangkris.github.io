@@ -2,7 +2,7 @@
 title: "Adding an On-Site AI Q&A to a Static Blog: Search Index plus Two-Channel Retrieval"
 date: 2026-09-15 08:00:00
 lang: en
-categories: [Indie Development]
+categories: [Vibe Coding]
 tags: [AI, RAG, Static Blog, Hexo, Retrieval]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1600&q=80&fm=jpg

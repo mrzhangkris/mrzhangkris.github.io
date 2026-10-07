@@ -2,7 +2,7 @@
 title: "Managing Nginx Logs with logrotate: Configuration, Hooks, and Real Tests"
 date: 2024-05-20 08:45:00
 lang: en
-categories: [Tech, Linux]
+categories: [Ops in Practice]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1573164713988-8665fc963095?w=1600&q=80&fm=jpg

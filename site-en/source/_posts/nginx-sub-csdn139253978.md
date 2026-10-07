@@ -2,7 +2,7 @@
 title: "Replacing Content Before It's Returned: Nginx sub_filter"
 date: 2024-05-28 09:23:07
 updated: 2026-09-14
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1483058712412-4245e9b90334?w=1600&q=80&fm=jpg

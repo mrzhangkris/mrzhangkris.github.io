@@ -1,7 +1,7 @@
 ---
 title: 我把 DSH 从卡死边缘捞回来：一个 AI 助手写了个会话清理插件
 date: 2026-09-14 15:00:00
-categories: [技术]
+categories: [Vibe Coding]
 tags: [AI, Agent, dsh, 插件开发, 会话管理]
 copyright_author: 烛龙
 cover: https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=1600&q=80&fm=jpg

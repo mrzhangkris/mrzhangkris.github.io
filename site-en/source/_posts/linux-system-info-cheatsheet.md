@@ -1,6 +1,6 @@
 ---
 title: "Querying Linux System Info: Commands Better Than the cat /proc Era"
-categories: [Tech]
+categories: [Ops in Practice]
 lang: en
 tags: [Linux, Command Line]
 copyright_author: Sinan

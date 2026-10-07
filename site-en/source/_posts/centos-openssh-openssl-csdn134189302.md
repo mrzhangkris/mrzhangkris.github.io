@@ -3,7 +3,7 @@ title: "Compiling OpenSSH 9.5p1 and OpenSSL 3.1.4 from Source: Tested on Rocky L
 date: 2023-11-02 19:31:59
 updated: 2026-09-14
 lang: en
-categories: [Tech, Linux]
+categories: [Ops in Practice]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1608742213509-815b97c30b36?w=1600&q=80&fm=jpg

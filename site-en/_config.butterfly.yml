@@ -813,6 +813,11 @@ theme_color:
 # The user interface setting of category and tag page
 # Choose: index - same as Homepage UI / default - same as archives UI
 # leave it empty or index
+
+# 2026-10-07 实测：category_ui: index 会走带封面的网格，但丢掉「分类 - X」的
+# 页面标题，读者进分类页看不到自己在哪。保持默认的标题+分页列表模式。
+# 2026-10-07 实测：category_ui: index 会走带封面的网格，但丢掉「分类 - X」的
+# 页面标题，读者进分类页看不到自己在哪。保持默认的标题+分页列表模式。
 category_ui:
 tag_ui:
 

@@ -1,7 +1,7 @@
 ---
 title: "AI 写作的版权与法律边界：一份面向个人创作者的全景"
 date: 2026-09-15 23:20:00
-categories: [AI 工程]
+categories: [Vibe Coding]
 tags: [AI 写作, 版权, 合规, 观点]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80&fm=jpg

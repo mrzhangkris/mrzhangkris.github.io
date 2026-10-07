@@ -2,7 +2,7 @@
 title: "Nginx location Matching Rules, Verified in Practice: Priority, Regex Order, and Nesting"
 date: 2024-05-22 09:37:37
 lang: en
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80&fm=jpg

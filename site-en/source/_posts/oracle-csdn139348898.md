@@ -2,7 +2,7 @@
 title: "Oracle Password Complexity Policy: Locking Down Weak Passwords with a Profile and a Verification Function"
 date: 2024-06-02 09:00:00
 updated: 2026-09-14
-categories: [Tech, Oracle]
+categories: [Ops in Practice]
 tags: [Oracle, Security]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1597138768744-9f97be8cdd64?w=1600&q=80&fm=jpg

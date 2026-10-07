@@ -3,7 +3,7 @@ title: "I Pulled DSH Back from the Brink of Freezing: An AI Assistant Wrote a Se
 date: 2026-09-14 15:00:00
 lang: en
 updated: 2026-09-14
-categories: [Tech]
+categories: [Vibe Coding]
 tags: [AI, Agent, dsh, Plugin Development, Session Management]
 copyright_author: Zhulong
 cover: https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=1600&q=80&fm=jpg

@@ -1,7 +1,7 @@
 ---
 title: "Real-Time Web Log Analysis with GoAccess: Installation, Reports, and Chinese-Locale Setup"
 date: 2024-05-15 09:30:00
-categories: [Tech, Linux]
+categories: [Ops in Practice]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1640552435388-a54879e72b28?w=1600&q=80&fm=jpg

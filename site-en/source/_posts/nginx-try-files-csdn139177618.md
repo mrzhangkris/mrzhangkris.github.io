@@ -2,7 +2,7 @@
 title: "Nginx try_files: One Directive to Govern Static File Lookup and Fallback"
 date: 2024-05-26 09:00:00
 updated: 2026-09-14
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1575318634028-6a0cfcb60c59?w=1600&q=80&fm=jpg

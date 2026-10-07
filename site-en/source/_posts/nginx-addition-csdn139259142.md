@@ -2,7 +2,7 @@
 title: "The Nginx addition Module: Splicing Subrequest Content into the Main Response"
 date: 2024-05-28 10:20:58
 updated: 2026-09-14
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1680992046626-418f7e910589?w=1600&q=80&fm=jpg

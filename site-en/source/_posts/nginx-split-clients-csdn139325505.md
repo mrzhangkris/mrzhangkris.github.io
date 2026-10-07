@@ -2,7 +2,7 @@
 title: "A/B Testing and Canary Releases with the Nginx split_clients Module"
 date: 2024-05-30 15:21:07
 updated: 2026-09-14
-categories: [Tech, Nginx]
+categories: [Ops in Practice]
 lang: en
 tags: [Nginx]
 copyright_author: Ganjiang

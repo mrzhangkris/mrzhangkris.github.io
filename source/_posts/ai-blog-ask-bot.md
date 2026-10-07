@@ -1,7 +1,7 @@
 ---
 title: "给静态博客装一个站内 AI 问答：搜索索引加双通道检索"
 date: 2026-09-15 08:00:00
-categories: [独立开发]
+categories: [Vibe Coding]
 tags: [AI, RAG, 静态博客, Hexo, 检索]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=1600&q=80&fm=jpg

@@ -2,7 +2,7 @@
 title: "The Blog Production Line (Part 3): Six Automated Pre-Publish Checks"
 date: 2026-09-14 22:00:00
 lang: en
-categories: [Tech]
+categories: [Vibe Coding]
 tags: [Blog, Hexo, Automation, Quality Checks, GitHub Actions]
 copyright_author: Ganjiang
 series: blog-pipeline-line
