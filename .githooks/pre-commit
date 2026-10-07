@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# pre-commit —— 提交前跑 diff_guard 闸门
+#
+# 拦截「内容只改一处、整份文件全被标记改动」的格式漂移。2026-10-07 实测教训：
+# 用 Python 改一个 CRLF 行尾的 yaml，write 默认写 LF，1214 行全变，
+# 真正的 3 行改动被噪音淹没，提交完全无法 review。
+#
+# 本钩子在 .githooks/（随 git 跟踪），由 core.hooksPath 指向；
+# clone 后执行 `git config core.hooksPath .githooks` 即可启用。
+#
+# 绕过（仅在确认是整文件重写/批量替换时）：git commit --no-verify
+
+set -uo pipefail
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+GUARD="$REPO_ROOT/checks/diff_guard.py"
+
+if [ ! -f "$GUARD" ]; then
+  echo "pre-commit: 找不到 $GUARD，跳过 diff_guard" >&2
+  exit 0
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "pre-commit: 无 python3，跳过 diff_guard" >&2
+  exit 0
+fi
+
+python3 "$GUARD" --staged
+rc=$?
+
+# python3 缺失时脚本返回 0；只有真正检出问题时才阻断
+if [ $rc -eq 0 ]; then
+  exit 0
+fi
+exit $rc

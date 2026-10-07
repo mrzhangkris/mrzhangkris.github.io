@@ -16,6 +16,40 @@
 用法：`bash checks/blog_regression.sh`
 退出码：全过 0，有失败 1。
 
+## diff_guard.py —— 提交前格式漂移闸门
+
+拦截「内容只改一处、整份文件全被标记改动」这类污染 diff 的错误。
+
+2026-10-07 实测教训：用 Python `open(p,'w')` 改一个 CRLF 行尾的 yaml，
+write 默认写 LF，1214 行全部被标记为改动；内容一个字符没丢，但真正的
+3 行改动被噪音淹没，提交完全无法 review。这类错误靠人肉看 diff 统计
+迟早漏，故做成闸门。
+
+规则：
+
+| 级别 | 判定 |
+|---|---|
+| FAIL | 格式漂移：去行尾/行尾空白/BOM 后内容相同但字节不同 |
+| FAIL | 编码漂移：HEAD 是 UTF-8，改后不再是合法 UTF-8 |
+| WARN | 单文件改动 > 400 行（整文件重写/批量替换需人确认） |
+
+```bash
+python3 checks/diff_guard.py --self-test   # 先自测闸门本身有效
+python3 checks/diff_guard.py               # 检查暂存区
+```
+
+**已挂进 pre-commit 钩子**（`.githooks/`，随 git 跟踪）：
+
+```bash
+git config core.hooksPath .githooks        # clone 后执行一次即可启用
+```
+
+绕过（仅在确认是整文件重写时）：`git commit --no-verify`
+
+自测里也踩过一次坑：闸门脚本自己的 `git show` 没带 `cwd`，跑的是当前
+仓库而不是临时测试仓，导致自测「漏掉」坏样本。是自测抓出来的——
+**闸门没验证过就装，等于没装**。
+
 ## 浏览器层（L2）与内容层（L3）说明
 - L2（chrome-devtools 实测光效/机器人 UI/控制台）暂为手动流程，要点见
   `~/.agents/skills/blog-regression-check/SKILL.md`（若已批准创建）
