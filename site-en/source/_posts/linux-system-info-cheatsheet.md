@@ -8,8 +8,6 @@ cover: https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=80&fm=
 date: 2026-09-11 17:40:00
 ---
 
-# Querying Linux System Info: Commands Better Than the cat /proc Era
-
 > In 2024 I wrote "Common CentOS System Info Queries" on CSDN. Looking back two years later, the commands in that post still run, but most of them take the long way around: `cat /proc/cpuinfo` piped through grep and wc to count lines, awk arithmetic to convert uptime seconds, digging version numbers out of `/etc/centos-release`. Since then CentOS 7 has gone end-of-life (June 2024), but the commands themselves work across distributions—whether you're still on legacy CentOS or have migrated to Rocky/Alma, they're still useful. So I rewrote it as one post: the modern equivalent sits right next to each old command, along with a note on where the original was loose.
 
 ## CPU

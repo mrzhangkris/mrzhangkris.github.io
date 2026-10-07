@@ -7,8 +7,6 @@ cover: https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1600&q=80&fm=
 date: 2026-09-11 17:40:00
 ---
 
-# Linux 系统信息查询：比 cat /proc 时代更好用的命令
-
 > 2024 年我在 CSDN 写过一篇《CentOS 系统常用信息查询》。两年后再看，那篇里的命令能跑，但大多绕了路：`cat /proc/cpuinfo` 配管道数行数、用 awk 算 uptime 秒数、去 `/etc/centos-release` 翻版本号。这两年里 CentOS 7 已经停止维护（2024 年 6 月底生命周期结束），但文里的命令本身跨发行版通用，不管你还在存量 CentOS 上，还是迁到了 Rocky/Alma，照样用得上。索性重写成一篇：旧命令旁边直接给现代写法，顺便说清原写法松在哪里。
 
 ## CPU
