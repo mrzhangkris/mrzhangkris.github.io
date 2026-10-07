@@ -71,7 +71,7 @@ FLUSH PRIVILEGES;
 SQL
 ```
 
-实测这个账号从远程（-h 127.0.0.1 模拟）登录后，`SHOW DATABASES` 只能看到 `appdb` 和两个自带 schema——授权边界即所见边界，最小权限是能被直接验证的：
+实测这个账号从远程（-h 127.0.0.1 模拟）登录后，`SHOW DATABASES` 只能看到 `appdb` 和 `information_schema`——授权边界即所见边界，最小权限是能被直接验证的：
 
 ![配图2](/images/csdn/figures/centos-7-mysql-csdn138905545-2.png)
 

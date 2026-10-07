@@ -211,3 +211,26 @@
   #blog-ask-btn span { display: none; }
   #blog-ask-panel { height: 60vh; }
 }
+
+/* 移动端阅读优化 · 干将 2026-10-07
+   依据：全站 125 篇普查（实测，非推断）
+   - 主题只给 .table-wrap 与 figure.highlight table 加了 overflow，
+     而 markdown 表格是 #article-container 的裸 table，两边都不属于，
+     125 篇里 table-wrapper 出现 0 次；最宽表 6 列约 547px > 375px 视口。
+   - 正文 --global-font-size 实测 14px，主题 56 个媒体查询块内零补偿。 */
+
+/* 1. 正文 markdown 表格横向滚动
+   用直接子元素选择器，代码块表格包在 figure.highlight 内不受影响。
+   做法与主题处理代码块表格一致（figure.highlight table { display:block; overflow:auto }），
+   不加 white-space:nowrap——否则窄表格也会被撑宽、动不动就出滚动条 */
+#article-container > table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 2. 窄屏正文字号补偿（仅移动端，桌面观感不变） */
+@media (max-width: 768px) {
+  :root { --global-font-size: 15.5px; }
+}

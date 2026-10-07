@@ -72,7 +72,7 @@ FLUSH PRIVILEGES;
 SQL
 ```
 
-Tested: after this account logged in remotely (simulated with -h 127.0.0.1), `SHOW DATABASES` showed only `appdb` and the two built-in schemas — the grant boundary is the visibility boundary, so least privilege is directly verifiable:
+Tested: after this account logged in remotely (simulated with -h 127.0.0.1), `SHOW DATABASES` showed only `appdb` and `information_schema` — the grant boundary is the visibility boundary, so least privilege is directly verifiable:
 
 ![Figure 2](/images/csdn/figures/centos-7-mysql-csdn138905545-2.png)
 
