@@ -5,12 +5,16 @@
 
 # Site
 title: Zhang Peng's Blog
-subtitle: Indie Developer · Tech / AI / Life
-description: Zhang Peng's personal blog on tech, AI engineering and indie development.
+subtitle: Ops in Practice · Vibe Coding · Essays
+description: Zhang Peng's blog: 96 hands-on ops notes re-tested from CentOS 7 to Rocky 9, and 28 write-ups on building things that actually run with AI.
 keywords:
   - Zhang Peng
   - blog
-  - AI
+  - ops
+  - CentOS
+  - Rocky Linux
+  - Vibe Coding
+  - AI Agent
   - indie developer
 author: Zhang Peng
 language: en

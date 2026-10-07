@@ -177,9 +177,9 @@ subtitle:
   source: false
   # If you close the typewriter effect, the subtitle will only show the first line of sub
   sub:
-    - Indie developer · Tech / AI / Life
-    - Writing code, and writing words
-    - Long-term focus on AI self-evolution and memory systems
+    - Ops in Practice · Vibe Coding · Essays
+    - CentOS 7 went EOL, so the old notes got re-tested
+    - Also: building things with AI that actually run
 
 # Article layout on the homepage
 # 1: Cover on the left, info on the right

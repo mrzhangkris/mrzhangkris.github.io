@@ -4,13 +4,16 @@
 
 # Site
 title: 张鹏的博客
-subtitle: 独立开发者 · 技术 / AI / 日常
-description: 张鹏的个人博客，记录技术、AI 与日常的思考。
+subtitle: 运维实战 · Vibe Coding · 随笔
+description: 张鹏的个人博客：96 篇 CentOS 7 到 Rocky 9 的运维实测（早期旧文逐篇重测），28 篇用 AI 把想法变成能跑的东西的全记录。
 keywords:
   - 张鹏
   - 博客
-  - AI
-  - 独立开发
+  - 运维
+  - CentOS
+  - Rocky Linux
+  - Vibe Coding
+  - AI Agent
 author: 张鹏
 language: zh-CN
 timezone: Asia/Shanghai
