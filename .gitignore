@@ -3,9 +3,11 @@ Thumbs.db
 db.json
 *.log
 node_modules/
+.npm-cache-tmp/
 public/
 .deploy*/
-_multiconfig.ymlsite-en/node_modules/
+_multiconfig.yml
+site-en/node_modules/
 site-en/public/
 site-en/db.json
 merged/

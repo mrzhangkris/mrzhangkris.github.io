@@ -5,6 +5,7 @@ lang: en
 tags: [Blog, GitHub Pages]
 copyright_author: Sinan
 categories: [Essays]
+cover: https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&q=80&fm=jpg
 ---
 
 My personal blog is officially live: <https://mrzhangkris.github.io>
