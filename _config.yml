@@ -84,7 +84,13 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
+# 2026-10-07 由 'mtime' 改为 'date'：
+#   原值 'mtime' 让未声明 updated: 的文章回落到文件 mtime，而 mtime 就是构建
+#   时刻——31 篇从未修订的文章因此显示假的「更新于 <部署日>」，每次部署都变。
+#   注意不能改 'empty'：Butterfly 的 post-info.pug 在 date_type: both 下
+#   无条件渲染 post-meta-date-updated，updated 为 undefined 时 date(undefined)
+#   返回当天，假日期照样出现（实测过）。'date' 让它回落到发布日期，稳定且真实。
+updated_option: 'date'
 
 # Pagination
 ## Set per_page to 0 to disable pagination

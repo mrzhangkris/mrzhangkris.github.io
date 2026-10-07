@@ -31,7 +31,7 @@ Phase 2 全量翻译流水线的单点规范。每批 agent 必须遵守；质�
 ## 验收门（每批完成后必跑）
 
 ```bash
-cd site-en && /usr/bin/python3 scripts/check_en_post.py source/_posts/<本批文件...>
+cd site-en && /usr/bin/python3 checks/check_en_post.py source/_posts/<本批文件...>
 ```
 
 全 PASS 才算批次完成；FAIL 项修复后复跑。

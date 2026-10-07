@@ -73,7 +73,9 @@ meta_generator: true
 
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
-updated_option: 'mtime'
+# 与中文站同步：见主站 _config.yml 同项说明（mtime 会让未声明 updated 的文章
+# 显示构建时刻作为更新日期）
+updated_option: 'date'
 
 per_page: 10
 pagination_dir: page

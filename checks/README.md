@@ -1,4 +1,9 @@
-# 博客回归检查脚本
+# 博客回归检查
+
+> 2026-10-07：本目录原名 `scripts/`，但 Hexo 会把 `scripts/` 下所有文件当插件加载，
+> 导致每次构建报 4 条 `Script load failed` ERROR（README.md / blog_regression.sh /
+> paths.txt / blog-ask.test.mjs）。故非 Hexo 脚本迁至本目录 `checks/`；
+> `scripts/` 只保留真正需要 Hexo 加载的 `hreflang-zh.js`。
 
 ## blog_regression.sh
 线上全站回归（L1 curl 层），19 项检查，约 30 秒：
@@ -8,14 +13,14 @@
 - custom.css 三件套（暗色微光 / hover 背光 / 旋转光束 / reduced-motion）
 - 机器人 API 连通 / 双语 sitemap
 
-用法：`bash scripts/blog_regression.sh`
+用法：`bash checks/blog_regression.sh`
 退出码：全过 0，有失败 1。
 
 ## 浏览器层（L2）与内容层（L3）说明
 - L2（chrome-devtools 实测光效/机器人 UI/控制台）暂为手动流程，要点见
   `~/.agents/skills/blog-regression-check/SKILL.md`（若已批准创建）
 - L3 内容质量门：中文 `check_post`（如 blog-pipeline 技能内置）、英文
-  `site-en/scripts/check_en_post.py --all`
+  `python3 site-en/checks/check_en_post.py site-en/source/_posts/*.md`
 
 ## 踩坑备忘（检查结果解读必读）
 1. **浏览器缓存假象**：页面/子资源被 disk cache 缓存旧版，DOM 实测「异常」未必是缺陷。

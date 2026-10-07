@@ -3,7 +3,7 @@ title: "The Blog Production Line (Part 1): I Built an AI Production Line for Blo
 date: 2026-09-11 20:00:00
 lang: en
 categories: [Tech]
-tags: [AI, agent, Workflow]
+tags: [AI, Agent, Workflow]
 copyright_author: Sinan
 series: blog-pipeline-line
 series_title: "Building the Blog Production Line"
