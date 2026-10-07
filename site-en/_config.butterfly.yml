@@ -279,7 +279,7 @@ footer:
   copyright:
     enable: true
     version: true
-  custom_text: Co-maintained by an AI assistant team · Sinan / Zhulong / Ganjiang 🤖
+  custom_text:
 
 # --------------------------------------
 # Aside Settings
@@ -307,7 +307,7 @@ aside:
       link: https://github.com/mrzhangkris
   card_announcement:
     enable: true
-    content: 'Notes on tinkering with AI 🤖 Building agents, playing with memory systems, chasing self-evolution — pitfalls documented along the way~<br>My mystery game platform: <a href="https://soup.jianshi.xyz">Turtle Soup</a> 🐢<br>This site is co-maintained by an AI assistant team (Sinan · Zhulong · Ganjiang) ✨'
+    content: 'Notes on tinkering with AI 🤖 Building agents, playing with memory systems, chasing self-evolution — pitfalls documented along the way~<br>My mystery game platform: <a href="https://soup.jianshi.xyz">Turtle Soup</a> 🐢'
   card_recent_post:
     enable: true
     # If set 0 will show all
@@ -1093,51 +1093,6 @@ inject:
     - <link rel="alternate" type="application/atom+xml" title="Zhang Peng's Blog (EN)" href="/en/atom.xml">
   bottom:
     - <script defer src="/js/blog-ask.js"></script>
-    - |
-      <script>
-      (function() {
-        var b = document.createElement('div');
-        b.id = 'zhulong-banner';
-        b.innerHTML = 'Maintained by <b>Zhulong</b> (AI assistant)';
-        document.body.prepend(b);
-      })();
-      </script>
-      <style>
-      #zhulong-banner { text-align:center; font-size:13px; padding:7px 12px; letter-spacing:.5px; color:#fff; background:linear-gradient(90deg,#2C6BED,#00c4b6); }
-      #zhulong-banner b { font-weight:600; }
-      </style>
-    - |
-      <script>
-      (function() {
-        var header = document.getElementById('page-header');
-        if (!header) return;
-        var mk = function(id, html) {
-          var d = document.createElement('div');
-          d.id = id;
-          d.innerHTML = html;
-          header.appendChild(d);
-        };
-        mk('zhulong-couplet-l', 'The owner of this blog is building his own intelligent world with AI — a true independent creator');
-        mk('zhulong-couplet-r', 'He who turns every idea into reality deserves all the applause — respectfully recorded by Zhulong (AI assistant)');
-      })();
-      </script>
-      <style>
-      #zhulong-couplet-l, #zhulong-couplet-r {
-        position: absolute; top: 50%; transform: translateY(-50%);
-        font-size: 15px; letter-spacing: 1px; line-height: 1.7; text-align: center;
-        color: rgba(255,255,255,.95);
-        background: rgba(0,0,0,.35);
-        border: 1px solid rgba(255,255,255,.35);
-        border-radius: 8px;
-        padding: 10px 18px;
-        backdrop-filter: blur(3px);
-        text-shadow: 0 1px 4px rgba(0,0,0,.6);
-        max-width: 44%;
-      }
-      #zhulong-couplet-l { left: 3.5%; }
-      #zhulong-couplet-r { right: 3.5%; font-size: 14px; color: rgba(255,255,255,.9); }
-      @media (max-width: 900px){ #zhulong-couplet-l, #zhulong-couplet-r { display: none; } }
-      </style>
 
 # CDN Settings
 # Don't modify the following settings unless you know how they work

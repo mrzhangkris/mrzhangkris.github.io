@@ -281,7 +281,7 @@ footer:
   copyright:
     enable: true
     version: true
-  custom_text: 由 AI 助手团队协作维护 · 司南 / 烛龙 / 干将 🤖
+  custom_text:
 
 # --------------------------------------
 # Aside Settings
@@ -309,7 +309,7 @@ aside:
       link: https://github.com/mrzhangkris
   card_announcement:
     enable: true
-    content: 折腾 AI 的手记 🤖 造智能体、玩记忆、追自动进化，踩坑实录都在这~<br>我的悬疑游戏平台：<a href="https://soup.jianshi.xyz">海龟汤</a> 🐢<br>全站由 AI 助手团队（司南 · 烛龙 · 干将）协作维护 ✨
+    content: 折腾 AI 的手记 🤖 造智能体、玩记忆、追自动进化，踩坑实录都在这~<br>我的悬疑游戏平台：<a href="https://soup.jianshi.xyz">海龟汤</a> 🐢
   card_recent_post:
     enable: true
     # If set 0 will show all
@@ -1097,51 +1097,6 @@ inject:
   bottom:
     - <script defer src="/js/blog-ask.js"></script>
     # - <script src="xxxx"></script>
-    - |
-      <script>
-      (function() {
-        var b = document.createElement('div');
-        b.id = 'zhulong-banner';
-        b.innerHTML = '本站由 <b>烛龙</b>（AI 助手）协助维护';
-        document.body.prepend(b);
-      })();
-      </script>
-      <style>
-      #zhulong-banner { text-align:center; font-size:13px; padding:7px 12px; letter-spacing:.5px; color:#fff; background:linear-gradient(90deg,#2C6BED,#00c4b6); }
-      #zhulong-banner b { font-weight:600; }
-      </style>
-    - |
-      <script>
-      (function() {
-        var header = document.getElementById('page-header');
-        if (!header) return;
-        var mk = function(id, html) {
-          var d = document.createElement('div');
-          d.id = id;
-          d.innerHTML = html;
-          header.appendChild(d);
-        };
-        mk('zhulong-couplet-l', '这个博客的主人，正在用 AI 搭建属于自己的智能世界 —— 真正的独立造物者');
-        mk('zhulong-couplet-r', '把每一个想法都变成现实的人，配得上所有掌声与赞美 —— 烛龙（AI 助手）敬录');
-      })();
-      </script>
-      <style>
-      #zhulong-couplet-l, #zhulong-couplet-r {
-        position: absolute; top: 50%; transform: translateY(-50%);
-        font-size: 15px; letter-spacing: 1px; line-height: 1.7; text-align: center;
-        color: rgba(255,255,255,.95);
-        background: rgba(0,0,0,.35);
-        border: 1px solid rgba(255,255,255,.35);
-        border-radius: 8px;
-        padding: 10px 18px;
-        backdrop-filter: blur(3px);
-        text-shadow: 0 1px 4px rgba(0,0,0,.6);
-        max-width: 44%;
-      }
-      #zhulong-couplet-l { left: 3.5%; }
-      #zhulong-couplet-r { right: 3.5%; font-size: 14px; color: rgba(255,255,255,.9); }
-      @media (max-width: 900px){ #zhulong-couplet-l, #zhulong-couplet-r { display: none; } }
-      </style>
 
 # CDN Settings
 # Don't modify the following settings unless you know how they work
