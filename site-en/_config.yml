@@ -6,7 +6,9 @@
 # Site
 title: Zhang Peng's Blog
 subtitle: Ops in Practice · Vibe Coding · Essays
-description: Zhang Peng's blog: 96 hands-on ops notes re-tested from CentOS 7 to Rocky 9, and 28 write-ups on building things that actually run with AI.
+# 说明：值里含「: 」（冒号+空格）时必须加引号，否则 js-yaml 直接解析失败。
+# 该错误曾导致英文站 Actions 构建整体挂掉（exit code 2）。
+description: "Zhang Pengs blog: 96 hands-on ops notes re-tested from CentOS 7 to Rocky 9, and 28 write-ups on building things with AI that actually run."
 keywords:
   - Zhang Peng
   - blog

@@ -1,34 +1,45 @@
 #!/usr/bin/env bash
-# pre-commit —— 提交前跑 diff_guard 闸门
+# pre-commit —— 提交前跑两道闸门
 #
-# 拦截「内容只改一处、整份文件全被标记改动」的格式漂移。2026-10-07 实测教训：
-# 用 Python 改一个 CRLF 行尾的 yaml，write 默认写 LF，1214 行全变，
-# 真正的 3 行改动被噪音淹没，提交完全无法 review。
+# 1. checks/diff_guard.py —— 格式漂移
+#    拦截「内容只改一处、整份文件全被标记改动」。2026-10-07 实测教训：用
+#    Python 改一个 CRLF 行尾的 yaml，write 默认写 LF，1214 行全变，真正的
+#    3 行改动被噪音淹没，提交完全无法 review。
+#
+# 2. checks/yaml_lint.py —— YAML 可解析性
+#    2026-10-07 同日两次踩坑：link.yml 的 descr 与 _config.yml 的
+#    description 都含「: 」（冒号+空格）未加引号，一次让友链页渲染成空
+#    容器，一次直接让 Actions 英文站构建 exit code 2。中文全角「：」不算
+#    指示符，所以中文版没事、英文版炸——只在构建环节才暴露。
 #
 # 本钩子在 .githooks/（随 git 跟踪），由 core.hooksPath 指向；
 # clone 后执行 `git config core.hooksPath .githooks` 即可启用。
 #
-# 绕过（仅在确认是整文件重写/批量替换时）：git commit --no-verify
+# 绕过（仅在确认无误时）：git commit --no-verify
 
 set -uo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GUARD="$REPO_ROOT/checks/diff_guard.py"
-
-if [ ! -f "$GUARD" ]; then
-  echo "pre-commit: 找不到 $GUARD，跳过 diff_guard" >&2
-  exit 0
-fi
+YAML_LINT="$REPO_ROOT/checks/yaml_lint.py"
 
 if ! command -v python3 >/dev/null 2>&1; then
-  echo "pre-commit: 无 python3，跳过 diff_guard" >&2
+  echo "pre-commit: 无 python3，跳过两道闸门" >&2
   exit 0
 fi
 
-python3 "$GUARD" --staged
-rc=$?
+rc=0
 
-# python3 缺失时脚本返回 0；只有真正检出问题时才阻断
-if [ $rc -eq 0 ]; then
-  exit 0
-fi
+for check in "$GUARD" "$YAML_LINT"; do
+  if [ ! -f "$check" ]; then
+    echo "pre-commit: 找不到 $check，跳过" >&2
+    continue
+  fi
+  echo "--- $(basename "$check") ---"
+  python3 "$check" --staged
+  c=$?
+  if [ $c -ne 0 ]; then
+    rc=$c
+  fi
+done
+
 exit $rc
