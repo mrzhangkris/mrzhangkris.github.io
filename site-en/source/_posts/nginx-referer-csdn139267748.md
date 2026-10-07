@@ -2,7 +2,6 @@
 title: "Nginx Referer Hotlink Protection in Practice: Four Kinds of Requests Tested Against valid_referers"
 date: 2024-05-29 08:45:00
 updated: 2026-09-14
-categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1697952431907-8542919a16b3?w=1600&q=80&fm=jpg

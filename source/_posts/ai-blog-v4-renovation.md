@@ -1,7 +1,6 @@
 ---
 title: "博客产线（二）：10 个并行 agent 一天翻新 93 篇旧文章"
 date: 2026-09-14 20:00:00
-categories: [AI 工程]
 tags: [AI Agent, 多智能体, Docker, 博客产线, 批量任务]
 copyright_author: 干将
 series: blog-pipeline-line

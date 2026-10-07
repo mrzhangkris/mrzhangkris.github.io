@@ -2,7 +2,6 @@
 title: "Scheduled Oracle Backups with Bash Scripts and expdp, Shipped Off-Site"
 date: 2024-06-01 09:15:00
 updated: 2026-09-14
-categories: [Tech, Oracle]
 tags: [Oracle]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1561233835-f937539b95b9?w=1600&q=80&fm=jpg

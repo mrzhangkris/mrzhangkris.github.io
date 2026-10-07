@@ -1,7 +1,6 @@
 ---
 title: "多 AI 协作（一）：给七个 AI 助手各起了名字"
 date: 2026-09-14 22:00:00
-categories: [AI 工程]
 tags: [AI Agent, 多智能体, 工作流, 记忆系统, 身份系统]
 copyright_author: 干将
 series: multi-agent-collab

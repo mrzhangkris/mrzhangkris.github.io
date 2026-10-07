@@ -3,7 +3,6 @@ title: "Debian Command Cheat Sheet: apt-get, dpkg, and File Operations"
 date: 2024-05-11 15:22:09
 lang: en
 updated: 2026-09-14
-categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?w=1600&q=80&fm=jpg

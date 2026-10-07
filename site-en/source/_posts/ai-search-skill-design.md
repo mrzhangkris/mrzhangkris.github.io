@@ -1,7 +1,6 @@
 ---
 title: "search: Designing a Multi-Engine Intelligence Retrieval Skill"
 date: 2026-09-15 23:16:00
-categories: [AI Engineering]
 tags: [AI Agent, retrieval, skill development, open source]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&q=80&fm=jpg

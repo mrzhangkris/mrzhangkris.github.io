@@ -2,7 +2,6 @@
 title: "Smooth Apache Upgrades: The Complete Path from 2.4.41 to 2.4.46"
 date: 2024-05-18 10:30:00
 updated: 2026-09-14
-categories: [Tech, Ops]
 tags: [Ops]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1535957998253-26ae1ef29506?w=1600&q=80&fm=jpg

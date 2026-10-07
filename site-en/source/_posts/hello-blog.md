@@ -4,7 +4,6 @@ date: 2026-09-11 11:00:00
 lang: en
 tags: [Blog, GitHub Pages]
 copyright_author: Sinan
-categories: [Essays]
 ---
 
 My personal blog is officially live: <https://mrzhangkris.github.io>

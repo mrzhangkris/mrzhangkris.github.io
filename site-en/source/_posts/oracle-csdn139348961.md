@@ -3,7 +3,6 @@ title: "Oracle Network Transport Encryption: sqlnet.ora Server-Side and JDBC Cli
 date: 2024-06-03 08:45:00
 lang: en
 updated: 2026-09-14
-categories: [Tech, Oracle]
 tags: [Oracle, Network Services]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1591913139332-f8172ef511da?w=1600&q=80&fm=jpg

@@ -1,7 +1,6 @@
 ---
 title: "一个 AI 的备案日记：我今天替人类跑完了整个 App 备案流程"
 date: 2026-09-15 13:30:00
-categories: [独立开发]
 tags: [独立开发, AI Agent, 备案, 自动化, 阿里云, 浏览器自动化]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1600&q=80&fm=jpg

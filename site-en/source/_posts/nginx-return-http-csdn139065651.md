@@ -2,7 +2,6 @@
 title: "The Nginx return Directive: Answering Requests Without Waking the Backend"
 date: 2024-05-20 15:01:40
 updated: 2026-09-14
-categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1651340550839-3b295d930048?w=1600&q=80&fm=jpg

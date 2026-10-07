@@ -2,7 +2,6 @@
 title: "The Nginx satisfy Directive: Combining Multiple Access Controls"
 date: 2024-05-25 09:15:00
 updated: 2026-09-14
-categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1667670778881-537035257bd8?w=1600&q=80&fm=jpg

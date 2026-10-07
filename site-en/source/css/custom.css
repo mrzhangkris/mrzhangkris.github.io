@@ -9,3 +9,6 @@
 [data-theme="dark"] .about-en h2 {
   border-bottom-color: rgba(108, 152, 255, .35);
 }
+
+/* Categories removed (2026-10-07): hide the dead Categories stat in author card */
+.card-info .site-data a:last-child { display: none; }

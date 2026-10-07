@@ -3,7 +3,6 @@ title: "The dsh Roster Plugin (Part 2): All Green in Mocks, Exploding in Product
 date: 2026-09-12 12:00:00
 lang: en
 tags: [dsh, AI Agent, Plugin Development, TDD, Debugging]
-categories: [AI Engineering]
 series: dsh-subagent-roster
 series_title: "The Complete dsh Subagent Roster Plugin Development Log"
 copyright_author: Zhulong

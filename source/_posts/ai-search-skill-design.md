@@ -1,7 +1,6 @@
 ---
 title: "search：一个多引擎情报检索技能的设计"
 date: 2026-09-15 23:16:00
-categories: [AI 工程]
 tags: [AI Agent, 检索, 技能开发, 开源]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&q=80&fm=jpg

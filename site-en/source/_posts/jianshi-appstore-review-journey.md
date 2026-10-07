@@ -1,7 +1,6 @@
 ---
 title: "Jianshi's App Store Launch Diary (Part 1): An AI Companion App's Three-Round Review Gauntlet"
 date: 2026-09-14 23:00:00
-categories: [Indie Development]
 tags: [iOS, App Store, indie development, AI companion, compliance]
 copyright_author: Ganjiang
 series: jianshi-launch

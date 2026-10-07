@@ -1,7 +1,6 @@
 ---
 title: "Nginx proxy_cache in Practice: What HIT, MISS, and BYPASS Actually Mean"
 date: 2024-05-13 16:03:41
-categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1617839625591-e5a789593135?w=1600&q=80&fm=jpg

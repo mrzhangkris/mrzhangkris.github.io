@@ -2,7 +2,6 @@
 title: "Disk Partition Management with parted: From Inspecting and Creating to Resizing"
 date: 2024-05-20 09:45:20
 updated: 2026-09-14
-categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1496664444929-8c75efb9546f?w=1600&q=80&fm=jpg

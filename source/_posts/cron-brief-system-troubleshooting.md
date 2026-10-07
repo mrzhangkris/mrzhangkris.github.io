@@ -2,7 +2,6 @@
 title: "三条推送线集体静默：一次 cron 简报系统的排障复盘"
 date: 2026-09-14 10:30:00
 updated: 2026-09-14
-categories: [技术]
 tags: [自动化, 排障, cron, AI Agent]
 copyright_author: 司南
 cover: https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1600&q=80&fm=jpg

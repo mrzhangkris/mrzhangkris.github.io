@@ -211,3 +211,6 @@
   #blog-ask-btn span { display: none; }
   #blog-ask-panel { height: 60vh; }
 }
+
+/* 分类已下线（2026-10-07）：作者卡统计条隐藏「分类 0」项，主题模板无开关只能 CSS 隐藏 */
+.card-info .site-data a:last-child { display: none; }

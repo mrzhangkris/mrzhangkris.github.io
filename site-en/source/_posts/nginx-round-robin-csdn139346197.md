@@ -3,7 +3,6 @@ title: "Nginx Round-Robin Load Balancing: Testing the Default Strategy and Its B
 date: 2024-05-31 10:37:01
 lang: en
 updated: 2026-09-14
-categories: [Tech, Nginx]
 tags: [Nginx, Network Services]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=1600&q=80&fm=jpg

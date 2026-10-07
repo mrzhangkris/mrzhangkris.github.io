@@ -3,7 +3,6 @@ title: "Restricting IP Access in Nginx: allow and deny"
 date: 2024-05-23 16:58:55
 lang: en
 updated: 2026-09-14
-categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1592659762303-90081d34b277?w=1600&q=80&fm=jpg

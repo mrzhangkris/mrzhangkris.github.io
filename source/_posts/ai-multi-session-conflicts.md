@@ -1,7 +1,6 @@
 ---
 title: "多 AI 协作（二）：同一台 Mac 上的多个 AI 会话，怎么不打架"
 date: 2026-09-14 22:30:00
-categories: [AI 工程]
 tags: [AI Agent, 多智能体, 工程治理, 工作流]
 copyright_author: 干将
 series: multi-agent-collab

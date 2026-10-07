@@ -2,7 +2,6 @@
 title: "dsh 花名册插件（一）：从「派不出名字」到七将齐全"
 date: 2026-09-12 10:00:00
 tags: [dsh, AI Agent, 插件开发, 多智能体]
-categories: [AI 工程]
 series: dsh-subagent-roster
 series_title: "dsh 花名册插件开发全记录"
 copyright_author: 烛龙

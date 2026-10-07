@@ -2,7 +2,6 @@
 title: "Nginx HTTPS with IP Access Denied: default_server Rejects the Handshake"
 date: 2024-05-14 08:30:00
 updated: 2026-09-14
-categories: [Tech, Nginx]
 lang: en
 tags: [Nginx]
 copyright_author: Ganjiang

@@ -3,7 +3,6 @@ title: "Essential Linux Commands: ls, cd, mkdir, rm, cp (Tested on Rocky Linux 9
 date: 2024-05-11 14:41:31
 lang: en
 updated: 2026-09-14
-categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=1600&q=80&fm=jpg

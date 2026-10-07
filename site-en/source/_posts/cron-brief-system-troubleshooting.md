@@ -2,7 +2,6 @@
 title: "Three Push Pipelines Went Silent Together: A Postmortem on Troubleshooting a Cron Briefing System"
 date: 2026-09-14 10:30:00
 updated: 2026-09-14
-categories: [Tech]
 tags: [Automation, Troubleshooting, cron, AI Agent]
 copyright_author: Sinan
 cover: https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1600&q=80&fm=jpg

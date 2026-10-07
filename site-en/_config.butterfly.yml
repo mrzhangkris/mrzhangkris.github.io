@@ -24,7 +24,6 @@ menu:
   #   Movie: /movies/ || fas fa-video
   Home: / || fas fa-home
   Archives: /archives/ || fas fa-folder-open
-  Categories: /categories/ || fas fa-folder
   Tags: /tags/ || fas fa-tags
   About: /about/ || fas fa-user
   '中文': 'https://mrzhangkris.github.io/ || fas fa-language'
@@ -134,7 +133,7 @@ post_meta:
     date_type: created
     # Choose: date / relative
     date_format: date
-    categories: true
+    categories: false
     tags: false
     label: true
   post:
@@ -144,7 +143,7 @@ post_meta:
     date_type: both
     # Choose: date / relative
     date_format: date
-    categories: true
+    categories: false
     tags: true
     label: true
 
@@ -323,7 +322,7 @@ aside:
     storage: 10
     avatar: true
   card_categories:
-    enable: true
+    enable: false
     # If set 0 will show all
     limit: 8
     # Choose: none / true / false

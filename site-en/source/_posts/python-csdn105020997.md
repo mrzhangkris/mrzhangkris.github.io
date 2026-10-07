@@ -2,7 +2,6 @@
 title: "Reading Subprocess Output in Real Time with Python: the -u Flag and flush=True"
 date: 2020-03-22 11:46:08
 updated: 2026-09-14
-categories: [Tech, Python]
 tags: [Python]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1605436247078-f0ef43ee8d5c?w=1600&q=80&fm=jpg

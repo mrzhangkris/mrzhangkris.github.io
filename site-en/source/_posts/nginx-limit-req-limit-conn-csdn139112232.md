@@ -3,7 +3,6 @@ title: "Nginx Rate Limiting in Practice: limit_req and limit_conn — When They 
 date: 2024-05-22 10:06:41
 lang: en
 updated: 2026-09-14
-categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1580584126903-c17d41830450?w=1600&q=80&fm=jpg

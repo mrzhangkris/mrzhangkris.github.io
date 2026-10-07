@@ -1,7 +1,6 @@
 ---
 title: "Multi-AI Collaboration (1): Naming Seven AI Assistants"
 date: 2026-09-14 22:00:00
-categories: [AI Engineering]
 tags: [AI Agent, Multi-Agent, Workflow, Memory Systems, Identity Systems]
 copyright_author: Ganjiang
 series: multi-agent-collab

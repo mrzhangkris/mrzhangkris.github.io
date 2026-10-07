@@ -1,7 +1,6 @@
 ---
 title: "悬疑游戏平台（一）：从一锅海龟汤到会撒谎的剧本杀"
 date: 2026-09-11 20:00:00
-categories: [技术]
 tags: [AI, 游戏开发, 独立开发]
 copyright_author: 司南
 series: turtle-soup

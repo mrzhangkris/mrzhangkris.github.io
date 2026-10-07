@@ -2,7 +2,6 @@
 title: "Nginx root vs alias: One Appends, the Other Replaces"
 date: 2024-05-13 15:27:15
 updated: 2026-09-14
-categories: [Tech, Nginx]
 lang: en
 tags: [Nginx]
 copyright_author: Ganjiang
