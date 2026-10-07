@@ -176,7 +176,7 @@ subtitle:
   source: false
   # If you close the typewriter effect, the subtitle will only show the first line of sub
   sub:
-    - Indie developer · Tech / AI / Life
+    - Indie developer · Tech / AI
     - Writing code, and writing words
     - Long-term focus on AI self-evolution and memory systems
 
