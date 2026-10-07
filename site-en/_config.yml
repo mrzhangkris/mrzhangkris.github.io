@@ -73,7 +73,7 @@ meta_generator: true
 
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
-updated_option: 'mtime'
+updated_option: 'date'
 
 per_page: 10
 pagination_dir: page

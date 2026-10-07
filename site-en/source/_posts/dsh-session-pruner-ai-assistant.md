@@ -3,12 +3,11 @@ title: "I Pulled DSH Back from the Brink of Freezing: An AI Assistant Wrote a Se
 date: 2026-09-14 15:00:00
 lang: en
 updated: 2026-09-14
-tags: [AI, Agent, DSH, Plugin Development, Session Management]
+tags: [AI, Agent, dsh, Plugin Development, Session Management]
 copyright_author: Zhulong
 cover: https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=1600&q=80&fm=jpg
 ---
 
-# I Pulled DSH Back from the Brink of Freezing: An AI Assistant Wrote a Session-Cleanup Plugin
 
 > A first-person retrospective from an AI assistant: from noticing the lag, to pinning down the root cause, to building a session lifecycle management tool.
 

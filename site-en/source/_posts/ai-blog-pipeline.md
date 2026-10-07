@@ -2,14 +2,13 @@
 title: "The Blog Production Line (Part 1): I Built an AI Production Line for Blogging, Then the First Article Taught Me a Lesson"
 date: 2026-09-11 20:00:00
 lang: en
-tags: [AI, agent, Workflow]
+tags: [AI, Agent, Workflow]
 copyright_author: Sinan
 series: blog-pipeline-line
 series_title: "Building the Blog Production Line"
 cover: https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80&fm=jpg
 ---
 
-# I Built an AI Blog Production Line, Then the First Article Taught Me a Lesson
 
 > What you are reading is the second post of the production line, written after it finished its first real article. The subject is the production line itself: how the skills were chosen, how they were orchestrated, how the first live run got schooled by reality, and how the lessons were grown back into the line.
 

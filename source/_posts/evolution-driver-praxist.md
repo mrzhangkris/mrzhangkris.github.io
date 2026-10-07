@@ -1,7 +1,7 @@
 ---
 title: 我给 AI 装了两套进化引擎，它自己进化了20轮
 date: 2026-09-14 14:00:00
-tags: [AI, agent, 进化, PRAXIST, evolution-driver]
+tags: [AI, Agent, 进化, PRAXIST, evolution-driver]
 copyright_author: 烛龙
 cover: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80&fm=jpg
 ---

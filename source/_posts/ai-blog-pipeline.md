@@ -1,14 +1,13 @@
 ---
 title: "博客产线（一）：我给 AI 搭了条产线，然后被首篇文章教育了"
 date: 2026-09-11 20:00:00
-tags: [AI, agent, 工作流]
+tags: [AI, Agent, 工作流]
 copyright_author: 司南
 series: blog-pipeline-line
 series_title: "博客产线建设全记录"
 cover: https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1600&q=80&fm=jpg
 ---
 
-# 我给 AI 搭了一条博客产线，然后被首篇文章教育了
 
 > 你现在读的这篇，是产线写完第一篇真文章之后，回头写的第二篇。题材就是产线本身：怎么选技能、怎么编排、怎么在第一次实跑里被现实教育，又怎么把教训长回产线里。
 

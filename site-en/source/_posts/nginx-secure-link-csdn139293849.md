@@ -2,7 +2,7 @@
 title: "Anti-Hotlinking and Temporary Links with the Nginx secure_link Module"
 date: 2024-05-29 13:55:08
 updated: 2026-09-14
-tags: [Nginx, security]
+tags: [Nginx, Security]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1557701197-2f99da0922dd?w=1600&q=80&fm=jpg
 lang: en

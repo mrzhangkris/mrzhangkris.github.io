@@ -1,7 +1,7 @@
 ---
 title: "A Mystery Game Platform (Part 1): From a Pot of Turtle Soup to Murder-Mystery Scripts Where the AI Lies"
 date: 2026-09-11 20:00:00
-tags: [AI, Game Development, Indie Development]
+tags: [AI, Game Development, indie development]
 copyright_author: Sinan
 series: turtle-soup
 series_title: "The Full Record of the Turtle Soup Mystery Game Platform"

@@ -11,7 +11,7 @@ cover: https://images.unsplash.com/photo-1667984390553-7f439e6ae401?w=1600&q=80&
 
 相关文档：
 
-- 远程执行文档：https://docs.saltstack.com/en/latest/topics/tutorials/modules.html
+- 远程执行文档：https://docs.saltproject.io/en/latest/topics/tutorials/modules.html
 - 指定目标文档：https://docs.saltproject.io/en/latest/topics/targeting/index.html
 - 执行模块文档：https://docs.saltproject.io/en/latest/ref/modules/all/index.html
 - 返回模块文档：https://docs.saltproject.io/en/latest/ref/returners/all/index.html

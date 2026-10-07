@@ -1,7 +1,7 @@
 ---
 title: "Teaching AI to Read the Host: The Design and Value of dsh-dev MCP"
 date: 2026-09-15 23:12:00
-tags: [dsh, MCP, plugin development, documentation engineering]
+tags: [dsh, MCP, Plugin Development, documentation engineering]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1550439062-609e1531270e?w=1600&q=80&fm=jpg
 lang: en

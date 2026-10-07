@@ -1,7 +1,7 @@
 ---
 title: I Gave My AI Two Evolution Engines, and It Evolved Itself Through 20 Rounds
 date: 2026-09-14 14:00:00
-tags: [AI, agent, evolution, PRAXIST, evolution-driver]
+tags: [AI, Agent, evolution, PRAXIST, evolution-driver]
 copyright_author: Zhulong
 cover: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80&fm=jpg
 lang: en
