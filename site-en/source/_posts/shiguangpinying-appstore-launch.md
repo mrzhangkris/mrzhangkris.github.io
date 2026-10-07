@@ -19,6 +19,12 @@ That red line is not purism — it's positioning. Look where this category is he
 
 There are eight modes now: free canvas, smart layout, stitch, 3D pop-out, templates, couple wallpapers, memes, and stickers. The pipeline is simple: photo → one-tap enhance (on-device) → layout and export. Pro unlocks all templates and HD export at ¥12/month, ¥68/year, or a ¥98 lifetime purchase, with a free trial on first launch.
 
+![Purely Collage on iPad: the eight mode entries and the Pro paywall with an itemized free-vs-Pro comparison](/img/shiguangpinying-appstore-launch/01-ipad-home-pro.png)
+
+The most-used mode is Free Canvas: drag, pinch to scale, with transparent PNG export that covers sticker and design workflows too.
+
+![Free Canvas: a six-slot drag-and-drop grid with transparent PNG export](/img/shiguangpinying-appstore-launch/02-free-canvas.png)
+
 ## Five submissions, four rejections: round by round
 
 **Round 1 (submitted 9/26): a 2.1 information request.** Stopped before review even started, asked to fill in information. Routine, I thought — the hard part would be the product itself. That was naive.
@@ -32,6 +38,8 @@ There are eight modes now: free canvas, smart layout, stitch, 3D pop-out, templa
 **Round 5 (same day, everything fixed and resubmitted): approved on 10/6.** The final submission contained "5 items": the app version itself + non-consumable + two subscriptions + the subscription group, all bound together, passed in one go.
 
 The biggest takeaway after five rounds: **most rejection causes are not in your code — they live in the cracks between metadata and IAP configuration.** One phrase in a subtitle, one empty field in a subscription group, one unchecked "submit with version" box — any of them is enough to keep the best product outside the door. Apple's review checklist is deterministic; manage it like a spec instead of praying about it like luck.
+
+![App Store review timeline: five submissions, four rejections, Sep 26 to Oct 6](/img/shiguangpinying-appstore-launch/03-review-timeline.png)
 
 ## Two things we cut, and why
 
