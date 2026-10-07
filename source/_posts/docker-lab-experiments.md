@@ -1,7 +1,7 @@
 ---
 title: "把 Docker 容器当实验田：批量实测的玩法与心得"
 date: 2026-09-15 23:22:00
-categories: [运维实战]
+categories: [技术]
 tags: [Docker, 实验环境, 运维, 自动化]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&q=80&fm=jpg

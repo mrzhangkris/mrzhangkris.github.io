@@ -1,7 +1,7 @@
 ---
 title: "插件之间怎么对话：rpc-bridge 与跨件联动的契约坑"
 date: 2026-09-15 23:14:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [dsh, 插件开发, 架构设计, 排错]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1600&q=80&fm=jpg

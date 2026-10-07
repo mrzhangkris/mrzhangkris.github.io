@@ -1,7 +1,7 @@
 ---
 title: "小说产线的角色们：给 AI 流水线配一套神话班底"
 date: 2026-09-15 23:24:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [AI 写作, Agent, 技能开发]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1600&q=80&fm=jpg

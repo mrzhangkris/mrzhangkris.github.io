@@ -2,7 +2,7 @@
 title: Restricting User Command Execution with rbash (the Restricted Shell)
 date: 2024-05-20 09:15:00
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1510519138101-570d1dca3d66?w=1600&q=80&fm=jpg

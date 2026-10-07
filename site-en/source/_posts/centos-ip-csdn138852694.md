@@ -3,7 +3,7 @@ title: "Static IP and Multi-NIC Routing Policies on Rocky Linux 9 (with CentOS 7
 date: 2024-05-16 08:30:00
 updated: 2026-09-14
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1610563166150-b34df4f3bcd6?w=1600&q=80&fm=jpg

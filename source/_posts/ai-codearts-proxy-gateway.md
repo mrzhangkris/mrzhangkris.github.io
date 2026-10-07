@@ -1,7 +1,7 @@
 ---
 title: "codearts-proxy：把三家云的免费模型额度拧成一个本地接口"
 date: 2026-09-26 23:30:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [代理, API, 华为云, 腾讯云, Node.js]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=1600&q=80&fm=jpg

@@ -1,7 +1,7 @@
 ---
 title: "让 AI 读懂宿主：dsh-dev MCP 的设计与价值"
 date: 2026-09-15 23:12:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [dsh, MCP, 插件开发, 文档工程]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1550439062-609e1531270e?w=1600&q=80&fm=jpg

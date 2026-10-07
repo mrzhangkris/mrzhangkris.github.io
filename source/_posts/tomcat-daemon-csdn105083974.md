@@ -2,7 +2,7 @@
 title: "Tomcat 以 daemon 模式启动（jsvc）：Rocky Linux 9 实测"
 date: 2020-03-25 01:04:21
 updated: 2026-09-14
-categories: [运维实战]
+categories: [技术, Tomcat]
 tags: [Tomcat]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1519086588705-c935fdedcc14?w=1600&q=80&fm=jpg
@@ -42,7 +42,7 @@ useradd -g tomcat -s /usr/sbin/nologin tomcat
 
 ```bash
 cd /opt
-wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.121/bin/apache-tomcat-9.0.121.tar.gz
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.121/bin/apache-tomcat-9.0.121.tar.gz
 tar -zxf apache-tomcat-9.0.121.tar.gz
 ```
 

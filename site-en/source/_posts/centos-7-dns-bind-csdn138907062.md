@@ -3,7 +3,7 @@ title: "Setting Up a BIND DNS Server on Rocky Linux 9: Forward and Reverse Resol
 date: 2024-05-19 09:30:00
 updated: 2026-09-14
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Network Services]
 tags: [Network Services]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1518181835702-6eef8b4b2113?w=1600&q=80&fm=jpg

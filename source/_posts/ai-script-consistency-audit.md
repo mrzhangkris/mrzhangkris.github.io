@@ -1,7 +1,7 @@
 ---
 title: "悬疑游戏平台（二）：AI 写剧本杀，难的不是写，是对得上"
 date: 2026-09-11 20:30:00
-categories: [Vibe Coding]
+categories: [技术]
 tags: [AI, 游戏开发, 质量工程]
 copyright_author: 司南
 series: turtle-soup

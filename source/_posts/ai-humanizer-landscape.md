@@ -1,7 +1,7 @@
 ---
 title: "AI 味检测与去 AI 味：一条赛道的全景对照"
 date: 2026-09-15 23:18:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [AI 写作, 检测, humanizer, 选型对比]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1600&q=80&fm=jpg

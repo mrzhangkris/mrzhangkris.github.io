@@ -2,11 +2,11 @@
 title: "A/B Testing and Canary Releases with the Nginx split_clients Module"
 date: 2024-05-30 15:21:07
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, Nginx]
 lang: en
 tags: [Nginx]
 copyright_author: Ganjiang
-cover: https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600&q=80&fm=jpg
+cover: https://images.unsplash.com/photo-1496181133206-80ce9b88a851?w=1600&q=80&fm=jpg
 ---
 
 Is the new homepage design really better than the old one? Dare you ship the new feature to everyone at once? A/B testing and canary releases are two phrasings of the same question: how to split traffic into groups by proportion, and do it stably. Nginx's split_clients module (`ngx_http_split_clients_module`) handles this right at the access layer—hashing a user characteristic and slicing traffic by percentage, with no application code involved.

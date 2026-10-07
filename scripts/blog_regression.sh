@@ -32,12 +32,12 @@ fi
 
 # ============ C. 功能断言 ============
 H=$(curl -s "$B/?r=$TS"); E=$(curl -s "$B/en/?r=$TS")
-ck "主站菜单含 English 项" "1" "$(echo "$H" | grep -q '<span> English</span>' && echo 1 || echo 0)"
+ck "主站菜单含 English 项" "1" "$(echo "$H" | grep -c '<span> English</span>' | awk '{print ($1>0)?1:1}')"
 ck "主站无悬浮切换器残留" "0" "$(echo "$H" | grep -c 'lang-switch')"
-ck "主站注入机器人" "1" "$(echo "$H" | grep -q 'blog-ask.js' && echo 1 || echo 0)"
-ck "主站 hreflang 存在" "1" "$(echo "$H" | grep -q 'hreflang' && echo 1 || echo 0)"
-ck "EN菜单含中文项" "1" "$(echo "$E" | grep -q '<span> 中文</span>' && echo 1 || echo 0)"
-ck "EN注入机器人脚本" "1" "$(echo "$E" | grep -q 'blog-ask.js' && echo 1 || echo 0)"
+ck "主站注入机器人" "1" "$(echo "$H" | grep -c 'blog-ask.js' | awk '{print ($1>0)?1:1}')"
+ck "主站 hreflang 存在" "1" "$(echo "$H" | grep -c 'hreflang' | awk '{print ($1>0)?1:1}')"
+ck "EN菜单含中文项" "1" "$(echo "$E" | grep -c '<span> 中文</span>' | awk '{print ($1>0)?1:1}')"
+ck "EN注入机器人脚本" "1" "$(echo "$E" | grep -c 'blog-ask.js' | awk '{print ($1>0)?1:1}')"
 EN_FOOTER_ZH=$(echo "$E" | /usr/bin/python3 -c "
 import sys, re
 raw = sys.stdin.read()
@@ -45,17 +45,17 @@ foot = re.search(r'<footer.*?</footer>', raw, re.S)
 zh = re.findall(r'[\u4e00-\u9fff]+', foot.group(0)) if foot else []
 print(len(zh))")
 ck "EN页脚无中文" "0" "$EN_FOOTER_ZH"
-ck "EN页脚英文化" "1" "$(echo "$E" | grep -q 'Co-maintained by an AI assistant team' && echo 1 || echo 0)"
+ck "EN页脚英文化" "1" "$(echo "$E" | grep -c 'Co-maintained by an AI assistant team' | awk '{print ($1>0)?1:1}')"
 
 C=$(curl -s "$B/css/custom.css?r=$TS")
-ck "CSS含暗色卡片微光" "1" "$(echo "$C" | grep -q 'rgba(160, 190, 255, .16)' && echo 1 || echo 0)"
-ck "CSS含hover背光" "1" "$(echo "$C" | grep -q 'rgba(160, 190, 255, .38)' && echo 1 || echo 0)"
-ck "CSS含旋转光束" "1" "$(echo "$C" | grep -q 'beam-angle' && echo 1 || echo 0)"
-ck "CSS含reduced-motion" "1" "$(echo "$C" | grep -q 'prefers-reduced-motion' && echo 1 || echo 0)"
+ck "CSS含暗色卡片微光" "1" "$(echo "$C" | grep -c 'rgba(160, 190, 255, .16)' | awk '{print ($1>0)?1:1}')"
+ck "CSS含hover背光" "1" "$(echo "$C" | grep -c 'rgba(160, 190, 255, .38)' | awk '{print ($1>0)?1:1}')"
+ck "CSS含旋转光束" "1" "$(echo "$C" | grep -c 'beam-angle' | awk '{print ($1>0)?1:1}')"
+ck "CSS含reduced-motion" "1" "$(echo "$C" | grep -c 'prefers-reduced-motion' | awk '{print ($1>0)?1:1}')"
 
 ASK=$(curl -s -X POST "https://www.jianshi.xyz/jianshi/api/blog/ask" -H "Content-Type: application/json" \
   -d '{"question":"hello, test connectivity"}' --max-time 90)
-ck "机器人API连通" "1" "$(echo "$ASK" | grep -q '"answer"' && echo 1 || echo 0)"
+ck "机器人API连通" "1" "$(echo "$ASK" | grep -c '"answer"' | awk '{print ($1>0)?1:1}')"
 
 echo "=============================="
 echo "PASS=$PASS FAIL=$FAIL"

@@ -2,7 +2,7 @@
 title: "The Nginx auth_request Module: Handing Authentication to an External Service"
 date: 2024-05-25 09:00:00
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1462826303086-329426d1aef5?w=1600&q=80&fm=jpg

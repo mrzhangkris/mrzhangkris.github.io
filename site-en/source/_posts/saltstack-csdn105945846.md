@@ -2,7 +2,7 @@
 title: "SaltStack Remote Execution: Targeting, Common Modules, and Returners"
 date: 2020-05-06 10:55:52
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, SaltStack]
 tags: [SaltStack]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1667984390553-7f439e6ae401?w=1600&q=80&fm=jpg
@@ -13,7 +13,7 @@ Once SaltStack is installed, the thing you use most day to day is remote executi
 
 Related documentation:
 
-- Remote execution docs: https://docs.saltproject.io/en/latest/topics/tutorials/modules.html
+- Remote execution docs: https://docs.saltstack.com/en/latest/topics/tutorials/modules.html
 - Targeting docs: https://docs.saltproject.io/en/latest/topics/targeting/index.html
 - Execution module docs: https://docs.saltproject.io/en/latest/ref/modules/all/index.html
 - Returner docs: https://docs.saltproject.io/en/latest/ref/returners/all/index.html

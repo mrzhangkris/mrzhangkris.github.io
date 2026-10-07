@@ -2,7 +2,7 @@
 title: "Nginx index and autoindex Modules: Default Homepages and Directory Listings, Tested"
 date: 2024-05-27 10:44:21
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1562408590-e32931084e23?w=1600&q=80&fm=jpg

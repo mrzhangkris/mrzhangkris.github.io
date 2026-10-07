@@ -4,16 +4,13 @@
 
 # Site
 title: 张鹏的博客
-subtitle: 运维实战 · Vibe Coding · 随笔
-description: 张鹏的个人博客：96 篇 CentOS 7 到 Rocky 9 的运维实测（早期旧文逐篇重测），28 篇用 AI 把想法变成能跑的东西的全记录。
+subtitle: 独立开发者 · 技术 / AI / 日常
+description: 张鹏的个人博客，记录技术、AI 与日常的思考。
 keywords:
   - 张鹏
   - 博客
-  - 运维
-  - CentOS
-  - Rocky Linux
-  - Vibe Coding
-  - AI Agent
+  - AI
+  - 独立开发
 author: 张鹏
 language: zh-CN
 timezone: Asia/Shanghai
@@ -87,13 +84,7 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-# 2026-10-07 由 'mtime' 改为 'date'：
-#   原值 'mtime' 让未声明 updated: 的文章回落到文件 mtime，而 mtime 就是构建
-#   时刻——31 篇从未修订的文章因此显示假的「更新于 <部署日>」，每次部署都变。
-#   注意不能改 'empty'：Butterfly 的 post-info.pug 在 date_type: both 下
-#   无条件渲染 post-meta-date-updated，updated 为 undefined 时 date(undefined)
-#   返回当天，假日期照样出现（实测过）。'date' 让它回落到发布日期，稳定且真实。
-updated_option: 'date'
+updated_option: 'mtime'
 
 # Pagination
 ## Set per_page to 0 to disable pagination

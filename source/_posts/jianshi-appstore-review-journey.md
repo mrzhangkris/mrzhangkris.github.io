@@ -1,7 +1,7 @@
 ---
 title: "渐识上架记（一）：一个 AI 陪伴 App 的三轮审核闯关"
 date: 2026-09-14 23:00:00
-categories: [Vibe Coding]
+categories: [独立开发]
 tags: [iOS, App Store, 独立开发, AI 陪伴, 合规]
 copyright_author: 干将
 series: jianshi-launch

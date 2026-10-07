@@ -3,7 +3,7 @@ title: "Installing MySQL 8.0 on Rocky Linux 9 (with CentOS 7 / MySQL 5.7 Differe
 date: 2024-05-17 09:22:53
 lang: en
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, MySQL]
 tags: [MySQL]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1529078155058-5d716f45d604?w=1600&q=80&fm=jpg
@@ -72,7 +72,7 @@ FLUSH PRIVILEGES;
 SQL
 ```
 
-Tested: after this account logged in remotely (simulated with -h 127.0.0.1), `SHOW DATABASES` showed only `appdb` and `information_schema` — the grant boundary is the visibility boundary, so least privilege is directly verifiable:
+Tested: after this account logged in remotely (simulated with -h 127.0.0.1), `SHOW DATABASES` showed only `appdb` and the two built-in schemas — the grant boundary is the visibility boundary, so least privilege is directly verifiable:
 
 ![Figure 2](/images/csdn/figures/centos-7-mysql-csdn138905545-2.png)
 

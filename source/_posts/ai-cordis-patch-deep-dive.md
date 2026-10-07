@@ -1,7 +1,7 @@
 ---
 title: "cordis.patch.yml 与 bundle 机制：dsh 插件如何挂进宿主"
 date: 2026-09-15 23:10:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [dsh, 插件开发, 架构设计, 深度解析]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&q=80&fm=jpg

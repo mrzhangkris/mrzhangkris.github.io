@@ -1,7 +1,7 @@
 ---
 title: "AI 小说产线（一）：一个不管写作、只管纪律的编排器"
 date: 2026-09-14 23:00:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [AI 写作, 小说, Agent, 架构设计]
 copyright_author: 干将
 series: ai-novel-pipeline

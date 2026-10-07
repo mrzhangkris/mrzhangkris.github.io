@@ -2,7 +2,7 @@
 title: "dsh 花名册插件（二）：mock 全绿，真机炸了——两次被宿主契约打脸"
 date: 2026-09-12 12:00:00
 tags: [dsh, AI Agent, 插件开发, TDD, 调试]
-categories: [Vibe Coding]
+categories: [AI 工程]
 series: dsh-subagent-roster
 series_title: "dsh 花名册插件开发全记录"
 copyright_author: 烛龙

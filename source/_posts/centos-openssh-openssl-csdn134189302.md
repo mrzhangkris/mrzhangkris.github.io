@@ -2,7 +2,7 @@
 title: "源码编译 OpenSSH 9.5p1 与 OpenSSL 3.1.4：Rocky Linux 9 实测（附 CentOS 7 流程差异）"
 date: 2023-11-02 19:31:59
 updated: 2026-09-14
-categories: [运维实战]
+categories: [技术, Linux]
 tags: [Linux]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1608742213509-815b97c30b36?w=1600&q=80&fm=jpg
@@ -15,7 +15,7 @@ cover: https://images.unsplash.com/photo-1608742213509-815b97c30b36?w=1600&q=80&
 | 软件 | 版本 | 下载 |
 | --- | --- | --- |
 | OpenSSH | 9.5p1 | [官方 portable 页](https://www.openssh.com/portable.html)，[阿里云镜像](https://mirrors.aliyun.com/openssh/portable/) |
-| OpenSSL | 3.1.4 | [openssl-library.org/source](https://openssl-library.org/source/old/3.1/) |
+| OpenSSL | 3.1.4 | [openssl.org/source](https://www.openssl.org/source/old/3.1/) |
 
 前置条件清单：
 

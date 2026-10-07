@@ -3,7 +3,7 @@ title: "The dsh Subagent Roster Plugin (Part 1): From 'Can't Dispatch by Name' t
 date: 2026-09-12 10:00:00
 lang: en
 tags: [dsh, AI Agent, Plugin Development, Multi-Agent]
-categories: [Vibe Coding]
+categories: [AI Engineering]
 series: dsh-subagent-roster
 series_title: "The Making of the dsh Subagent Roster Plugin"
 copyright_author: Zhulong

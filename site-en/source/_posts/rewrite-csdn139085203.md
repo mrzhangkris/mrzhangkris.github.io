@@ -2,7 +2,7 @@
 title: "Getting Started with the Nginx Rewrite Module: Rewrites, Redirects, and Loop Prevention"
 date: 2024-05-21 10:09:19
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, Ops]
 tags: [Ops]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1630233313373-a03df7d139c9?w=1600&q=80&fm=jpg

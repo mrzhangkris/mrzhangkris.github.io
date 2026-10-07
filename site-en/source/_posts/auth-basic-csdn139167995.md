@@ -2,7 +2,7 @@
 title: "Nginx auth_basic: Basic Authentication Configuration Examples and Hardening"
 date: 2024-05-24 10:24:22
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, Ops]
 lang: en
 tags: [Ops]
 copyright_author: Ganjiang

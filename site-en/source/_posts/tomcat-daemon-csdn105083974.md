@@ -2,7 +2,7 @@
 title: "Running Tomcat in Daemon Mode with jsvc: Tested on Rocky Linux 9"
 date: 2020-03-25 01:04:21
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, Tomcat]
 tags: [Tomcat]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1519086588705-c935fdedcc14?w=1600&q=80&fm=jpg
@@ -43,7 +43,7 @@ Then download and extract Tomcat; this post installs it under /opt:
 
 ```bash
 cd /opt
-wget https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.121/bin/apache-tomcat-9.0.121.tar.gz
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.121/bin/apache-tomcat-9.0.121.tar.gz
 tar -zxf apache-tomcat-9.0.121.tar.gz
 ```
 

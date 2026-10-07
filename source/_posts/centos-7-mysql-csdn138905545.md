@@ -2,7 +2,7 @@
 title: "Rocky Linux 9 安装 MySQL 8.0（附 CentOS 7 / MySQL 5.7 差异）"
 date: 2024-05-17 09:22:53
 updated: 2026-09-14
-categories: [运维实战]
+categories: [技术, MySQL]
 tags: [MySQL]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1529078155058-5d716f45d604?w=1600&q=80&fm=jpg
@@ -71,7 +71,7 @@ FLUSH PRIVILEGES;
 SQL
 ```
 
-实测这个账号从远程（-h 127.0.0.1 模拟）登录后，`SHOW DATABASES` 只能看到 `appdb` 和 `information_schema`——授权边界即所见边界，最小权限是能被直接验证的：
+实测这个账号从远程（-h 127.0.0.1 模拟）登录后，`SHOW DATABASES` 只能看到 `appdb` 和两个自带 schema——授权边界即所见边界，最小权限是能被直接验证的：
 
 ![配图2](/images/csdn/figures/centos-7-mysql-csdn138905545-2.png)
 

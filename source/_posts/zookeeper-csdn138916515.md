@@ -2,7 +2,7 @@
 title: "ZooKeeper 集群部署：Rocky Linux 9 三节点实战（附 CentOS 7 差异）"
 date: 2024-05-21 09:15:02
 updated: 2026-09-14
-categories: [运维实战]
+categories: [技术, ZooKeeper]
 tags: [ZooKeeper]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1667984390533-64bdefe719ea?w=1600&q=80&fm=jpg
@@ -33,7 +33,7 @@ java -version
 
 ```bash
 # 本文版本 3.8.6（downloads 站 stable 目录）
-wget https://archive.apache.org/dist/zookeeper/zookeeper-3.8.6/apache-zookeeper-3.8.6-bin.tar.gz
+wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.8.6-bin.tar.gz
 tar -xzf apache-zookeeper-3.8.6-bin.tar.gz -C /opt
 mv /opt/apache-zookeeper-3.8.6-bin /opt/zookeeper
 ```

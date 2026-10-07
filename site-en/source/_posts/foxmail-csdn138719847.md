@@ -1,7 +1,7 @@
 ---
 title: "Foxmail Tips Roundup: Accounts, Filtering, and Productivity Settings"
 date: 2024-05-11 16:10:45
-categories: [Ops in Practice]
+categories: [Tech, Network Services]
 tags: [Network Services]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1761507320645-b11a00bfcc34?w=1600&q=80&fm=jpg

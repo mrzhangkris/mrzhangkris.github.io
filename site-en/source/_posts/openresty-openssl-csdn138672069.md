@@ -3,7 +3,7 @@ title: "OpenResty Build Fails to Find OpenSSL: Root Cause and Three Fixes"
 date: 2024-05-10 16:40:43
 updated: 2026-09-14
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1611677806845-363fccca2c51?w=1600&q=80&fm=jpg

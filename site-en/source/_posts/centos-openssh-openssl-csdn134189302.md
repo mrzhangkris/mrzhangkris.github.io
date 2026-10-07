@@ -3,7 +3,7 @@ title: "Compiling OpenSSH 9.5p1 and OpenSSL 3.1.4 from Source: Tested on Rocky L
 date: 2023-11-02 19:31:59
 updated: 2026-09-14
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1608742213509-815b97c30b36?w=1600&q=80&fm=jpg
@@ -16,7 +16,7 @@ When the system's built-in OpenSSH/OpenSSL is outdated and has known vulnerabili
 | Software | Version | Download |
 | --- | --- | --- |
 | OpenSSH | 9.5p1 | [official portable page](https://www.openssh.com/portable.html), [Aliyun mirror](https://mirrors.aliyun.com/openssh/portable/) |
-| OpenSSL | 3.1.4 | [openssl-library.org/source](https://openssl-library.org/source/old/3.1/) |
+| OpenSSL | 3.1.4 | [openssl.org/source](https://www.openssl.org/source/old/3.1/) |
 
 Prerequisites checklist:
 

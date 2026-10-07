@@ -2,7 +2,7 @@
 title: "Checking NIC Speed on Rocky Linux 9: ethtool, ifconfig, and nmcli"
 date: 2024-05-16 09:07:41
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1600&q=80&fm=jpg

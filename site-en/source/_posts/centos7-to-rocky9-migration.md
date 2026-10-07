@@ -3,7 +3,7 @@ title: "CentOS 7 End-of-Life Migration in Practice: The el7→el9 Difference Lis
 date: 2026-09-14 21:00:00
 lang: en
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech]
 tags: [Linux, CentOS, Rocky Linux, Migration, Ops]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1600&q=80&fm=jpg

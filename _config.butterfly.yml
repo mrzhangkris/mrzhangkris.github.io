@@ -179,9 +179,9 @@ subtitle:
   source: false
   # If you close the typewriter effect, the subtitle will only show the first line of sub
   sub:
-    - 运维实战 · Vibe Coding · 随笔
-    - CentOS 7 停服了，所以把旧文重测了一遍
-    - 也写用 AI 把想法变成能跑的东西
+    - 独立开发者 · 技术 / AI / 日常
+    - 写代码，也写文字
+    - 长期关注 AI 自动进化与记忆系统
 
 # Article layout on the homepage
 # 1: Cover on the left, info on the right
@@ -815,11 +815,6 @@ theme_color:
 # The user interface setting of category and tag page
 # Choose: index - same as Homepage UI / default - same as archives UI
 # leave it empty or index
-
-# 2026-10-07 实测：category_ui: index 会走带封面的网格，但丢掉「分类 - X」的
-# 页面标题，读者进分类页看不到自己在哪。保持默认的标题+分页列表模式。
-# 2026-10-07 实测：category_ui: index 会走带封面的网格，但丢掉「分类 - X」的
-# 页面标题，读者进分类页看不到自己在哪。保持默认的标题+分页列表模式。
 category_ui:
 tag_ui:
 

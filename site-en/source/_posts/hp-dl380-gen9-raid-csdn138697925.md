@@ -2,7 +2,7 @@
 title: "RAID on HP DL380 Gen9: Building Arrays and Setting the Boot Drive with SSA"
 date: 2024-05-11 09:08:16
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1650600538903-ec09f670c391?w=1600&q=80&fm=jpg

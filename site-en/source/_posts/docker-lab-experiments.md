@@ -1,7 +1,7 @@
 ---
 title: "Docker Containers as an Experimental Lab: A Playbook for Hands-On Batch Testing"
 date: 2026-09-15 23:22:00
-categories: [Ops in Practice]
+categories: [Tech]
 tags: [Docker, Lab Environment, Ops, Automation]
 lang: en
 copyright_author: Ganjiang

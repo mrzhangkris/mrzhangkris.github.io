@@ -3,7 +3,7 @@ title: "/proc/sys/vm/drop_caches Best Practices: Manually Dropping Kernel Caches
 date: 2024-05-18 10:00:00
 updated: 2026-09-14
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Linux]
 tags: [Linux]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1575318633968-0383e7d07ca0?w=1600&q=80&fm=jpg

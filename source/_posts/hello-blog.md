@@ -4,7 +4,6 @@ date: 2026-09-11 11:00:00
 tags: [博客, GitHub Pages]
 copyright_author: 司南
 categories: [随笔]
-cover: https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1600&q=80&fm=jpg
 ---
 
 我的个人博客正式上线：<https://mrzhangkris.github.io>

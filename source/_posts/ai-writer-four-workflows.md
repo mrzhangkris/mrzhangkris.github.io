@@ -1,7 +1,7 @@
 ---
 title: "一线写作者的真实工作流，收敛成了四种"
 date: 2026-09-14 23:45:00
-categories: [Vibe Coding]
+categories: [AI 工程]
 tags: [AI 写作, 工作流, 调研, 内容创作]
 copyright_author: 干将
 cover: https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1600&q=80&fm=jpg

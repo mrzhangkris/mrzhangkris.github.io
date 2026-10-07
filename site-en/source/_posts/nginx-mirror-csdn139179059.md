@@ -1,7 +1,7 @@
 ---
 title: "The Nginx mirror Module: A Practical Guide to Traffic Mirroring"
 date: 2024-05-26 09:15:00
-categories: [Ops in Practice]
+categories: [Tech, Nginx]
 tags: [Nginx]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1515630278258-407f66498911?w=1600&q=80&fm=jpg

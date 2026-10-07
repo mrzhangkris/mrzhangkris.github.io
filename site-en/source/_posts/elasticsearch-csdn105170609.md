@@ -1,7 +1,7 @@
 ---
 title: "Installing Elasticsearch 7.6.1: Manual tarball Deployment with a Custom JDK"
 date: 2020-03-29 10:05:30
-categories: [Ops in Practice]
+categories: [Tech, Elasticsearch]
 lang: en
 tags: [Elasticsearch]
 copyright_author: Ganjiang

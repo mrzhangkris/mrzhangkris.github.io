@@ -2,7 +2,7 @@
 title: "Deploying a ZooKeeper Cluster: A Three-Node Run on Rocky Linux 9 (with CentOS 7 Differences)"
 date: 2024-05-21 09:15:02
 updated: 2026-09-14
-categories: [Ops in Practice]
+categories: [Tech, ZooKeeper]
 tags: [ZooKeeper]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1667984390533-64bdefe719ea?w=1600&q=80&fm=jpg
@@ -34,7 +34,7 @@ Download the binary package from the Apache website and extract it to the same d
 
 ```bash
 # this post's version: 3.8.6 (stable directory on the downloads site)
-wget https://archive.apache.org/dist/zookeeper/zookeeper-3.8.6/apache-zookeeper-3.8.6-bin.tar.gz
+wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.8.6-bin.tar.gz
 tar -xzf apache-zookeeper-3.8.6-bin.tar.gz -C /opt
 mv /opt/apache-zookeeper-3.8.6-bin /opt/zookeeper
 ```

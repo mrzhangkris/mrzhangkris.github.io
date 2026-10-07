@@ -3,7 +3,7 @@ title: "Troubleshooting Tomcat Startup Crashes: Causes and Fixes"
 date: 2024-05-11 16:00:13
 updated: 2026-09-14
 lang: en
-categories: [Ops in Practice]
+categories: [Tech, Tomcat]
 tags: [Tomcat]
 copyright_author: Ganjiang
 cover: https://images.unsplash.com/photo-1515965885361-f1e0095517ea?w=1600&q=80&fm=jpg

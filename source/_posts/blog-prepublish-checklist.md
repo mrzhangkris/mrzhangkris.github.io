@@ -1,7 +1,7 @@
 ---
 title: "博客产线（三）：发布前的六道自动体检"
 date: 2026-09-14 22:00:00
-categories: [Vibe Coding]
+categories: [技术]
 tags: [博客, Hexo, 自动化, 质量检查, GitHub Actions]
 copyright_author: 干将
 series: blog-pipeline-line
