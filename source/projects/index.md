@@ -18,7 +18,7 @@ type: page
 .section-title {
   font-size: 24px;
   font-weight: 600;
-  color: var(--font-color);
+  color: var(--font-color, #333);
   margin-bottom: 24px;
   padding-bottom: 12px;
   border-bottom: 2px solid var(--theme-color, #2C6BED);
@@ -32,10 +32,10 @@ type: page
 }
 
 .project-card {
-  background: var(--card-bg);
+  background: var(--card-bg, #fff);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: var(--card-box-shadow);
+  box-shadow: var(--card-box-shadow, 0 2px 8px rgba(0,0,0,0.1));
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -43,7 +43,7 @@ type: page
 
 .project-card:hover {
   transform: translateY(-6px);
-  box-shadow: var(--card-hover-box-shadow);
+  box-shadow: var(--card-hover-box-shadow, 0 8px 24px rgba(0,0,0,0.15));
 }
 
 .project-cover {
@@ -75,20 +75,20 @@ type: page
 .project-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--font-color);
+  color: var(--font-color, #333);
   margin: 0;
 }
 
 .project-subtitle {
   font-size: 13px;
-  color: var(--card-meta);
+  color: var(--card-meta, #666);
   margin-top: 4px;
 }
 
 .project-desc {
   font-size: 14px;
   line-height: 1.7;
-  color: var(--font-color);
+  color: var(--font-color, #333);
   opacity: 0.85;
   margin-bottom: 16px;
   flex: 1;
@@ -137,7 +137,7 @@ type: page
 
 .project-link.secondary {
   background: rgba(0, 0, 0, 0.05);
-  color: var(--font-color);
+  color: var(--font-color, #333);
 }
 
 .project-link.secondary:hover {
