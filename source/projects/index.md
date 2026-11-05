@@ -1,7 +1,7 @@
 ---
 title: 项目展示
 date: 2026-11-05 14:00:00
-type: projects
+type: page
 ---
 
 <style>
