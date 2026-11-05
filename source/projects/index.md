@@ -27,7 +27,7 @@ type: page
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
 }
 
@@ -173,12 +173,47 @@ type: page
 }
 
 @media (max-width: 768px) {
+  .projects-container {
+    padding: 12px;
+  }
+  
   .projects-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
   
   .project-cover {
     height: 160px;
+  }
+  
+  .project-content {
+    padding: 16px;
+  }
+  
+  .project-title {
+    font-size: 17px;
+  }
+  
+  .project-subtitle {
+    font-size: 13px;
+  }
+  
+  .project-desc {
+    font-size: 14px;
+  }
+  
+  .project-tag {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+  
+  .project-link {
+    font-size: 14px;
+    padding: 8px 14px;
+  }
+  
+  .project-section {
+    margin-bottom: 40px;
   }
 }
 </style>
