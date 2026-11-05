@@ -220,9 +220,6 @@ type: page
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
 
 <div class="project-card">
 <div class="project-cover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
