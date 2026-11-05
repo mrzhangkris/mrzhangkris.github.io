@@ -105,7 +105,7 @@ type: page
   font-size: 12px;
   padding: 4px 10px;
   border-radius: 12px;
-  background: rgba(44, 107, 237, 0.1);
+  background: var(--tag-bg, rgba(44, 107, 237, 0.1));
   color: var(--theme-color, #2C6BED);
 }
 
@@ -170,6 +170,40 @@ type: page
   height: 6px;
   border-radius: 50%;
   background: currentColor;
+}
+
+/* 深色模式适配 */
+[data-theme="dark"] .project-card {
+  background: var(--card-bg, #1e1e1e);
+}
+
+[data-theme="dark"] .project-link.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--font-color, #e0e0e0);
+}
+
+[data-theme="dark"] .project-link.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .project-tag {
+  background: rgba(44, 107, 237, 0.2);
+}
+
+/* 焦点状态（无障碍） */
+.project-link:focus,
+.project-card:focus-within {
+  outline: 2px solid var(--theme-color, #2C6BED);
+  outline-offset: 2px;
+}
+
+/* 激活状态 */
+.project-link:active {
+  transform: scale(0.98);
+}
+
+.project-card:active {
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
