@@ -6,7 +6,9 @@
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "server": "hexo server",
+    "lint": "markdownlint-cli2 'source/_posts/**/*.md'",
+    "lint:fix": "markdownlint-cli2 --fix 'source/_posts/**/*.md'"
   },
   "hexo": {
     "version": "8.1.2"
@@ -28,5 +30,8 @@
     "hexo-theme-butterfly": "^5.7.0",
     "hexo-theme-landscape": "^1.0.0",
     "hexo-wordcount": "^6.0.1"
+  },
+  "devDependencies": {
+    "markdownlint-cli2": "^0.17.2"
   }
 }

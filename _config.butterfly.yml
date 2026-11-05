@@ -716,7 +716,7 @@ cloudflare_analytics:
 # https://clarity.microsoft.com/
 microsoft_clarity:
 
-# https://umami.is/
+# https://umami.is/ (推荐：隐私友好、可自托管)
 umami_analytics:
   enable: false
   # For self-hosted setups, configure the hostname of the Umami instance
@@ -736,6 +736,11 @@ google_tag_manager:
   tag_id:
   # optional
   domain:
+
+# 51.la 统计（国内友好）
+tencent_analytics:
+  enable: false
+  sid:
 
 # --------------------------------------
 # Advertisement
@@ -764,10 +769,12 @@ ad:
 # --------------------------------------
 
 site_verification:
-  # - name: google-site-verification
-  #   content: xxxxxx
-  # - name: baidu-site-verification
-  #   content: xxxxxxx
+  - name: google-site-verification
+    content: ''  # 从 Google Search Console 获取
+  - name: baidu-site-verification
+    content: ''  # 从百度搜索资源平台获取
+  - name: msvalidate.01
+    content: ''  # 从 Bing Webmaster Tools 获取
 
 # --------------------------------------
 # Beautify / Effect
@@ -1067,21 +1074,21 @@ pwa:
 Open_Graph_meta:
   enable: true
   option:
-    # twitter_card:
-    # twitter_image:
-    # twitter_id:
-    # twitter_site:
+    twitter_card: summary_large_image
+    twitter_id: mrzhangkris
+    twitter_site: https://mrzhangkris.github.io
     # google_plus:
     # fb_admins:
     # fb_app_id:
 
-# Structured Data
+# Structured Data (JSON-LD for SEO)
 # https://developers.google.com/search/docs/guides/intro-structured-data
 structured_data:
-  enable: false
-  # Alternate name for the site, used in structured data
-  # Format: ['name1', 'name2']
+  enable: true
   alternate_name:
+    - 张鹏的博客
+    - Zhang Peng's Blog
+    - mrzhangkris
 
 # Add the vendor prefixes to ensure compatibility
 css_prefix: true
@@ -1093,6 +1100,13 @@ inject:
     - <link rel="stylesheet" href="/css/custom.css">
     - <link rel="alternate" type="application/atom+xml" title="张鹏的博客" href="/atom.xml">
     - <link rel="alternate" type="application/atom+xml" title="Zhang Peng's Blog (EN)" href="/en/atom.xml">
+    - <meta name="author" content="张鹏">
+    - <meta name="publisher" content="张鹏">
+    - <meta name="copyright" content="Copyright © 2024-2026 张鹏">
+    - <link rel="canonical" href="https://mrzhangkris.github.io/">
+    - <link rel="alternate" hreflang="zh-CN" href="https://mrzhangkris.github.io/">
+    - <link rel="alternate" hreflang="en" href="https://mrzhangkris.github.io/en/">
+    - <link rel="alternate" hreflang="x-default" href="https://mrzhangkris.github.io/">
   bottom:
     - <script defer src="/js/blog-ask.js"></script>
     # - <script src="xxxx"></script>

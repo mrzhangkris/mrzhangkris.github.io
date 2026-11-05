@@ -3,5 +3,14 @@ Allow: /
 Disallow: /js/
 Disallow: /css/
 Disallow: /fancybox/
+Disallow: /en/js/
+Disallow: /en/css/
 
+# Sitemaps
 Sitemap: https://mrzhangkris.github.io/sitemap.xml
+Sitemap: https://mrzhangkris.github.io/en/sitemap.xml
+
+# RSS
+User-agent: *
+Allow: /atom.xml
+Allow: /en/atom.xml
